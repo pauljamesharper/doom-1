@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: reveal-2-column
+# key: 2columns
+# --
+#+REVEAL_HTML: <div class="column" style="float:left; width: 50%">
+$1
+#+REVEAL_HTML: </div>
+
+#+REVEAL_HTML: <div class="column" style="float:right; width: 50%">
+$2
+#+REVEAL_HTML: </div>

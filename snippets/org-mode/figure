@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: figure
+# key: fig
+# --
+
+#+CAPTION: $1
+#+NAME: fig:$2
+#+ATTR_LaTeX: scale=0.85
+[[file:$3]]

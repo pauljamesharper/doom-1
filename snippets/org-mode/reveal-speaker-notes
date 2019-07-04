@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: reveal-speaker-notes
+# key: notes
+# --
+#+BEGIN_NOTES
+- ${1: Note content}
+#+END_NOTES
