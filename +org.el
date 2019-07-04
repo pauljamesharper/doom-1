@@ -17,10 +17,10 @@
   )
 
   ;; Latex-Export
-  (require 'ox-latex)
-  (require 'ox-bibtex)
-  (require 'org)
-  (require 'ox)
+  ;; (require 'ox-latex)
+  ;; (require 'ox-bibtex)
+  ;; (require 'org)
+  ;; (require 'ox)
 
   (setq org-latex-bib-compiler "biber"
         org-latex-pdf-process ; -shell-escape needed for minted
