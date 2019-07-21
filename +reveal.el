@@ -1,8 +1,7 @@
 ;;; ~/.doom.d/+reveal.el -*- lexical-binding: t; -*-
 
 (def-package! org-re-reveal
-  :defer t
-  :after ox
+  :after org
   :init
   ;; Fix #1127, where ox-reveal adds an errant entry to
   ;; `org-structure-template-alist'

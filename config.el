@@ -11,6 +11,10 @@
 (load! "+caldav")
 (load! "+flyspell")
 (load! "+pdf-annot")
+(load! "+ui")
+
+(setq auth-sources '("~/.authinfo.gpg"))
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; UI
 (setq doom-theme 'doom-one

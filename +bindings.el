@@ -11,7 +11,7 @@
 
         (:localleader
           :desc "Hide property drawers" "p"    #'my/org-cycle-hide-properties-everywhere
-
+          :desc "Archive subtree"       "a"    #'org-archive-subtree
 
         (:prefix ("e" . "export")
           :desc "org-export"            "e"    #'org-export-dispatch)))

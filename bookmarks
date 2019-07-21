@@ -9,9 +9,9 @@
  (position . 5334))
 ("org-capture-last-stored"
  (filename . "~/Exocortex/Executive/actions.org")
- (front-context-string . "** TODO [#B] Fin")
- (rear-context-string . "licing paper!]]\n")
- (position . 6358))
+ (front-context-string . "** TODO [#A] App")
+ (rear-context-string . "rnance Summit]]\n")
+ (position . 9667))
 ("Actions"
  (filename . "~/Exocortex/Executive/actions.org")
  (front-context-string . " ] Make outline ")

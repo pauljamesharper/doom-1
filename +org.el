@@ -1,27 +1,86 @@
 ;;; ~/.doom.d/+org.el -*- lexical-binding: t; -*-
 
-;;ORG-MODE
+;; ORG-FUNCTIONS
+(defun my/org-archive-done-tasks ()
+  (interactive)
+  (org-map-entries 'org-archive-subtree "/DONE" 'file))
+
+(defun my/org-cycle-hide-drawers (state)
+"Re-hide all drawers after a visibility state change."
+(when (and (derived-mode-p 'org-mode)
+          (not (memq state '(overview folded contents))))
+  (save-excursion
+    (let* ((globalp (memq state '(contents all)))
+        (beg (if globalp
+                (point-min)
+                (point)))
+        (end (if globalp
+                (point-max)
+                (if (eq state 'children)
+                  (save-excursion
+                    (outline-next-heading)
+                    (point))
+                  (org-end-of-subtree t)))))
+    (goto-char beg)
+    (while (re-search-forward org-drawer-regexp end t)
+      (save-excursion
+        (beginning-of-line 1)
+        (when (looking-at org-drawer-regexp)
+          (let* ((start (1- (match-beginning 0)))
+                (limit
+                  (save-excursion
+                    (outline-next-heading)
+                      (point)))
+                (msg (format
+                        (concat
+                          "org-cycle-hide-drawers:  "
+                          "`:END:`"
+                          " line missing at position %s")
+                        (1+ start))))
+            (if (re-search-forward "^[ \t]*:END:" limit t)
+              (outline-flag-region start (point-at-eol) t)
+              (user-error msg))))))))))
+
+(defun my/org-cycle-hide-properties-everywhere ()
+  (interactive)
+  (my/org-cycle-hide-drawers 'all)
+  )
+
+(defun my/org-cycle-hide-properties-children ()
+  (interactive)
+  (my/org-cycle-hide-drawers 'children)
+  )
+
+
+;; HOOKS
+(add-hook! 'org-mode-hook 'my/org-cycle-hide-properties-everywhere)
+
+
+;;WIHTIN ORG-MODE
 (after! org
 
   ;; Org-Agenda
-  (setq org-agenda-files '("~/Exocortex/Executive"))
-
+  (setq org-agenda-files '("~/Exocortex/Executive/actions.org"
+                           "~/Exocortex/Executive/strategy.org"
+                           "~/Exocortex/Executive/calendar.org"
+                           "~/Exocortex/Executive/calendar-inbox.org"))
   ;;Capture Templates
   (setq org-capture-templates
-        '(("t" "Todo" entry
+        '(("t" "TODO" entry
          (file+headline "~/Exocortex/Executive/actions.org" "Other")
           "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
-         ("a" "appointment" entry
+         ("a" "APPOINTMENT" entry
          (file+headline "~/Exocortex/Executive/calendar.org" "Appointments")
           "* %?\nSCHEDULED: %^T\n%a\n"))
-  )
+        )
+
+  (setq org-todo-keywords
+   '((sequence "TODO(t)" "PROJ(p)" "|" "DONE(d)")
+     (sequence "[ ](T)" "[-](P)" "[?](M)" "|" "[X](D)")
+     (sequence "NEXT(n)" "WAIT(w)" "HOLD(h)" "|" "ABRT(c)")
+     (sequence "TOREAD(r)" "|" "READ(R)")))
 
   ;; Latex-Export
-  ;; (require 'ox-latex)
-  ;; (require 'ox-bibtex)
-  ;; (require 'org)
-  ;; (require 'ox)
-
   (setq org-latex-bib-compiler "biber"
         org-latex-pdf-process ; -shell-escape needed for minted
         '("%latex -shell-escape -interaction nonstopmode -output-directory %o %f"

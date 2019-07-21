@@ -10,4 +10,5 @@
 (package! helm-bibtex)
 (package! org-ref :recipe (:fetcher github :repo "jkitchin/org-ref" :files ("*")))
 (package! org-caldav)
-
+(package! mu4e-alert)
+(package! fancy-battery)
