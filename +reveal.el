@@ -1,6 +1,6 @@
 ;;; ~/.doom.d/+reveal.el -*- lexical-binding: t; -*-
 
-(def-package! org-re-reveal
+(use-package! org-re-reveal
   :after org
   :init
   ;; Fix #1127, where ox-reveal adds an errant entry to

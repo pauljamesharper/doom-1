@@ -1,6 +1,6 @@
 ;;; ~/.doom.d/+refman.el -*- lexical-binding: t; -*-
 
-(def-package! org-ref
+(use-package! org-ref
   :commands (org-ref-bibtex-next-entry
              org-ref-bibtex-previous-entry
              doi-utils-get-bibtex-entry-pdf
@@ -20,7 +20,7 @@
   :init
   (setq org-ref-completion-library 'org-ref-helm-bibtex))
 
-(def-package! bibtex
+(use-package! bibtex
   :defer t
   :config
   (setq bibtex-dialect 'biblatex
@@ -29,10 +29,10 @@
   (map! :map bibtex-mode-map
         [fill-paragraph] #'bibtex-fill-entry))
 
-(def-package! bibtex-completion
+(use-package! bibtex-completion
   :defer t)
 
-(def-package! helm-bibtex
+(use-package! helm-bibtex
   :commands helm-bibtex)
 
 (setq org-ref-default-citation-link "autocite")

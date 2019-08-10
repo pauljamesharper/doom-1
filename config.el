@@ -23,4 +23,3 @@
 
 ;; Bookmark save directory
 (setq bookmark-default-file "~/.doom.d/bookmarks")
-

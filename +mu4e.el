@@ -38,7 +38,7 @@
       )
   )
 
-(def-package! org-mu4e
+(use-package! org-mu4e
   :after mu4e
   :config
   (setq org-mu4e-link-query-in-headers-mode nil
@@ -52,7 +52,7 @@
 
 
 ;; mu4e-alert
-(def-package! mu4e-alert
+(use-package! mu4e-alert
   :after mu4e
   :hook ((after-init . mu4e-alert-enable-mode-line-display)
          (after-init . mu4e-alert-enable-notifications))

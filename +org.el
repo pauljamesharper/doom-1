@@ -60,17 +60,17 @@
 (after! org
 
   ;; Org-Agenda
-  (setq org-agenda-files '("~/Exocortex/Executive/actions.org"
-                           "~/Exocortex/Executive/strategy.org"
-                           "~/Exocortex/Executive/calendar.org"
-                           "~/Exocortex/Executive/calendar-inbox.org"))
+  (setq org-agenda-files '("~/org/actions.org"
+                           "~/org/strategy.org"
+                           "~/org/calendar.org"
+                           "~/org/calendar-inbox.org"))
   ;;Capture Templates
   (setq org-capture-templates
         '(("t" "TODO" entry
-         (file+headline "~/Exocortex/Executive/actions.org" "Other")
+         (file+headline "~/org/actions.org" "Other")
           "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
          ("a" "APPOINTMENT" entry
-         (file+headline "~/Exocortex/Executive/calendar.org" "Appointments")
+         (file+headline "~/org/calendar.org" "Appointments")
           "* %?\nSCHEDULED: %^T\n%a\n"))
         )
 
@@ -94,5 +94,5 @@
                isbn=false, style=authoryear-icomp,
                date=year]{biblatex}" t)
   (add-to-list 'org-latex-packages-alist
-               "\\addbibresource{~/Exocortex/library.bib}" t)
+               "\\addbibresource{~/library.bib}" t)
 )
