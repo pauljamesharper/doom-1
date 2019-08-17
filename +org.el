@@ -59,7 +59,13 @@
 ;;WIHTIN ORG-MODE
 (after! org
 
+  (add-to-list 'org-modules 'org-habit t)
+  (setq org-directory "~/work/org/"
+      org-agenda-files (list org-directory)
+      org-ellipsis " ▼ ")
+
   ;; Org-Agenda
+  (setq org-agenda-window-setup 'only-window)
   (setq org-agenda-files '("~/org/actions.org"
                            "~/org/strategy.org"
                            "~/org/calendar.org"

@@ -36,17 +36,17 @@
   :commands helm-bibtex)
 
 (setq org-ref-default-citation-link "autocite")
-(setq reftex-default-bibliography '("~/Exocortex/library.bib" "~/Projects/kolleg/references.bib"))
+(setq reftex-default-bibliography '("~/library.bib" "~/Projects/kolleg/references.bib"))
 
-(setq org-ref-default-bibliography '("~/Exocortex/library.bib" "~/Projects/kolleg/references.bib")
+(setq org-ref-default-bibliography '("~/library.bib" "~/Projects/kolleg/references.bib")
       org-ref-pdf-directory "~/Zotero/storage/")
 
 (setq bibtex-completion-library-path '("~/Zotero/storage/"))
 (setq bibtex-completion-pdf-field "file")
 (setq bibtex-completion-bibliography
-      '("~/Exocortex/library.bib"
+      '("~/library.bib"
         "~/Projects/kolleg/references.bib"))
-(setq bibtex-completion-notes-path "~/Exocortex/Memory/Academic/bibnotes/")
+;; (setq bibtex-completion-notes-path "~/Exocortex/Memory/Academic/bibnotes/")
 
 (defun my/org-ref-open-pdf-at-point ()
   "Open the pdf for bibtex key under point if it exists."

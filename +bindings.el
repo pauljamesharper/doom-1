@@ -1,9 +1,8 @@
 ;;; ~/.doom.d/+bindings.el -*- lexical-binding: t; -*-
 
-
-
 (map! :leader
-      :desc "Add to dictionary"       "a"    #'my/flyspell-save-word)
+      :desc "Add to dictionary"       "a"    #'my/flyspell-save-word
+      :desc "Change dictionary"       "d"    #'ispell-change-dictionary)
 
 (after! org
   (map! :map org-mode-map

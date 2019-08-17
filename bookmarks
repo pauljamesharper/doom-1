@@ -2,49 +2,19 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(("Calendar"
- (filename . "~/Exocortex/Executive/calendar.org")
+(("org-capture-last-stored"
+ (filename . "~/org/calendar.org")
+ (front-context-string . "** Meeting with ")
+ (rear-context-string . "1, 14195 Berlin\n")
+ (position . 926))
+("Calendar"
+ (filename . "~/org/calendar.org")
  (front-context-string)
  (rear-context-string . "hu 09:00-15:15>\n")
  (position . 5334))
-("org-capture-last-stored"
- (filename . "~/Exocortex/Executive/actions.org")
- (front-context-string . "** TODO [#A] App")
- (rear-context-string . "rnance Summit]]\n")
- (position . 9667))
 ("Actions"
- (filename . "~/Exocortex/Executive/actions.org")
+ (filename . "~/org/actions.org")
  (front-context-string . " ] Make outline ")
  (rear-context-string . "07-31 Wed>\n*** [")
  (position . 1214))
-("Downloads"
- (filename . "~/Downloads/")
- (front-context-string . "Barry Season 2 M")
- (rear-context-string . "22. Jun 23:46  ")
- (position . 122))
-("Reading"
- (filename . "~/Reading/")
- (front-context-string . ".MoonReader\n  dr")
- (rear-context-string . "22. Jun 21:14  ")
- (position . 122))
-("Subconscious"
- (filename . "~/Exocortex/Subconscious/")
- (front-context-string . "2019-05-05-17-08")
- (rear-context-string . " 6. Mai 08:19  ")
- (position . 135))
-("Memory"
- (filename . "~/Exocortex/Memory/")
- (front-context-string . "Academic\n  drwxr")
- (rear-context-string . "22. Jun 21:06  ")
- (position . 128))
-("Executive"
- (filename . "~/Exocortex/Executive/")
- (front-context-string . ".stfolder\n  -rw-")
- (rear-context-string . "22. Jun 21:06  ")
- (position . 131))
-("Exocortex"
- (filename . "~/Exocortex/")
- (front-context-string . "Executive\n  drwx")
- (rear-context-string . "22. Jun 21:06  ")
- (position . 123))
 )

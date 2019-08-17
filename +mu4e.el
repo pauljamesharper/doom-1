@@ -1,18 +1,21 @@
 ;;; ~/.doom.d/+mu4e.el -*- lexical-binding: t; -*-
 
 ;; E-mail setup
+;;
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
+
 (after! mu4e
+  (setq mu4e-maildir "~/.mail/")
   (set-email-account! "sehn.tech"
-    '((mu4e-sent-folder       . "/mailbox/Sent")
-      (mu4e-drafts-folder     . "/mailbox/Drafts")
-      (mu4e-trash-folder      . "/mailbox/Trash")
-      (mu4e-refile-folder     . "/mailbox/Archive/2019")
-      (mu4e-drafts-folder     . "/mailbox/Drafts")
-      (mu4e-compose-signature . "---\nLinus Sehn\nGraduate Student | International Relations and Computer Science\nFU Berlin, HU Berlin, Uni Potsdam\n[[mailto:mail@sehn.tech][mail@sehn.tech]]")
-      (smtpmail-smtp-user     . "linus@sehn.tech")
-      (user-mail-address      . "linus@sehn.tech")
-      (user-full-name         . "Linus Sehn"))
-    t)
+                      '((mu4e-sent-folder       . "/mailbox/Sent")
+                        (mu4e-drafts-folder     . "/mailbox/Drafts")
+                        (mu4e-trash-folder      . "/mailbox/Trash")
+                        (mu4e-refile-folder     . "/mailbox/Archive/2019")
+                        (mu4e-compose-signature . "---\nLinus Sehn\nGraduate Student | International Relations and Computer Science\nFU Berlin, HU Berlin, Uni Potsdam\nlinus@sehn.tech")
+                        (smtpmail-smtp-user     . "linus@sehn.tech")
+                        (user-mail-address      . "linus@sehn.tech")
+                        (user-full-name         . "Linus Sehn"))
+                      t)
 
   (setq mu4e-compose-complete-addresses 't
         mu4e-sent-messages-behavior 'sent

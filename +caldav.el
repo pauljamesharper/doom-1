@@ -24,10 +24,10 @@
 
   (setq org-caldav-url "https://dav.mailbox.org/caldav"
         org-caldav-calendar-id "Y2FsOi8vMC80NA"
-        org-caldav-inbox "~/Exocortex/Executive/calendar-inbox.org"
-        org-caldav-files '("~/Exocortex/Executive/calendar.org"
-                         "~/Exocortex/Executive/actions.org"
-                         "~/Exocortex/Executive/someday.org"))
+        org-caldav-inbox "~/org/calendar-inbox.org"
+        org-caldav-files '("~/org/calendar.org"
+                         "~/org/actions.org"
+                         "~/org/someday.org"))
 
   :config
   (setq org-icalendar-timezone "Europe/Berlin"
@@ -37,11 +37,11 @@
         ;; This ensures all org "deadlines" show up, and show up as due dates
         org-icalendar-use-deadline '(event-if-todo event-if-not-todo todo-due)
         ;; This ensures "scheduled" org items show up, and show up as start times
-        org-icalendar-use-scheduled '(todo-start event-if-todo event-if-not-todo))
+        org-icalendar-use-scheduled '(todo-start event-if-todo event-if-not-todo)))
   ;; Add the delayed save hook with a five minute idle timer
-  (add-hook 'after-save-hook
-      (lambda ()
-        (when (eq major-mode 'org-mode)
-    (org-caldav-sync-with-delay 300))))
+  ;; (add-hook 'after-save-hook
+  ;;     (lambda ()
+  ;;       (when (eq major-mode 'org-mode)
+  ;;   (org-caldav-sync-with-delay 300)))))
   ;; Add the close emacs hook
-  (add-hook 'kill-emacs-hook 'org-caldav-sync-at-close))
+  ;; (add-hook 'kill-emacs-hook 'org-caldav-sync-at-close))

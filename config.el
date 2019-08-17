@@ -17,6 +17,7 @@
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; UI
+(display-time-mode 1)
 (setq doom-theme 'doom-one
       treemacs-width 45
       dired-dwim-target t)
