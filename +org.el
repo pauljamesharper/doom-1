@@ -80,11 +80,11 @@
           "* %?\nSCHEDULED: %^T\n%a\n"))
         )
 
-  (setq org-todo-keywords
-   '((sequence "TODO(t)" "PROJ(p)" "|" "DONE(d)")
-     (sequence "[ ](T)" "[-](P)" "[?](M)" "|" "[X](D)")
-     (sequence "NEXT(n)" "WAIT(w)" "HOLD(h)" "|" "ABRT(c)")
-     (sequence "TOREAD(r)" "|" "READ(R)")))
+  ;; (setq org-todo-keywords
+  ;;  '((sequence "TODO(t)" "PROJ(p)" "|" "DONE(d)")
+  ;;    (sequence "[ ](T)" "[-](P)" "[?](M)" "|" "[X](D)")
+  ;;    (sequence "NEXT(n)" "WAIT(w)" "HOLD(h)" "|" "ABRT(c)")
+  ;;    (sequence "TOREAD(r)" "|" "READ(R)")))
 
   ;; Latex-Export
   (setq org-latex-bib-compiler "biber"
