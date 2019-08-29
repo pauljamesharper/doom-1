@@ -104,11 +104,8 @@
 
 ;; ORG-MODE EXTERNAL PACKAGES
 (use-package! org-journal
-  :bind
-  (("C-c j t" . journal-file-today)
-    ("C-c j y" . journal-file-yesterday))
   :config
-  (org-journal-dir "~/org/.journal/2019/")
-  (org-journal-file-format "%Y%m%d")
-  (org-journal-date-format "%e %b %Y (%A)")
-  (org-journal-time-format ""))
+  (setq org-journal-dir "~/org/.journal/2019/")
+  (setq org-journal-file-format "%Y%m%d")
+  (setq org-journal-date-format "%e %b %Y (%A)")
+  (setq org-journal-time-format ""))
