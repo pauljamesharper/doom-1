@@ -60,9 +60,8 @@
 (after! org
 
   (add-to-list 'org-modules 'org-habit t)
-  (setq org-directory "~/work/org/"
-      org-agenda-files (list org-directory)
-      org-ellipsis " ▼ ")
+  (setq org-directory "~/org/"
+      org-agenda-files (list org-directory))
 
   ;; Org-Agenda
   (setq org-agenda-window-setup 'only-window)
@@ -80,11 +79,11 @@
           "* %?\nSCHEDULED: %^T\n%a\n"))
         )
 
-  ;; (setq org-todo-keywords
-  ;;  '((sequence "TODO(t)" "PROJ(p)" "|" "DONE(d)")
-  ;;    (sequence "[ ](T)" "[-](P)" "[?](M)" "|" "[X](D)")
-  ;;    (sequence "NEXT(n)" "WAIT(w)" "HOLD(h)" "|" "ABRT(c)")
-  ;;    (sequence "TOREAD(r)" "|" "READ(R)")))
+  (setq org-todo-keywords
+   '((sequence "TODO(t)" "PROJ(p)" "|" "DONE(d)")
+     (sequence "[ ](T)" "[-](P)" "[?](M)" "|" "[X](D)")
+     (sequence "NEXT(n)" "WAIT(w)" "HOLD(h)" "|" "ABRT(c)")
+     (sequence "TOREAD(r)" "|" "READ(R)")))
 
   ;; Latex-Export
   (setq org-latex-bib-compiler "biber"
@@ -101,4 +100,15 @@
                date=year]{biblatex}" t)
   (add-to-list 'org-latex-packages-alist
                "\\addbibresource{~/library.bib}" t)
-)
+  )
+
+;; ORG-MODE EXTERNAL PACKAGES
+(use-package! org-journal
+  :bind
+  (("C-c j t" . journal-file-today)
+    ("C-c j y" . journal-file-yesterday))
+  :config
+  (org-journal-dir "~/org/.journal/2019/")
+  (org-journal-file-format "%Y%m%d")
+  (org-journal-date-format "%e %b %Y (%A)")
+  (org-journal-time-format ""))

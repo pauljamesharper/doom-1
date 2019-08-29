@@ -2,7 +2,7 @@
 
 ;; E-mail setup
 ;;
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
+;; (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
 
 (after! mu4e
   (setq mu4e-maildir "~/.mail/")
