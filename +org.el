@@ -69,6 +69,10 @@
                            "~/org/strategy.org"
                            "~/org/calendar.org"
                            "~/org/calendar-inbox.org"))
+
+  ;; Org-Archive
+  (setq org-archive-location "~/Archive/org-archive.org::* From %s")
+
   ;;Capture Templates
   (setq org-capture-templates
         '(("t" "TODO" entry

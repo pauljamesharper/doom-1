@@ -7,7 +7,7 @@
 ;; UI
 (display-time-mode 1)
 (setq doom-font (font-spec :family "Roboto Mono for Powerline" :size 14))
-(setq doom-theme 'doom-spacegrey
+(setq doom-theme 'doom-one
       treemacs-width 45
       dired-dwim-target t)
 

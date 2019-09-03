@@ -7,5 +7,5 @@
   ;; `org-structure-template-alist'
   (setq org-re-reveal-note-key-char nil)
   :config
-  (setq org-re-reveal-root "/home/lino/Templates/reveal.js-3.8.0"
+  (setq org-re-reveal-root "/home/lino/.local/share/reveal/"
         org-re-reveal-mathjax t))
