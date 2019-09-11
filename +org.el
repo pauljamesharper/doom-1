@@ -99,8 +99,8 @@
 
   ;; Bibliography
   (add-to-list 'org-latex-packages-alist
-               "\\usepackage[backend=biber, eprint=false, url=false,
-               isbn=false, style=authoryear-icomp,
+               "\\usepackage[backend=biber, eprint=false, url=true,
+               isbn=false, style=oxyear,
                date=year]{biblatex}" t)
   (add-to-list 'org-latex-packages-alist
                "\\addbibresource{~/library.bib}" t)
@@ -113,3 +113,7 @@
   (setq org-journal-file-format "%Y%m%d")
   (setq org-journal-date-format "%e %b %Y (%A)")
   (setq org-journal-time-format ""))
+
+(use-package! org-noter
+  :config
+  (setq org-noter-notes-search-path '("~/org/bibnotes" )))

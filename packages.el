@@ -13,4 +13,5 @@
 (package! mu4e-alert)
 (package! fancy-battery)
 (package! org-journal)
+(package! org-noter)
 (package! ox-hugo)
