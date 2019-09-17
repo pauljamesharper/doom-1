@@ -25,3 +25,4 @@
 (load! "+flyspell")
 (load! "+pdf-annot")
 (load! "+ui")
+(load! "+hugo")
