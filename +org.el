@@ -64,7 +64,7 @@
       org-agenda-files (list org-directory))
 
   ;; Org-Agenda
-  (setq org-agenda-window-setup 'only-window)
+  (setq org-agenda-window-setup 'current-window)
   (setq org-agenda-files '("~/org/actions.org"
                            "~/org/strategy.org"
                            "~/org/calendar.org"
