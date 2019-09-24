@@ -107,12 +107,9 @@
   )
 
 ;; ORG-MODE EXTERNAL PACKAGES
-(use-package! org-journal
-  :config
-  (setq org-journal-dir "~/org/.journal/2019/")
-  (setq org-journal-file-format "%Y%m%d")
-  (setq org-journal-date-format "%e %b %Y (%A)")
-  (setq org-journal-time-format ""))
+(setq org-journal-dir "~/org/.journal/")
+(setq org-journal-date-format "%A, %d %B %Y")
+
 
 (use-package! org-noter
   :config
