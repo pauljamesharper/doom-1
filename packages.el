@@ -11,7 +11,5 @@
 (package! org-ref :recipe (:host github :repo "jkitchin/org-ref" :files ("*")))
 (package! org-caldav)
 (package! mu4e-alert)
-(package! fancy-battery)
-(package! org-journal)
 (package! org-noter)
 (package! ox-hugo)
