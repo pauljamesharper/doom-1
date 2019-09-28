@@ -13,3 +13,4 @@
 (package! mu4e-alert)
 (package! org-noter)
 (package! ox-hugo)
+(package! typo)

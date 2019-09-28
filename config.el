@@ -14,6 +14,12 @@
 ;; Bookmark save directory
 (setq bookmark-default-file "~/.doom.d/bookmarks")
 
+;; typo.el
+(use-package! typo
+    :config
+    (typo-global-mode 1)
+    (add-hook 'text-mode-hook 'typo-mode))
+
 (load! "+funcs")
 (load! "+bindings")
 (load! "+org")

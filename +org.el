@@ -67,6 +67,8 @@
   (setq org-agenda-window-setup 'current-window)
   (setq org-agenda-files '("~/org/actions.org"
                            "~/org/strategy.org"
+                           "~/org/reading.org"
+                           "~/org/watching.org"
                            "~/org/calendar.org"
                            "~/org/calendar-inbox.org"))
 
@@ -97,16 +99,28 @@
           "%latex -shell-escape -interaction nonstopmode -output-directory %o %f"
           "%latex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
+
   ;; Bibliography
   (add-to-list 'org-latex-packages-alist
                "\\usepackage[backend=biber, eprint=false, url=true,
-               isbn=false, style=oxyear,
+               isbn=false, style=authoryear-icomp,
                date=year]{biblatex}" t)
   (add-to-list 'org-latex-packages-alist
                "\\addbibresource{~/library.bib}" t)
+
+  )
+;; ORG-MODE EXTERNAL PACKAGES
+;;
+(after! ox-latex
+  (add-to-list 'org-export-smart-quotes-alist
+               '("en_cs"
+                  (primary-opening   :utf-8 "“" :html "&ldquo;" :latex "\\enquote{"  :texinfo "``")
+                  (primary-closing   :utf-8 "”" :html "&rdquo;" :latex "}"           :texinfo "''")
+                  (secondary-opening :utf-8 "‘" :html "&lsquo;" :latex "\\enquote*{" :texinfo "`")
+                  (secondary-closing :utf-8 "’" :html "&rsquo;" :latex "}"           :texinfo "'")
+                  (apostrophe        :utf-8 "’" :html "&rsquo;")))
   )
 
-;; ORG-MODE EXTERNAL PACKAGES
 (setq org-journal-dir "~/org/.journal/")
 (setq org-journal-date-format "%A, %d %B %Y")
 
