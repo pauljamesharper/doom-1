@@ -19,16 +19,16 @@
  (position . 2064))
 ("org-refile-last-stored"
  (filename . "~/org/watching.org")
- (front-context-string . "** Eternal sunsh")
- (rear-context-string . "tchi the killer\n")
- (position . 282))
+ (front-context-string . "** Get Me Roger ")
+ (rear-context-string . "he Spider Woman\n")
+ (position . 379))
 ("ZSH History"
  (filename . "/home/lino/.zsh_histfile"))
 ("org-capture-last-stored"
- (filename . "~/org/actions.org")
- (front-context-string . "** TODO [#A] Mak")
- (rear-context-string . "l-Tagung u.m.]]\n")
- (position . 10633))
+ (filename . "~/org/calendar.org")
+ (front-context-string . "** Gespräch über")
+ (rear-context-string . "ed 18:00-19:30>\n")
+ (position . 2478))
 ("Calendar"
  (filename . "~/org/calendar.org")
  (front-context-string)
