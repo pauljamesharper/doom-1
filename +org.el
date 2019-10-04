@@ -70,6 +70,7 @@
                            "~/org/reading.org"
                            "~/org/watching.org"
                            "~/org/calendar.org"
+                           "~/org/outreach.org"
                            "~/org/calendar-inbox.org"))
 
   ;; Org-Archive
