@@ -14,3 +14,4 @@
 (package! org-noter)
 (package! ox-hugo)
 (package! typo)
+(package! nov)

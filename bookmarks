@@ -18,17 +18,17 @@
  (rear-context-string . "be7ec8412\n:END:\n")
  (position . 2064))
 ("org-refile-last-stored"
- (filename . "~/org/watching.org")
- (front-context-string . "** Get Me Roger ")
- (rear-context-string . "he Spider Woman\n")
- (position . 379))
+ (filename . "~/org/actions.org")
+ (front-context-string . "*** TODO [#B] Co")
+ (rear-context-string . "6bcdc4e20\n:END:\n")
+ (position . 3251))
 ("ZSH History"
  (filename . "/home/lino/.zsh_histfile"))
 ("org-capture-last-stored"
- (filename . "~/org/calendar.org")
- (front-context-string . "** Gespräch über")
- (rear-context-string . "ed 18:00-19:30>\n")
- (position . 2478))
+ (filename . "~/org/actions.org")
+ (front-context-string . "** TODO [#B] Com")
+ (rear-context-string . "99029f14e\n:END:\n")
+ (position . 21471))
 ("Calendar"
  (filename . "~/org/calendar.org")
  (front-context-string)
