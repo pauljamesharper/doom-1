@@ -51,80 +51,122 @@
   (my/org-cycle-hide-drawers 'children)
   )
 
-
 ;; HOOKS
 (add-hook! 'org-mode-hook 'my/org-cycle-hide-properties-everywhere)
-
+(add-hook! 'org-mode-hook (lambda () (require 'org-ref)))
 
 ;;WIHTIN ORG-MODE
 (after! org
 
   (add-to-list 'org-modules 'org-habit t)
   (setq org-directory "~/org/"
-      org-agenda-files (list org-directory))
+    org-agenda-files (list org-directory))
 
   ;; Org-Agenda
   (setq org-agenda-window-setup 'current-window)
   (setq org-agenda-files '("~/org/actions.org"
-                           "~/org/strategy.org"
-                           "~/org/reading.org"
-                           "~/org/watching.org"
-                           "~/org/calendar.org"
-                           "~/org/outreach.org"
-                           "~/org/calendar-inbox.org"))
+                          "~/org/strategy.org"
+                          "~/org/reading.org"
+                          "~/org/watching.org"
+                          "~/org/calendar.org"
+                          "~/org/outreach.org"
+                          "~/org/calendar-inbox.org"))
 
   ;; Org-Archive
   (setq org-archive-location "~/org/archive/%s_archive.org::")
 
-  ;;Capture Templates
+  ;; Capture Templates
   (setq org-capture-templates
-        '(("t" "TODO" entry
-         (file+headline "~/org/actions.org" "Other")
-          "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
-         ("a" "APPOINTMENT" entry
-         (file+headline "~/org/calendar.org" "Appointments")
-          "* %?\nSCHEDULED: %^T\n%a\n"))
-        )
+      '(("t" "TODO" entry
+        (file+headline "~/org/actions.org" "Other")
+        "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
+        ("a" "APPOINTMENT" entry
+        (file+headline "~/org/calendar.org" "Appointments")
+        "* %?\nSCHEDULED: %^T\n%a\n"))
+      )
 
+  ;; Org Keywords
   (setq org-todo-keywords
-   '((sequence "TODO(t)" "PROJ(p)" "|" "DONE(d)")
-     (sequence "[ ](T)" "[-](P)" "[?](M)" "|" "[X](D)")
-     (sequence "NEXT(n)" "WAIT(w)" "HOLD(h)" "|" "ABRT(c)")
-     (sequence "TOREAD(r)" "|" "READ(R)")))
+  '((sequence "TODO(t)" "PROJ(p)" "|" "DONE(d)")
+    (sequence "[ ](T)" "[-](P)" "[?](M)" "|" "[X](D)")
+    (sequence "NEXT(n)" "WAIT(w)" "HOLD(h)" "|" "ABRT(c)")
+    (sequence "TOREAD(r)" "|" "READ(R)")))
 
-  ;; Latex-Export
+  ;; Export
   (setq org-latex-bib-compiler "biber"
-        org-latex-pdf-process ; -shell-escape needed for minted
-        '("%latex -shell-escape -interaction nonstopmode -output-directory %o %f"
-          "biber %b"
-          "%latex -shell-escape -interaction nonstopmode -output-directory %o %f"
-          "%latex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+      org-latex-pdf-process ; -shell-escape needed for minted
+      '("latexmk -shell-escape -bibtex -pdf %f"))
 
-
-  ;; Bibliography
   (add-to-list 'org-latex-packages-alist
-               "\\usepackage[backend=biber, eprint=false, url=true,
-               isbn=false, style=authoryear-icomp,
-               date=year]{biblatex}" t)
+              "\\usepackage[backend=biber, eprint=false, url=true,
+              isbn=false, style=authoryear-icomp,
+              date=year]{biblatex}" t)
   (add-to-list 'org-latex-packages-alist
-               "\\addbibresource{~/library.bib}" t)
+              "\\addbibresource{~/library.bib}" t)
 
-  )
-;; ORG-MODE EXTERNAL PACKAGES
-;;
-(after! ox-latex
-  (add-to-list 'org-export-smart-quotes-alist
-               '("en_cs"
-                  (primary-opening   :utf-8 "“" :html "&ldquo;" :latex "\\enquote{"  :texinfo "``")
-                  (primary-closing   :utf-8 "”" :html "&rdquo;" :latex "}"           :texinfo "''")
-                  (secondary-opening :utf-8 "‘" :html "&lsquo;" :latex "\\enquote*{" :texinfo "`")
-                  (secondary-closing :utf-8 "’" :html "&rsquo;" :latex "}"           :texinfo "'")
-                  (apostrophe        :utf-8 "’" :html "&rsquo;")))
-  )
+  (after! ox-latex
+    (add-to-list 'org-export-smart-quotes-alist
+                '("en_cs"
+                    (primary-opening   :utf-8 "“" :html "&ldquo;" :latex "\\enquote{"  :texinfo "``")
+                    (primary-closing   :utf-8 "”" :html "&rdquo;" :latex "}"           :texinfo "''")
+                    (secondary-opening :utf-8 "‘" :html "&lsquo;" :latex "\\enquote*{" :texinfo "`")
+                    (secondary-closing :utf-8 "’" :html "&rsquo;" :latex "}"           :texinfo "'")
+                    (apostrophe        :utf-8 "’" :html "&rsquo;")))
+    )
 
-(setq org-journal-dir "~/org/journal/")
-(setq org-journal-date-format "%A, %d %B %Y")
+  (use-package! ox-word
+    :load-path "~/.doom.d/load/ox-word/"
+    :after ox)
 
-(use-package! org-noter
-  :config
-  (setq org-noter-notes-search-path '("~/org/bibnotes" )))
+  ;; Journal
+  (setq org-journal-dir "~/org/journal/")
+  (setq org-journal-date-format "%A, %d %B %Y")
+
+  ;; Reference Management
+  (use-package! org-ref
+    :init
+    (setq org-ref-completion-library 'org-ref-helm-bibtex)
+    :config
+    (setq org-ref-default-citation-link "autocite"
+          org-ref-default-bibliography '("~/library.bib")
+          org-ref-pdf-directory "~/Zotero/storage/"))
+
+  (use-package! helm-bibtex
+    :commands helm-bibtex
+    :config
+    (setq bibtex-completion-library-path '("~/Zotero/storage/")
+          bibtex-completion-pdf-field "file"
+          bibtex-completion-bibliography
+          '("~/library.bib")))
+
+  (use-package! bibtex
+    :defer t
+    :config
+    (setq bibtex-dialect 'biblatex))
+
+  (use-package! bibtex-completion
+    :defer t
+    :config
+    (setq bibtex-completion-notes-path "~/org/bibnotes/"))
+
+  (use-package! org-noter
+    :config
+    (setq org-noter-notes-search-path '("~/org/bibnotes" )))
+
+  (defun my/org-ref-open-pdf-at-point ()
+    "Open the pdf for bibtex key under point if it exists."
+    (interactive)
+    (let* ((results (org-ref-get-bibtex-key-and-file))
+          (key (car results))
+    (pdf-file (car (bibtex-completion-find-pdf key))))
+      (if (file-exists-p pdf-file)
+    (org-open-file pdf-file)
+        (message "No PDF found for %s" key))))
+
+  (setq org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point)
+
+  (setq org-file-apps
+        '((auto-mode . emacs)
+          ("\\.x?html?\\'" . "firefox %s")
+          ))
+)

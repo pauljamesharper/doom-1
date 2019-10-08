@@ -19,16 +19,16 @@
  (position . 2064))
 ("org-refile-last-stored"
  (filename . "~/org/actions.org")
- (front-context-string . "*** TODO [#B] Co")
- (rear-context-string . "6bcdc4e20\n:END:\n")
- (position . 3251))
+ (front-context-string . "*** [ ] [#A] Wri")
+ (rear-context-string . "t\nvorbereiten?\"\n")
+ (position . 13079))
 ("ZSH History"
  (filename . "/home/lino/.zsh_histfile"))
 ("org-capture-last-stored"
  (filename . "~/org/actions.org")
- (front-context-string . "** TODO [#C] Get")
- (rear-context-string . "99029f14e\n:END:\n")
- (position . 21642))
+ (front-context-string . "** [ ] [#A] Writ")
+ (rear-context-string . "achrichtigung]]\n")
+ (position . 17835))
 ("Calendar"
  (filename . "~/org/calendar.org")
  (front-context-string)
