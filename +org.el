@@ -74,7 +74,7 @@
                            "~/org/calendar-inbox.org"))
 
   ;; Org-Archive
-  (setq org-archive-location "~/Archive/org-archive.org::* From %s")
+  (setq org-archive-location "~/org/archive/%s_archive.org::")
 
   ;;Capture Templates
   (setq org-capture-templates
@@ -122,9 +122,8 @@
                   (apostrophe        :utf-8 "’" :html "&rsquo;")))
   )
 
-(setq org-journal-dir "~/org/.journal/")
+(setq org-journal-dir "~/org/journal/")
 (setq org-journal-date-format "%A, %d %B %Y")
-
 
 (use-package! org-noter
   :config

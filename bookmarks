@@ -26,9 +26,9 @@
  (filename . "/home/lino/.zsh_histfile"))
 ("org-capture-last-stored"
  (filename . "~/org/actions.org")
- (front-context-string . "** TODO [#B] Com")
+ (front-context-string . "** TODO [#C] Get")
  (rear-context-string . "99029f14e\n:END:\n")
- (position . 21471))
+ (position . 21642))
 ("Calendar"
  (filename . "~/org/calendar.org")
  (front-context-string)

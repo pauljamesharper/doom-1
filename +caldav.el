@@ -24,7 +24,7 @@
 
   (setq org-caldav-url "https://dav.mailbox.org/caldav"
         org-caldav-calendar-id "Y2FsOi8vMC80NQ"
-        org-caldav-inbox "~/org/calendar-inbox.org"
+        org-caldav-inbox "~/org/.calendar-inbox.org"
         org-caldav-files '("~/org/calendar.org"
                          "~/org/actions.org"
                          "~/org/someday.org"))
@@ -39,7 +39,8 @@
         ;; This ensures "scheduled" org items show up, and show up as start times
         org-icalendar-use-scheduled '(todo-start event-if-todo event-if-not-todo)
         ;; exclude-tags for habits
-        org-icalendar-exclude-tags '("morning" "evening")))
+        org-icalendar-exclude-tags '("morning" "evening")
+        org-caldav-exclude-tags '("morning" "evening")))
   ;; Add the delayed save hook with a five minute idle timer
   ;; (add-hook 'after-save-hook
   ;;     (lambda ()
