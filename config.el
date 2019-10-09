@@ -24,7 +24,6 @@
 (load! "+bindings")
 (load! "+org")
 (load! "+latex")
-(load! "+refman")
 (load! "+epub")
 (load! "+mu4e")
 (load! "+reveal")
