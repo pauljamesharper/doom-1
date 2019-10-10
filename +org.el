@@ -64,6 +64,9 @@
 
   ;; Org-Agenda
   (setq org-agenda-window-setup 'current-window)
+  (setq org-agenda-start-day "-1d")
+  (setq org-agenda-span 5)
+  (setq org-agenda-start-on-weekday nil)
   (setq org-agenda-files '("~/org/actions.org"
                           "~/org/strategy.org"
                           "~/org/reading.org"
@@ -71,6 +74,31 @@
                           "~/org/calendar.org"
                           "~/org/outreach.org"
                           "~/org/calendar-inbox.org"))
+
+  (use-package! org-super-agenda
+    :after org-agenda
+    :init
+    (setq org-super-agenda-groups '((:name "Overdue"
+                                           :deadline past)
+                                    (:name "Due"
+                                           :deadline today)
+                                    (:name "Due soon"
+                                           :deadline future
+                                           :children t)
+                                    (:name "Morning Ritual"
+                                           :tag "morning")
+                                    (:name "Today"
+                                           :time-grid t
+                                           :scheduled today)
+                                    (:name "Shutdown Ritual"
+                                           :tag "shutdown")
+                                    (:name "Overdue Start"
+                                           :discard (:habit t)
+                                           :scheduled past)
+                                    (:name "Start soon"
+                                           :scheduled future)))
+    :config
+    (org-super-agenda-mode))
 
   ;; Org-Archive
   (setq org-archive-location "~/org/archive/%s_archive.org::")

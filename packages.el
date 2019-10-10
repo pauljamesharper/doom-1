@@ -7,10 +7,11 @@
 ;; (package! builtin-package :disable t)
 
 (package! org-re-reveal)
-(package! ivy-bibtex)
+(package! helm-bibtex)
 (package! org-ref :recipe (:host github :repo "jkitchin/org-ref" :files ("*")))
 (package! org-caldav)
 (package! mu4e-alert)
 (package! org-noter)
+(package! org-super-agenda)
 (package! typo)
 (package! nov)
