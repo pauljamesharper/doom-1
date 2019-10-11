@@ -25,10 +25,10 @@
 ("ZSH History"
  (filename . "/home/lino/.zsh_histfile"))
 ("org-capture-last-stored"
- (filename . "~/org/actions.org")
- (front-context-string . "** TODO [#B] App")
- (rear-context-string . "achrichtigung]]\n")
- (position . 25072))
+ (filename . "~/org/calendar.org")
+ (front-context-string . "** Meeting with ")
+ (rear-context-string . "12f99c515\n:END:\n")
+ (position . 19350))
 ("Calendar"
  (filename . "~/org/calendar.org")
  (front-context-string)

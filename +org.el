@@ -64,7 +64,7 @@
 
   ;; Org-Agenda
   (setq org-agenda-window-setup 'current-window)
-  (setq org-agenda-start-day "-1d")
+  (setq org-agenda-start-day "+0d")
   (setq org-agenda-span 5)
   (setq org-agenda-start-on-weekday nil)
   (setq org-agenda-files '("~/org/actions.org"
@@ -80,11 +80,10 @@
     :init
     (setq org-super-agenda-groups '((:name "Overdue"
                                            :deadline past)
-                                    (:name "Due"
+                                    (:name "Due today"
                                            :deadline today)
                                     (:name "Due soon"
-                                           :deadline future
-                                           :children t)
+                                           :deadline future)
                                     (:name "Morning Ritual"
                                            :tag "morning")
                                     (:name "Today"
@@ -110,7 +109,7 @@
         "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
         ("a" "APPOINTMENT" entry
         (file+headline "~/org/calendar.org" "Appointments")
-        "* %?\nSCHEDULED: %^T\n%a\n"))
+        "* %?\n%(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n"))
       )
 
   ;; Org Keywords

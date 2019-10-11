@@ -29,6 +29,6 @@
 (load! "+reveal")
 (load! "+caldav")
 (load! "+flyspell")
-(load! "+pdf-annot")
+(load! "+pdf")
 (load! "+ui")
 (load! "+hugo")
