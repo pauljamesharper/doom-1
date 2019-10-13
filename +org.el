@@ -1,55 +1,17 @@
 ;;; ~/.doom.d/+org.el -*- lexical-binding: t; -*-
 
-;; ORG-FUNCTIONS
-(defun my/org-archive-done-tasks ()
-  (interactive)
-  (org-map-entries 'org-archive-subtree "/DONE" 'file))
+;; BINDINGS
+(after! org
+  (map! :map org-mode-map
+        :desc "Hide property drawers"   "M-p"  #'my/org-cycle-hide-properties-everywhere
 
-(defun my/org-cycle-hide-drawers (state)
-"Re-hide all drawers after a visibility state change."
-(when (and (derived-mode-p 'org-mode)
-          (not (memq state '(overview folded contents))))
-  (save-excursion
-    (let* ((globalp (memq state '(contents all)))
-        (beg (if globalp
-                (point-min)
-                (point)))
-        (end (if globalp
-                (point-max)
-                (if (eq state 'children)
-                  (save-excursion
-                    (outline-next-heading)
-                    (point))
-                  (org-end-of-subtree t)))))
-    (goto-char beg)
-    (while (re-search-forward org-drawer-regexp end t)
-      (save-excursion
-        (beginning-of-line 1)
-        (when (looking-at org-drawer-regexp)
-          (let* ((start (1- (match-beginning 0)))
-                (limit
-                  (save-excursion
-                    (outline-next-heading)
-                      (point)))
-                (msg (format
-                        (concat
-                          "org-cycle-hide-drawers:  "
-                          "`:END:`"
-                          " line missing at position %s")
-                        (1+ start))))
-            (if (re-search-forward "^[ \t]*:END:" limit t)
-              (outline-flag-region start (point-at-eol) t)
-              (user-error msg))))))))))
+        (:localleader
+          :desc "Hide property drawers" "p"    #'my/org-cycle-hide-properties-everywhere
+          :desc "Archive subtree"       "a"    #'org-archive-subtree
 
-(defun my/org-cycle-hide-properties-everywhere ()
-  (interactive)
-  (my/org-cycle-hide-drawers 'all)
-  )
-
-(defun my/org-cycle-hide-properties-children ()
-  (interactive)
-  (my/org-cycle-hide-drawers 'children)
-  )
+          (:prefix ("e" . "export")
+            :desc "org-export"          "e"    #'org-export-dispatch)))
+)
 
 ;; HOOKS
 (add-hook! 'org-mode-hook 'my/org-cycle-hide-properties-everywhere)
@@ -163,8 +125,7 @@
     :config
     (setq bibtex-completion-library-path '("~/Zotero/storage/")
           bibtex-completion-pdf-field "file"
-          bibtex-completion-bibliography
-          '("~/library.bib")))
+          bibtex-completion-bibliography '("~/library.bib")))
 
   (use-package! bibtex
     :defer t
@@ -176,9 +137,12 @@
     :config
     (setq bibtex-completion-notes-path "~/org/bibnotes/"))
 
+  ;; Notes
   (use-package! org-noter
     :config
-    (setq org-noter-notes-search-path '("~/org/bibnotes" )))
+    (setq org-noter-notes-search-path '("~/org/bibnotes" )
+          org-noter-default-notes-file-names '("notes.org")
+          org-noter-always-create-frame nil))
 
   (defun my/org-ref-open-pdf-at-point ()
     "Open the pdf for bibtex key under point if it exists."
@@ -197,3 +161,54 @@
           ("\\.x?html?\\'" . "firefox %s")
           ))
 )
+
+;; ORG-FUNCTIONS
+(defun my/org-archive-done-tasks ()
+  (interactive)
+  (org-map-entries 'org-archive-subtree "/DONE" 'file))
+
+(defun my/org-cycle-hide-drawers (state)
+"Re-hide all drawers after a visibility state change."
+(when (and (derived-mode-p 'org-mode)
+          (not (memq state '(overview folded contents))))
+  (save-excursion
+    (let* ((globalp (memq state '(contents all)))
+        (beg (if globalp
+                (point-min)
+                (point)))
+        (end (if globalp
+                (point-max)
+                (if (eq state 'children)
+                  (save-excursion
+                    (outline-next-heading)
+                    (point))
+                  (org-end-of-subtree t)))))
+    (goto-char beg)
+    (while (re-search-forward org-drawer-regexp end t)
+      (save-excursion
+        (beginning-of-line 1)
+        (when (looking-at org-drawer-regexp)
+          (let* ((start (1- (match-beginning 0)))
+                (limit
+                  (save-excursion
+                    (outline-next-heading)
+                      (point)))
+                (msg (format
+                        (concat
+                          "org-cycle-hide-drawers:  "
+                          "`:END:`"
+                          " line missing at position %s")
+                        (1+ start))))
+            (if (re-search-forward "^[ \t]*:END:" limit t)
+              (outline-flag-region start (point-at-eol) t)
+              (user-error msg))))))))))
+
+(defun my/org-cycle-hide-properties-everywhere ()
+  (interactive)
+  (my/org-cycle-hide-drawers 'all)
+  )
+
+(defun my/org-cycle-hide-properties-children ()
+  (interactive)
+  (my/org-cycle-hide-drawers 'children)
+  )
