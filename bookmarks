@@ -19,9 +19,9 @@
  (position . 2064))
 ("org-refile-last-stored"
  (filename . "~/org/actions.org")
- (front-context-string . "*** [ ] [#A] Wri")
- (rear-context-string . "t\nvorbereiten?\"\n")
- (position . 13079))
+ (front-context-string . "** Idea about re")
+ (rear-context-string . "rg][inbox.org]]\n")
+ (position . 25862))
 ("ZSH History"
  (filename . "/home/lino/.zsh_histfile"))
 ("org-capture-last-stored"

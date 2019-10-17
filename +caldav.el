@@ -39,8 +39,8 @@
         ;; This ensures "scheduled" org items show up, and show up as start times
         org-icalendar-use-scheduled '(todo-start event-if-todo event-if-not-todo)
         ;; exclude-tags for habits
-        org-icalendar-exclude-tags '("morning" "shutdown")
-        org-caldav-exclude-tags '("morning" "shutdown")))
+        org-icalendar-exclude-tags '("morning" "shutdown" "intellect")
+        org-caldav-exclude-tags '("morning" "shutdown" "intellect")))
   ;; Add the delayed save hook with a five minute idle timer
   ;; (add-hook 'after-save-hook
   ;;     (lambda ()
