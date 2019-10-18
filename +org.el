@@ -27,7 +27,9 @@
   ;; Org-Agenda
   (setq org-agenda-window-setup 'current-window)
   (setq org-agenda-start-day "+0d")
-  (setq org-agenda-span 5)
+  (setq org-agenda-span 14)
+  (setq org-agenda-skip-scheduled-if-done t)
+  (setq org-agenda-skip-deadline-if-done t)
   (setq org-agenda-start-on-weekday nil)
   (setq org-agenda-files '("~/org/actions.org"
                           "~/org/strategy.org"
