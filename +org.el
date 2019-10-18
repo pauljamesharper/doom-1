@@ -48,11 +48,11 @@
                                            :deadline future)
                                     (:name "Morning Ritual"
                                            :tag "morning")
+                                    (:name "Shutdown Ritual"
+                                           :tag "shutdown")
                                     (:name "Today"
                                            :time-grid t
                                            :scheduled today)
-                                    (:name "Shutdown Ritual"
-                                           :tag "shutdown")
                                     (:name "Overdue Start"
                                            :discard (:habit t)
                                            :scheduled past)
@@ -88,7 +88,7 @@
 
   (add-to-list 'org-latex-packages-alist
               "\\usepackage[backend=biber, eprint=false, url=true,
-              isbn=false, style=authoryear-icomp,
+              isbn=false, style=verbose-inote,
               date=year]{biblatex}" t)
   (add-to-list 'org-latex-packages-alist
               "\\addbibresource{~/library.bib}" t)
