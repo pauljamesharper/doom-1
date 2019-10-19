@@ -39,15 +39,6 @@
  (position . 12701))
 ("org-refile-last-stored"
  (filename . "~/org/actions.org")
-<<<<<<< HEAD
- (front-context-string . "*** TODO [#A] Re")
- (rear-context-string . "59b888c0e\n:END:\n")
- (position . 12701))
-=======
- (front-context-string . "** Idea about re")
- (rear-context-string . "rg][inbox.org]]\n")
- (position . 25862))
->>>>>>> 0d24ac7e88982ec6c64917c083067634a275b256
 ("ZSH History"
  (filename . "/home/lino/.zsh_histfile"))
 ("org-capture-last-stored"
@@ -55,4 +46,4 @@
  (front-context-string . "*** Sprechstunde")
  (rear-context-string . "hu 12:00-14:00>\n")
  (position . 15062))
-)
+))

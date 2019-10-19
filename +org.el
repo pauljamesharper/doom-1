@@ -27,7 +27,7 @@
   ;; Org-Agenda
   (setq org-agenda-window-setup 'current-window)
   (setq org-agenda-start-day "+0d")
-  (setq org-agenda-span 14)
+  (setq org-agenda-span 'day)
   (setq org-agenda-skip-scheduled-if-done t)
   (setq org-agenda-skip-deadline-if-done t)
   (setq org-agenda-start-on-weekday nil)
@@ -50,13 +50,13 @@
                                            :deadline future)
                                     (:name "Morning Ritual"
                                            :tag "morning")
+                                    (:name "Today"
+                                           :time-grid t)
                                     (:name "Shutdown Ritual"
                                            :tag "shutdown")
-                                    (:name "Today"
-                                           :time-grid t
+                                    (:name "Start today"
                                            :scheduled today)
                                     (:name "Overdue Start"
-                                           :discard (:habit t)
                                            :scheduled past)
                                     (:name "Start soon"
                                            :scheduled future)))
@@ -73,7 +73,10 @@
         "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
         ("a" "APPOINTMENT" entry
         (file+headline "~/org/calendar.org" "Appointments")
-        "* %?\n%(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n"))
+        "* %?\n%(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
+        ("d" "DISTRACTION" entry
+        (file "~/org/distractions.org")
+        "* %?\n%T\n** What was I doing\n** What was the trigger?"))
       )
 
   ;; Org Keywords
