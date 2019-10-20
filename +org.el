@@ -48,8 +48,7 @@
                                     (:name "Due today"
                                            :deadline today)
                                     (:name "Due soon"
-                                           :deadline future
-                                           :children t)
+                                           :deadline future)
                                     (:name "Morning Ritual"
                                            :tag "morning")
                                     (:name "Today"
