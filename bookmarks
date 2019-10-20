@@ -2,7 +2,12 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(("watching.org"
+(("org-capture-last-stored"
+ (filename . "~/org/distractions.org")
+ (front-context-string . "* Had to fiddel ")
+ (rear-context-string . "ed in HU-Moodle\n")
+ (position . 508))
+("watching.org"
  (filename . "~/org/watching.org")
  (front-context-string . "ea Bag\n** Yes, M")
  (rear-context-string . "yal Family\n** Fl")
@@ -39,11 +44,11 @@
  (position . 12701))
 ("org-refile-last-stored"
  (filename . "~/org/actions.org")
-("ZSH History"
- (filename . "/home/lino/.zsh_histfile"))
-("org-capture-last-stored"
- (filename . "~/org/calendar.org")
- (front-context-string . "*** Sprechstunde")
- (rear-context-string . "hu 12:00-14:00>\n")
- (position . 15062))
-))
+ ("ZSH History"
+  (filename . "/home/lino/.zsh_histfile"))
+ ("org-capture-last-stored"
+  (filename . "~/org/calendar.org")
+  (front-context-string . "*** Sprechstunde")
+  (rear-context-string . "hu 12:00-14:00>\n")
+  (position . 15062)))
+)

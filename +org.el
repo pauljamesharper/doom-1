@@ -31,6 +31,7 @@
   (setq org-agenda-skip-scheduled-if-done t)
   (setq org-agenda-skip-deadline-if-done t)
   (setq org-agenda-start-on-weekday nil)
+  (setq org-agenda-dim-blocked-tasks nil) ;; makes main tasks visible in agenda-view
   (setq org-agenda-files '("~/org/actions.org"
                           "~/org/strategy.org"
                           "~/org/reading.org"
@@ -47,7 +48,8 @@
                                     (:name "Due today"
                                            :deadline today)
                                     (:name "Due soon"
-                                           :deadline future)
+                                           :deadline future
+                                           :children t)
                                     (:name "Morning Ritual"
                                            :tag "morning")
                                     (:name "Today"
@@ -56,7 +58,7 @@
                                            :tag "shutdown")
                                     (:name "Start today"
                                            :scheduled today)
-                                    (:name "Overdue Start"
+                                    (:name "Reschedule or start"
                                            :scheduled past)
                                     (:name "Start soon"
                                            :scheduled future)))
