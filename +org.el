@@ -7,11 +7,7 @@
 
         (:localleader
           :desc "Hide property drawers" "p"    #'my/org-cycle-hide-properties-everywhere
-          :desc "Archive subtree"       "a"    #'org-archive-subtree
-
-          (:prefix ("e" . "export")
-            :desc "org-export"          "e"    #'org-export-dispatch)))
-)
+          :desc "Archive subtree"       "a"    #'org-archive-subtree)))
 
 ;; HOOKS
 (add-hook! 'org-mode-hook 'my/org-cycle-hide-properties-everywhere)
@@ -137,11 +133,6 @@
     :defer t
     :config
     (setq bibtex-dialect 'biblatex))
-
-  (use-package! bibtex-completion
-    :defer t
-    :config
-    (setq bibtex-completion-notes-path "~/org/bibnotes/"))
 
   ;; Notes
   (use-package! org-noter

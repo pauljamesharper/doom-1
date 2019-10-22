@@ -7,7 +7,6 @@
 ;; (package! builtin-package :disable t)
 
 (package! org-re-reveal)
-(package! helm-bibtex)
 (package! org-ref :recipe (:host github :repo "jkitchin/org-ref" :files ("*")))
 (package! org-caldav)
 (package! mu4e-alert)
