@@ -116,17 +116,17 @@
   ;; Reference Management
   (use-package! org-ref
     :init
-    (setq org-ref-completion-library 'org-ref-helm-bibtex)
+    (setq org-ref-completion-library 'org-ref-ivy-cite)
     :config
     (setq org-ref-default-citation-link "autocite"
-          org-ref-default-bibliography '("~/library.bib")
-          org-ref-pdf-directory "~/Zotero/storage/"))
+          org-ref-default-bibliography '("~/Library/.bib/library.bib")
+          org-ref-pdf-directory "~/Library"))
 
-  (use-package! helm-bibtex
-    :commands helm-bibtex
+  (use-package! ivy-bibtex
     :config
-    (setq bibtex-completion-library-path '("~/Zotero/storage/")
-          bibtex-completion-pdf-field "file"
+    (setq ivy-re-builders-alist
+          '((ivy-bibtex . ivy--regex-ignore-order)
+            (t . ivy--regex-plus))
           bibtex-completion-bibliography '("~/library.bib")))
 
   (use-package! bibtex
