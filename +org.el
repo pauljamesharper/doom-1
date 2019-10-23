@@ -123,6 +123,7 @@
           org-ref-pdf-directory "~/Library"))
 
   (use-package! ivy-bibtex
+    :defer t
     :config
     (setq ivy-re-builders-alist
           '((ivy-bibtex . ivy--regex-ignore-order)
@@ -136,6 +137,7 @@
 
   ;; Notes
   (use-package! org-noter
+    :defer t
     :config
     (setq org-noter-notes-search-path '("~/org/bibnotes" )
           org-noter-default-notes-file-names '("notes.org")
