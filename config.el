@@ -11,24 +11,42 @@
       treemacs-width 45
       dired-dwim-target t)
 
+(display-time-mode 1)
+(setq display-time-day-and-date t)
+(setq display-time-24hr-format t)
+(setq display-time-default-load-average nil)
+
 ;; Bookmark save directory
 (setq bookmark-default-file "~/.doom.d/bookmarks")
 
-;; typo.el
-(use-package! typo
-    :config
-    (typo-global-mode 1)
-    (add-hook 'text-mode-hook 'typo-mode))
+;; flyspell
+(defun my/flyspell-save-word ()
+  (interactive)
+  (let ((current-location (point))
+         (word (flyspell-get-word)))
+    (when (consp word)
+      (flyspell-do-correct 'save nil (car word) current-location (cadr word) (caddr word) current-location))))
 
-(load! "+funcs")
+;; pdf-tools
+(add-to-list 'auto-mode-alist '("\\.pdf\\'" . pdf-view-mode))
+(add-hook 'pdf-view-mode-hook #'pdf-tools-enable-minor-modes)
+
+(setq +latex-viewers '(pdf-tools))
+(setq pdf-annot-color-history '("LightGoldenrod1" "salmon" "pale green" "cornflower blue")
+      pdf-annot-default-annotation-properties
+      '((t (label . "Lino on Emacs"))
+        (text (icon . "Note")
+              (color . "#ff0000"))
+        (highlight (color . "LightGoldenrod1"))))
+
 (load! "+bindings")
-(load! "+org")
-(load! "+latex")
-(load! "+epub")
+(load! "+typo")
 (load! "+mu4e")
-(load! "+reveal")
-(load! "+caldav")
-(load! "+flyspell")
-(load! "+pdf")
-(load! "+ui")
-(load! "+hugo")
+(load! "+org")
+(load! "+org-ref")
+(load! "+org-caldav")
+(load! "+org-noter")
+(load! "+org-re-reveal")
+(load! "+org-super-agenda")
+(load! "+ox")
+(load! "+nov")

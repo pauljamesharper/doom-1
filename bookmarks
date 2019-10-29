@@ -4,9 +4,9 @@
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
 (("org-capture-last-stored"
  (filename . "~/org/calendar.org")
- (front-context-string . "*** KI-Camp 2019")
- (rear-context-string . "-Brandenburg\"]]\n")
- (position . 20672))
+ (front-context-string . "*** Meeting with")
+ (rear-context-string . "019 in Berlin]]\n")
+ (position . 14756))
 ("watching.org"
  (filename . "~/org/watching.org")
  (front-context-string . "ea Bag\n** Yes, M")
@@ -39,16 +39,12 @@
  (position . 194))
 ("org-capture-last-stored-marker"
  (filename . "~/org/actions.org")
- (front-context-string . "*** TODO [#A] Re")
- (rear-context-string . "59b888c0e\n:END:\n")
- (position . 12701))
+ (front-context-string . "*** TODO [#A] Se")
+ (rear-context-string . "o Lora and Abel\n")
+ (position . 3196))
 ("org-refile-last-stored"
  (filename . "~/org/actions.org")
- ("ZSH History"
-  (filename . "/home/lino/.zsh_histfile"))
- ("org-capture-last-stored"
-  (filename . "~/org/calendar.org")
-  (front-context-string . "*** Sprechstunde")
-  (rear-context-string . "hu 12:00-14:00>\n")
-  (position . 15062)))
+ (front-context-string . "*** TODO [#A] Se")
+ (rear-context-string . "o Lora and Abel\n")
+ (position . 3196))
 )

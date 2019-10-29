@@ -13,52 +13,11 @@
 (add-hook! 'org-mode-hook 'my/org-cycle-hide-properties-everywhere)
 (add-hook! 'org-mode-hook (lambda () (require 'org-ref)))
 
-;;WIHTIN ORG-MODE
-(after! org
 
+(after! org
   (add-to-list 'org-modules 'org-habit t)
   (setq org-directory "~/org/"
     org-agenda-files (list org-directory))
-
-  ;; Org-Agenda
-  (setq org-agenda-window-setup 'current-window)
-  (setq org-agenda-start-day "+0d")
-  (setq org-agenda-span 'day)
-  (setq org-agenda-skip-scheduled-if-done t)
-  (setq org-agenda-skip-deadline-if-done t)
-  (setq org-agenda-start-on-weekday nil)
-  (setq org-agenda-dim-blocked-tasks nil) ;; makes main tasks visible in agenda-view
-  (setq org-agenda-files '("~/org/actions.org"
-                          "~/org/strategy.org"
-                          "~/org/reading.org"
-                          "~/org/watching.org"
-                          "~/org/calendar.org"
-                          "~/org/outreach.org"
-                          "~/org/calendar-inbox.org"))
-
-  (use-package! org-super-agenda
-    :after org-agenda
-    :init
-    (setq org-super-agenda-groups '((:name "Overdue"
-                                           :deadline past)
-                                    (:name "Due today"
-                                           :deadline today)
-                                    (:name "Due soon"
-                                           :deadline future)
-                                    (:name "Morning Ritual"
-                                           :tag "morning")
-                                    (:name "Today"
-                                           :time-grid t)
-                                    (:name "Shutdown Ritual"
-                                           :tag "shutdown")
-                                    (:name "Start today"
-                                           :scheduled today)
-                                    (:name "Reschedule or start"
-                                           :scheduled past)
-                                    (:name "Start soon"
-                                           :scheduled future)))
-    :config
-    (org-super-agenda-mode))
 
   ;; Org-Archive
   (setq org-archive-location "~/org/archive/%s_archive.org::")
@@ -83,83 +42,62 @@
     (sequence "NEXT(n)" "WAIT(w)" "HOLD(h)" "|" "ABRT(c)")
     (sequence "TOREAD(r)" "|" "READ(R)")))
 
-  ;; Export
-  (setq org-latex-bib-compiler "biber"
-      org-latex-pdf-process ; -shell-escape needed for minted
-      '("latexmk -shell-escape -bibtex -pdf %f"))
-
-  (add-to-list 'org-latex-packages-alist
-              "\\usepackage[backend=biber, eprint=false, url=true,
-              isbn=false, style=verbose-inote,
-              date=year]{biblatex}" t)
-  (add-to-list 'org-latex-packages-alist
-              "\\addbibresource{~/library.bib}" t)
-
-  (after! ox-latex
-    (add-to-list 'org-export-smart-quotes-alist
-                '("en_cs"
-                    (primary-opening   :utf-8 "“" :html "&ldquo;" :latex "\\enquote{"  :texinfo "``")
-                    (primary-closing   :utf-8 "”" :html "&rdquo;" :latex "}"           :texinfo "''")
-                    (secondary-opening :utf-8 "‘" :html "&lsquo;" :latex "\\enquote*{" :texinfo "`")
-                    (secondary-closing :utf-8 "’" :html "&rsquo;" :latex "}"           :texinfo "'")
-                    (apostrophe        :utf-8 "’" :html "&rsquo;")))
-    )
-
-  (use-package! ox-word
-    :load-path "~/.doom.d/load/ox-word/"
-    :after ox)
-
   ;; Journal
   (setq org-journal-dir "~/org/journal/")
   (setq org-journal-date-format "%A, %d %B %Y")
 
-  ;; Reference Management
-  (use-package! org-ref
-    :init
-    (setq org-ref-completion-library 'org-ref-ivy-cite)
-    :config
-    (setq org-ref-default-citation-link "autocite"
-          org-ref-default-bibliography '("~/Library/.bib/library.bib")
-          org-ref-pdf-directory "~/Library"))
-
-  (use-package! ivy-bibtex
-    :defer t
-    :config
-    (setq ivy-re-builders-alist
-          '((ivy-bibtex . ivy--regex-ignore-order)
-            (t . ivy--regex-plus))
-          bibtex-completion-bibliography '("~/library.bib")))
-
-  (use-package! bibtex
-    :defer t
-    :config
-    (setq bibtex-dialect 'biblatex))
-
-  ;; Notes
-  (use-package! org-noter
-    :defer t
-    :config
-    (setq org-noter-notes-search-path '("~/org/bibnotes" )
-          org-noter-default-notes-file-names '("notes.org")
-          org-noter-always-create-frame nil))
-
-  (defun my/org-ref-open-pdf-at-point ()
-    "Open the pdf for bibtex key under point if it exists."
-    (interactive)
-    (let* ((results (org-ref-get-bibtex-key-and-file))
-          (key (car results))
-    (pdf-file (car (bibtex-completion-find-pdf key))))
-      (if (file-exists-p pdf-file)
-    (org-open-file pdf-file)
-        (message "No PDF found for %s" key))))
-
-  (setq org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point)
-
   (setq org-file-apps
         '((auto-mode . emacs)
-          ("\\.x?html?\\'" . "firefox %s")
-          ))
-)
+          ("\\.x?html?\\'" . "firefox %s"))))
+
+  ;; (pushnew! org-link-abbrev-alist
+  ;;           '("autocite"      . "autocite:%s")
+  ;;           '("textcite"      . "textcite:%s"))
+
+
+  ;; (use-package! ivy-bibtex
+  ;;   :defer t
+  ;;   :config
+  ;;   (setq bibtex-completion-notes-path "~/org/bibnotes")
+  ;;   (setq bibtex-completion-pdf-field "file")
+  ;;   (setq ivy-re-builders-alist
+  ;;         '((ivy-bibtex . ivy--regex-ignore-order)
+  ;;           (t . ivy--regex-plus))
+  ;;         bibtex-completion-bibliography '("~/library.bib")))
+
+  ;; ;; Reference Management
+  ;; ;;
+  ;; (use-package! org-ref
+  ;;   :init
+  ;;   ;; Tell org-ref to let helm-bibtex find notes for it
+  ;;   (setq org-ref-notes-function
+  ;;         (lambda (thekey)
+  ;;     (let ((bibtex-completion-bibliography (org-ref-find-bibliography)))
+  ;;       (bibtex-completion-edit-notes
+	;;    (list (car (org-ref-get-bibtex-key-and-file thekey)))))))
+  ;;   (setq org-ref-completion-library 'org-ref-ivy-cite)
+  ;;   :config
+  ;;   (setq org-ref-default-citation-link "autocite"
+  ;;         org-ref-default-bibliography '("~/Library/.bib/library.bib" "~/Library/.bib/platform_state_surveillance.bib")
+  ;;         org-ref-pdf-directory "~/Library"))
+
+  ;; (use-package! bibtex
+  ;;   :defer t
+  ;;   :config
+  ;;   (setq bibtex-dialect 'biblatex))
+
+  ;; (defun my/org-ref-open-pdf-at-point ()
+  ;;   "Open the pdf for bibtex key under point if it exists."
+  ;;   (interactive)
+  ;;   (let* ((results (org-ref-get-bibtex-key-and-file))
+  ;;         (key (car results))
+  ;;   (pdf-file (car (bibtex-completion-find-pdf key))))
+  ;;     (if (file-exists-p pdf-file)
+  ;;   (org-open-file pdf-file)
+  ;;       (message "No PDF found for %s" key))))
+
+  ;; (setq org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point)
+
 
 ;; ORG-FUNCTIONS
 (defun my/org-archive-done-tasks ()

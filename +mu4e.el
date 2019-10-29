@@ -11,7 +11,7 @@
                         (mu4e-drafts-folder     . "/mailbox/Drafts")
                         (mu4e-trash-folder      . "/mailbox/Trash")
                         (mu4e-refile-folder     . "/mailbox/Archive/2019")
-                        (mu4e-compose-signature . "---\nLinus Sehn\nGraduate Student | International Relations and Computer Science\nFU Berlin, HU Berlin, Uni Potsdam\nlinus@sehn.tech")
+                        (mu4e-compose-signature . "---\nLinus Sehn\nGraduate Student | International Relations and Computer Science\nFU Berlin, HU Berlin, Uni Potsdam\nlinus@sehn.tech | https://sehn.tech")
                         (smtpmail-smtp-user     . "linus@sehn.tech")
                         (user-mail-address      . "linus@sehn.tech")
                         (user-full-name         . "Linus Sehn"))
