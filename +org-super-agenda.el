@@ -23,14 +23,14 @@
                                           :deadline today)
                                   (:name "Due soon"
                                           :deadline future)
-                                  (:name "Morning Ritual"
-                                          :tag "morning")
                                   (:name "Today"
                                           :time-grid t)
                                   (:name "Shutdown Ritual"
                                           :tag "shutdown")
                                   (:name "Start today"
                                           :scheduled today)
+                                  (:name "Weekly Tasks"
+                                          :tag "weekly")
                                   (:name "Reschedule or start"
                                           :scheduled past)
                                   (:name "Start soon"
