@@ -1,7 +1,7 @@
 ;;; ~/.doom.d/+caldav.el -*- lexical-binding: t; -*-
 
 (use-package! org-caldav
-  :defer t
+  :after org
   :init
   ;; This is the sync on close function; it also prompts for save after syncing so
   ;; no late changes get lost

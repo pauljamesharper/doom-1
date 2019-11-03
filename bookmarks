@@ -44,7 +44,7 @@
  (position . 3196))
 ("org-refile-last-stored"
  (filename . "~/org/actions.org")
- (front-context-string . "*** TODO [#A] Se")
- (rear-context-string . "o Lora and Abel\n")
- (position . 3196))
+ (front-context-string . "*** TODO Create ")
+ (rear-context-string . "nt niche blogs\n\n")
+ (position . 3836))
 )
