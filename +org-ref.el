@@ -32,7 +32,8 @@
           "~/Library/.bib/platform_state_surveillance.bib")
         bibtex-completion-library-path "~/Library/"
         bibtex-completion-pdf-field "file"
-        bibtex-completion-notes-path "~/org/bibnotes")
+        bibtex-completion-notes-path "~/org/bibnotes"
+        bibtex-completion-notes-template-multiple-files "\n\n* ${title}")
 
   (defun org-ref-noter-at-point ()
     "Open the pdf for bibtex key under point if it exists."
@@ -44,7 +45,7 @@
               (progn
                 (find-file-other-window pdf-file)
                 (org-noter))
-          (message "No PDF found for %s" key))))
+          (message "No PDF found for %s" key)))))
 
         ;; (interactive)
         ;; (let* ((results (org-ref-get-bibtex-key-and-file))
@@ -56,5 +57,5 @@
         ;;         (org-noter))
         ;;     (message "no pdf found for %s" key))))
 
-  (add-to-list 'org-ref-helm-user-candidates
-              '("Org-Noter notes" . org-ref-noter-at-point)))
+  ;; (add-to-list 'org-ref-helm-user-candidates
+  ;;             '("Org-Noter notes" . org-ref-noter-at-point)))

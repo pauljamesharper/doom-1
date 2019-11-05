@@ -1,14 +1,5 @@
 ;;; ~/.doom.d/+org.el -*- lexical-binding: t; -*-
 
-;; BINDINGS
-(after! org
-  (map! :map org-mode-map
-        :desc "Hide property drawers"   "M-p"  #'my/org-cycle-hide-properties-everywhere
-
-        (:localleader
-          :desc "Hide property drawers" "p"    #'my/org-cycle-hide-properties-everywhere
-          :desc "Archive subtree"       "a"    #'org-archive-subtree)))
-
 ;; HOOKS
 (add-hook! 'org-mode-hook 'my/org-cycle-hide-properties-everywhere)
 (add-hook! 'org-mode-hook (lambda () (require 'org-ref)))

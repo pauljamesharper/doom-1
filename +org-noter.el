@@ -3,6 +3,6 @@
 (use-package! org-noter
   :defer t
   :config
-  (setq org-noter-notes-search-path '("~/org/bibnotes" )
+  (setq org-noter-notes-search-path '("~/org/bibnotes" "~/Library")
         org-noter-default-notes-file-names '("notes.org")
         org-noter-always-create-frame t))

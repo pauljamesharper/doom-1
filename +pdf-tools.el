@@ -9,4 +9,4 @@
         '((t (label . "Lino on Emacs"))
           (text (icon . "Note")
                 (color . "#ff0000"))
-          (highlight (color . "LightGoldenrod1")))))
+          (highlight (color . "yellow")))))
