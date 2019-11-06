@@ -7,7 +7,7 @@
 
 (after! org
   (add-to-list 'org-modules 'org-habit t)
-  (setq org-directory "~/org/"
+  (setq org-directory "~/org"
     org-agenda-files (list org-directory))
 
   ;; Org-Archive
@@ -91,6 +91,7 @@
 
 
 ;; ORG-FUNCTIONS
+
 (defun my/org-archive-done-tasks ()
   (interactive)
   (org-map-entries 'org-archive-subtree "/DONE" 'file))
