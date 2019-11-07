@@ -23,6 +23,7 @@
 (load! "+flyspell")
 (load! "+typo")
 (load! "+mu4e")
+(load! "+deft")
 (load! "+org")
 (load! "+org-ref")
 (load! "+org-caldav")
