@@ -8,10 +8,10 @@
  (rear-context-string . "6K Oct 28 23:10 ")
  (position . 186))
 ("org-capture-last-stored"
- (filename . "~/org/distractions.org")
- (front-context-string . "* Installed a pr")
- (rear-context-string . "arting work day\n")
- (position . 823))
+ (filename . "~/org/actions.org")
+ (front-context-string . "** TODO [#A] Sen")
+ (rear-context-string . "oogle Flights]]\n")
+ (position . 34080))
 ("watching.org"
  (filename . "~/org/watching.org")
  (front-context-string . "ea Bag\n** Yes, M")
@@ -44,12 +44,12 @@
  (position . 194))
 ("org-capture-last-stored-marker"
  (filename . "~/org/actions.org")
- (front-context-string . "*** TODO [#A] Se")
- (rear-context-string . "o Lora and Abel\n")
- (position . 3196))
+ (front-context-string . "** TODO [#A] Sen")
+ (rear-context-string . "92ebf3a4\n:END:\n\n")
+ (position . 28208))
 ("org-refile-last-stored"
  (filename . "~/org/actions.org")
- (front-context-string . "*** TODO Create ")
- (rear-context-string . "nt niche blogs\n\n")
- (position . 3836))
+ (front-context-string . "** TODO [#A] Sen")
+ (rear-context-string . "92ebf3a4\n:END:\n\n")
+ (position . 28208))
 )

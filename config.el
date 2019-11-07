@@ -20,6 +20,7 @@
 
 (load! "+bindings")
 (load! "+pdf-tools")
+(load! "+flyspell")
 (load! "+typo")
 (load! "+mu4e")
 (load! "+org")
