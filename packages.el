@@ -10,5 +10,7 @@
 (package! org-noter)
 (package! org-re-reveal)
 (package! org-super-agenda)
+(package! anki-editor)
+(package! company-box)
 (package! typo)
 (package! nov)
