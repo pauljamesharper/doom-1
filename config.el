@@ -36,8 +36,3 @@
 (load! "+anki")
 (load! "+ox")
 (load! "+nov")
-
-<<<<<<< HEAD
-=======
-(doom/reload-theme)
->>>>>>> origin/master
