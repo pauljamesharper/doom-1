@@ -8,7 +8,6 @@
 (display-time-mode 1)
 ;; (setq doom-font (font-spec :family "FiraCode Nerd Font Mono Regular" :size 14))
 (setq doom-theme 'doom-one
-      treemacs-width 45
       dired-dwim-target t)
 
 (setq display-time-24hr-format t)
@@ -38,3 +37,7 @@
 (load! "+ox")
 (load! "+nov")
 
+<<<<<<< HEAD
+=======
+(doom/reload-theme)
+>>>>>>> origin/master
