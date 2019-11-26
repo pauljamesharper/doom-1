@@ -15,7 +15,6 @@
 (setq display-time-default-load-average nil)
 (display-time-mode 1)
 
-;; Company in text-mode
 (after! org
   (set-company-backend! 'text-mode 'company-math-symbols-latex 'company-dabbrev)
   (setq company-math-allow-latex-symbols-in-faces t))
@@ -38,3 +37,4 @@
 (load! "+anki")
 (load! "+ox")
 (load! "+nov")
+
