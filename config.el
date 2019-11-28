@@ -8,6 +8,7 @@
 (display-time-mode 1)
 ;; (setq doom-font (font-spec :family "FiraCode Nerd Font Mono Regular" :size 14))
 (setq doom-theme 'doom-one
+      doom-themes-enable-bold t
       dired-dwim-target t)
 
 (setq display-time-24hr-format t)
@@ -15,9 +16,9 @@
 (display-time-mode 1)
 
 ;; Company in text-mode
-(after! org
-  (set-company-backend! 'text-mode 'company-math-symbols-latex 'company-dabbrev)
-  (setq company-math-allow-latex-symbols-in-faces t))
+;; (after! org
+;;   (set-company-backend! 'text-mode 'company-math-symbols-latex 'company-dabbrev 'company-ob-ipython)
+;;   (setq company-math-allow-latex-symbols-in-faces t))
 
 ;; Bookmark save directory
 (setq bookmark-default-file "~/.doom.d/bookmarks")

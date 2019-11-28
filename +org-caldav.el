@@ -29,7 +29,6 @@
         org-caldav-files '("~/org/calendar.org"
                          "~/org/actions.org"
                          "~/org/someday.org"))
-
   :config
   (setq org-icalendar-timezone "Europe/Berlin"
         org-icalendar-alarm-time 15
@@ -42,10 +41,10 @@
         ;; exclude-tags for habits
         org-icalendar-exclude-tags '("weekly" "shutdown" "intellect")
         org-caldav-exclude-tags '("weekly" "shutdown" "intellect")))
-  ;; Add the delayed save hook with a five minute idle timer
-  ;; (add-hook 'after-save-hook
-  ;;     (lambda ()
-  ;;       (when (eq major-mode 'org-mode)
-  ;;   (org-caldav-sync-with-delay 300)))))
-  ;; Add the close emacs hook
-  ;; (add-hook 'kill-emacs-hook 'org-caldav-sync-at-close))
+        ;; Add the delayed save hook with a five minute idle timer
+        ;; (add-hook 'after-save-hook
+        ;;     (lambda ()
+        ;;       (when (eq major-mode 'org-mode)
+        ;;   (org-caldav-sync-with-delay 300)))))
+        ;; Add the close emacs hook
+        ;; (add-hook 'kill-emacs-hook 'org-caldav-sync-at-close))

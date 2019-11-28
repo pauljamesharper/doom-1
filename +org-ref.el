@@ -1,7 +1,6 @@
 ;;; ~/.doom.d/+org-ref.el -*- lexical-binding: t; -*-
 
 (use-package! org-ref
-  :after org
   :config
   (setq reftex-default-bibliography
         '("~/Library/.bib/library.bib"
