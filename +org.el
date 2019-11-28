@@ -8,7 +8,11 @@
 (after! org
   (add-to-list 'org-modules 'org-habit t)
   (setq org-directory "~/org"
-    org-agenda-files (list org-directory))
+        org-agenda-files (list org-directory))
+
+  ;; 8 lines in which bold/emphasis is displayed
+  (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
+  (setcar (nthcdr 4 org-emphasis-regexp-components) 8)
 
   ;; Org-Archive
   (setq org-archive-location "~/org/archive/%s_archive.org::")

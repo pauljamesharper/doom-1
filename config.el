@@ -15,10 +15,9 @@
 (setq display-time-default-load-average nil)
 (display-time-mode 1)
 
-;; Company in text-mode
-;; (after! org
-;;   (set-company-backend! 'text-mode 'company-math-symbols-latex 'company-dabbrev 'company-ob-ipython)
-;;   (setq company-math-allow-latex-symbols-in-faces t))
+(after! org
+  (set-company-backend! 'text-mode 'company-math-symbols-latex 'company-dabbrev)
+  (setq company-math-allow-latex-symbols-in-faces t))
 
 ;; Bookmark save directory
 (setq bookmark-default-file "~/.doom.d/bookmarks")
@@ -38,5 +37,3 @@
 (load! "+anki")
 (load! "+ox")
 (load! "+nov")
-
-(doom/reload-theme)
