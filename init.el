@@ -43,6 +43,7 @@
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
        window-select     ; visually switch windows
        workspaces        ; tab emulation, persistence & separate workspaces
+       zen               ; distraction-free mode
 
        :editor
        (evil +everywhere); come to the dark side, we have cookies
@@ -131,8 +132,8 @@
         +ipython         ; ipython support for babel
         ;;+pandoc        ; pandoc integration into org's exporter
         ;;+present       ; using org-mode for presentations
-        +hugo            ; use Emacs for hugo blogging
-        +journal)        ; using Emacs for presentations
+        +hugo)            ; use Emacs for hugo blogging
+        ;;+journal      ; using Emacs for presentations
        ;;perl              ; write code no one else can comprehend
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
@@ -184,7 +185,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(custom-safe-themes
+   (quote
+    ("53f8223005ceb058848fb92c2c4752ffdfcd771f8ad4324b3d0a4674dec56c44" default))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

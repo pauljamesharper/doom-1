@@ -13,10 +13,11 @@
 (setq display-time-24hr-format t)
 (setq display-time-default-load-average nil)
 (display-time-mode 1)
-
-(after! org
-  (set-company-backend! 'text-mode 'company-math-symbols-latex 'company-dabbrev)
-  (setq company-math-allow-latex-symbols-in-faces t))
+(setq doom-modeline-mu4e t)
+(setq doom-variable-pitch-font (font-spec :family "Source Serif Pro"))
+;; (after! org
+;;   (set-company-backend! 'text-mode 'company-math-symbols-latex 'company-dabbrev)
+;;   (setq company-math-allow-latex-symbols-in-faces t))
 
 ;; Bookmark save directory
 (setq bookmark-default-file "~/.doom.d/bookmarks")

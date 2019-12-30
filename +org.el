@@ -17,6 +17,7 @@
   ;; Org-Archive
   (setq org-archive-location "~/org/archive/%s_archive.org::")
 
+  (setq org-export-backends '(md ascii html icalendar latex))
   ;; Capture Templates
   (setq org-capture-templates
       '(("t" "TODO" entry
@@ -38,8 +39,10 @@
     (sequence "TOREAD(r)" "|" "READ(R)")))
 
   ;; Journal
-  (setq org-journal-dir "~/org/journal/")
-  (setq org-journal-date-format "%A, %d %B %Y")
+  ;; (setq org-journal-encrypt-journal t)
+  ;; (setq org-journal-file-type 'monthly)
+  ;; (setq org-journal-dir "~/org/journal/")
+  ;; (setq org-journal-date-format "%A, %d %B %Y")
 
   (setq org-file-apps
         '((auto-mode . emacs)
