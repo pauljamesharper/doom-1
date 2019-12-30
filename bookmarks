@@ -2,16 +2,21 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(("bibnotes"
+(("journal"
+ (filename . "~/org/journal/2019-12.org.gpg")
+ (front-context-string . "* Telling Franci")
+ (rear-context-string . "e my mind away.\n")
+ (position . 4511))
+("bibnotes"
  (filename . "~/org/bibnotes/")
  (front-context-string . "Clausewitz2005.o")
  (rear-context-string . "6K Oct 28 23:10 ")
  (position . 186))
 ("org-capture-last-stored"
  (filename . "~/org/actions.org")
- (front-context-string . "** TODO [#A] Sen")
- (rear-context-string . "oogle Flights]]\n")
- (position . 34080))
+ (front-context-string . "** TODO [#A] HU ")
+ (rear-context-string . "5: Geopolitik]]\n")
+ (position . 48416))
 ("watching.org"
  (filename . "~/org/watching.org")
  (front-context-string . "ea Bag\n** Yes, M")

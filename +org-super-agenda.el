@@ -17,23 +17,22 @@
                           "~/org/calendar.org"
                           "~/org/outreach.org"
                           "~/org/calendar-inbox.org"))
-  (setq org-super-agenda-groups '((:name "Overdue"
-                                          :deadline past)
+  (setq org-super-agenda-groups '((:name "Today"
+                                         :time-grid t)
+                                  (:name "Overdue"
+                                         :deadline past)
                                   (:name "Due today"
                                           :deadline today)
                                   (:name "Due soon"
                                           :deadline future)
-                                  (:name "Today"
-                                          :time-grid t)
-                                  (:name "Shutdown Ritual"
-                                          :tag "shutdown")
+                                  (:name "Habits"
+                                         :habit t)
+                                  (:name "Reschedule or start"
+                                         :scheduled past)
                                   (:name "Start today"
                                           :scheduled today)
-                                  (:name "Weekly Tasks"
-                                          :tag "weekly")
-                                  (:name "Reschedule or start"
-                                          :scheduled past)
                                   (:name "Start soon"
-                                          :scheduled future)))
+                                          :scheduled future)
+                                  ))
     :config
     (org-super-agenda-mode))
