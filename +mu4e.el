@@ -1,8 +1,5 @@
 ;;; ~/.doom.d/+mu4e.el -*- lexical-binding: t; -*-
 
-;; E-mail setup
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-
 (after! mu4e
   (setq mu4e-maildir "~/.mail/")
   (set-email-account! "sehn.tech"
@@ -57,3 +54,6 @@
   :after mu4e
   :hook (after-init . mu4e-alert-enable-mode-line-display)
   :config (mu4e-alert-set-default-style 'libnotify))
+
+(setq doom-modeline-mu4e t)
+(mu4e-alert-enable-mode-line-display)

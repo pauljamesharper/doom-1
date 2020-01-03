@@ -14,3 +14,4 @@
 (package! anki-editor)
 (package! typo)
 (package! nov)
+(package! org-clock-budget :recipe (:host github :repo "Fuco1/org-clock-budget" :files ("*")))
