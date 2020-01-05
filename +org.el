@@ -15,7 +15,7 @@
   (setcar (nthcdr 4 org-emphasis-regexp-components) 8)
 
   ;; Org-Archive
-  (setq org-archive-location "~/org/archive/%s_archive.org::")
+  (setq org-archive-location "~/org/archive/2020_%s_archive.org::* Finished Tasks")
 
   (setq org-export-backends '(md ascii html icalendar latex))
   ;; Capture Templates

@@ -18,13 +18,15 @@
 
       (:prefix-map ("i" . "insert")
         :desc "Insert Anki notes"      "a"     #'anki-editor-insert-note))
+
 ;; org-mode specific
 (map! :map org-mode-map
       :desc "Hide property drawers"   "M-p"    #'my/org-cycle-hide-properties-everywhere
       :desc "org-ref"                 "C-c c"  #'org-ref-insert-cite-with-completion
 
       (:localleader
-        :desc "Hide property drawers"  "p"     #'my/org-cycle-hide-properties-everywhere))
+        :desc "Hide property drawers"  "p"     #'my/org-cycle-hide-properties-everywhere
+        :desc "org-clock-budget"       "B"     #'org-clock-budget-report))
 
 ;; pdf-tools specific
 (map! :map pdf-view-mode-map
