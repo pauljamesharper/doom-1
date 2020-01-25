@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: img_hugo
+# key: trigger-key
+# condition: t
+# --
+
+#+BEGIN_EXPORT html
+{{< figure library="true" src="$1" title="$2" lightbox="true" >}}
+#+END_EXPORT
