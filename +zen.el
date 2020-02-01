@@ -2,5 +2,5 @@
 
 (use-package! writeroom-mode
   :config
-  (setq writeroom-fullscreen-effect t
+  (setq writeroom-maximize-window t
         doom-variable-pitch-font (font-spec :family "Pragmata Pro")))
