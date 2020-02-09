@@ -17,6 +17,7 @@
 
 ;; Modules
 (load! "+bindings")
+(load! "+crypt")
 (load! "+pdf-tools")
 (load! "+flyspell")
 (load! "+typo")
@@ -24,6 +25,7 @@
 (load! "+deft")
 (load! "+org")
 (load! "+org-ref")
+(load! "+org-journal")
 (load! "+org-caldav")
 (load! "+org-noter")
 (load! "+org-re-reveal")
