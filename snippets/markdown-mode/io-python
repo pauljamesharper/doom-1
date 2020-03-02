@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: io-python
+# key: trigger-key
+# condition: t
+# --
+
+\`\`\`python
+$1
+\`\`\`
+\`\`\`plaintext
+$2
+\`\`\`

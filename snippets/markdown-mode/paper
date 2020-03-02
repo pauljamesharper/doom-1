@@ -1,0 +1,17 @@
+# -*- mode: snippet -*-
+# name: paper
+# key: trigger-key
+# condition: t      
+# --
+
+subtitle: ""
+summary: "$1"
+authors: []
+tags: ["paper"]
+categories: ["Summary"]
+date: 2020-$3
+lastmod: 2020-$4
+featured: false
+draft: false
+projects: ["100-papers-in-cs"]
+---

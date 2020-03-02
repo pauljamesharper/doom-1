@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: quote
+# key: trigger-key
+# condition: t
+# --
+
+> $1
+<!--quoteend-->

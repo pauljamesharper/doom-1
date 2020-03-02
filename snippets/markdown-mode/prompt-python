@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: prompt-python
+# key: trigger-key
+# condition: t
+# --
+
+\`\`\`plaintext
+>>>$1
+\`\`\`
