@@ -4,6 +4,6 @@
 # condition: t
 # --
 
-\`\`\`plaintext
+\`\`\`python
 >>>$1
 \`\`\`

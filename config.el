@@ -15,6 +15,9 @@
 ;; Bookmark save directory
 (setq bookmark-default-file "~/.doom.d/bookmarks")
 
+;; Default Projectile Search Path
+(setq projectile-project-search-path '("~/Projects" "/home/lino"))
+
 ;; Modules
 (load! "+bindings")
 (load! "+crypt")
