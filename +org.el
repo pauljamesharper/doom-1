@@ -8,7 +8,8 @@
 (after! org
   (add-to-list 'org-modules 'org-habit t)
   (setq org-directory "~/org"
-        org-agenda-files (list org-directory))
+        org-agenda-files (list org-directory)
+        org-habit-show-done-always-green t)
 
   ;; 8 lines in which bold/emphasis is displayed
   (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
