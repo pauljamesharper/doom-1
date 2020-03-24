@@ -12,11 +12,13 @@
       display-time-default-load-average nil)
 (display-time-mode 1)
 
+(remove-hook 'mu4e-main-mode-hook 'evil-collection-mu4e-update-main-view)
 ;; Bookmark save directory
 (setq bookmark-default-file "~/.doom.d/bookmarks")
 
 ;; Default Projectile Search Path
 (setq projectile-project-search-path '("~/Projects" "/home/lino"))
+
 
 ;; Modules
 (load! "+bindings")

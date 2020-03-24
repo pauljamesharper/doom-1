@@ -3,6 +3,8 @@
 ;; everywhere
 (map! :leader
 
+      (:desc "e-mail" "e" #'mu4e)
+
       (:prefix-map ("r" . "org-ref")
         :desc "citation"               "c"     #'org-ref-insert-cite-with-completion
         :desc "pdf"                    "p"     #'org-ref-open-pdf-at-point

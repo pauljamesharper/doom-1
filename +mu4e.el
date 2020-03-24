@@ -1,7 +1,8 @@
 ;;; ~/.doom.d/+mu4e.el -*- lexical-binding: t; -*-
 
 (after! mu4e
-  (setq mu4e-maildir "~/.mail/")
+  (remove-hook 'mu4e-main-mode-hook 'evil-collection-mu4e-update-main-view)
+  (setq mu4e-root-maildir "~/.mail/")
   (set-email-account! "sehn.tech"
                       '((mu4e-sent-folder       . "/mailbox/Sent")
                         (mu4e-drafts-folder     . "/mailbox/Drafts")
@@ -40,8 +41,7 @@
 (use-package! org-mu4e
   :after mu4e
   :config
-  (setq org-mu4e-link-query-in-headers-mode nil
-        org-mu4e-convert-to-html t
+  (setq org-mu4e-convert-to-html t
         mu4e-compose-mode-hook nil)
 
   ;; Only render to html once. If the first send fails for whatever reason,

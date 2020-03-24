@@ -2,21 +2,29 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(("journal"
- (filename . "~/org/journal/2019-12.org.gpg")
- (front-context-string . "* Telling Franci")
- (rear-context-string . "e my mind away.\n")
- (position . 4511))
+(("Downloads"
+ (filename . "~/Downloads/")
+ (front-context-string . "hugo-academic-ma")
+ (rear-context-string . "0K Mar  8 01:09 ")
+ (position . 119))
+("blog"
+ (filename . "~/Projects/personal-website/content-org/posts.org")
+ (front-context-string . " Metalearning\nCL")
+ (rear-context-string . "S: num:t\n\n* DONE")
+ (position . 115))
+("journal"
+ (filename . "/home/lino/org/journal/2020.org.gpg")
+ (handler . org-bookmark-jump))
 ("bibnotes"
  (filename . "~/org/bibnotes/")
  (front-context-string . "Clausewitz2005.o")
  (rear-context-string . "6K Oct 28 23:10 ")
  (position . 186))
 ("org-capture-last-stored"
- (filename . "~/org/actions.org")
- (front-context-string . "** TODO [#A] HU ")
- (rear-context-string . "5: Geopolitik]]\n")
- (position . 48416))
+ (filename . "~/org/calendar.org")
+ (front-context-string . "*** Emacs Meetup")
+ (rear-context-string . "minerinnerung]]\n")
+ (position . 28516))
 ("watching.org"
  (filename . "~/org/watching.org")
  (front-context-string . "ea Bag\n** Yes, M")
@@ -49,12 +57,12 @@
  (position . 194))
 ("org-capture-last-stored-marker"
  (filename . "~/org/actions.org")
- (front-context-string . "** TODO [#A] Sen")
- (rear-context-string . "92ebf3a4\n:END:\n\n")
- (position . 28208))
+ (front-context-string . "*** TODO [#A] pu")
+ (rear-context-string . "8d48a4586\n:END:\n")
+ (position . 8013))
 ("org-refile-last-stored"
  (filename . "~/org/actions.org")
- (front-context-string . "** TODO [#A] Sen")
- (rear-context-string . "92ebf3a4\n:END:\n\n")
- (position . 28208))
+ (front-context-string . "*** TODO [#A] pu")
+ (rear-context-string . "8d48a4586\n:END:\n")
+ (position . 8013))
 )
