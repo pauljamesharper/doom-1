@@ -16,6 +16,7 @@
 ;; Bookmark save directory
 (setq bookmark-default-file "~/.doom.d/bookmarks")
 
+(setq +latex-viewers '(evince))
 ;; Default Projectile Search Path
 (setq projectile-project-search-path '("~/Projects" "/home/lino"))
 
