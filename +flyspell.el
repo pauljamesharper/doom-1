@@ -1,6 +1,5 @@
 ;;; ~/.doom.d/+flyspell.el -*- lexical-binding: t; -*-
 
-(setq ispell-dictionary "en_GB")
 
 (defun my/flyspell-save-word ()
   (interactive)

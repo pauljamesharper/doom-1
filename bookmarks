@@ -7,11 +7,6 @@
  (front-context-string . "hugo-academic-ma")
  (rear-context-string . "0K Mar  8 01:09 ")
  (position . 119))
-("blog"
- (filename . "~/Projects/personal-website/content-org/posts.org")
- (front-context-string . " Metalearning\nCL")
- (rear-context-string . "S: num:t\n\n* DONE")
- (position . 115))
 ("journal"
  (filename . "/home/lino/org/journal/2020.org.gpg")
  (handler . org-bookmark-jump))

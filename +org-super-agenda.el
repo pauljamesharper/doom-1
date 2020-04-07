@@ -11,7 +11,7 @@
   (setq org-agenda-start-on-weekday nil)
   (setq org-agenda-dim-blocked-tasks nil) ;; makes main tasks visible in agenda-view
   (setq org-agenda-files '("~/org/actions.org"
-                          "~/org/cs.org"
+                           "~/org/cs.org"
                           "~/org/strategy.org"
                           "~/org/reading.org"
                           "~/org/watching.org"

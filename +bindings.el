@@ -34,8 +34,8 @@
       (:localleader
         :desc "Hide property drawers"  "p"     #'my/org-cycle-hide-properties-everywhere
         :desc "Show yearly budget"     "y"     #'show-yearly-clock-budget
-        :desc "Show yearly budget"     "m"     #'show-monthly-clock-budget
-        :desc "Show yearly budget"     "w"     #'show-weekly-clock-budget
+        :desc "Show monthly budget"    "m"     #'show-monthly-clock-budget
+        :desc "Show weekly budget"     "w"     #'show-weekly-clock-budget
         )
       )
 

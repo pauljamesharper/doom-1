@@ -15,6 +15,7 @@
                       t)
 
   (setq mu4e-compose-complete-addresses 't
+        mu4e-use-fancy-chars 'nil
         mu4e-sent-messages-behavior 'sent
         mu4e-update-interval 300
         smtpmail-debug-info 't

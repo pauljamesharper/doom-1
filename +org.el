@@ -11,6 +11,9 @@
         org-agenda-files (list org-directory)
         org-habit-show-done-always-green t)
 
+  ;; org-clock
+  (setq org-clock-mode-line-total 'today)
+
   ;; 8 lines in which bold/emphasis is displayed
   (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
   (setcar (nthcdr 4 org-emphasis-regexp-components) 8)
