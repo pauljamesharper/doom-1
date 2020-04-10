@@ -3,25 +3,30 @@
 ;; Place your private configuration here
 (setq auth-sources '("~/.authinfo.gpg"))
 
-;; General UI adjustments
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
+;; transparency
+(add-to-list 'default-frame-alist '(alpha . (92 . 90)))
+(set-frame-parameter (selected-frame) 'alpha '(92 . 90))
+
+;; general UI adjustments
 (setq doom-theme 'doom-one
       doom-themes-enable-bold t
       dired-dwim-target t
       display-time-24hr-format t
       display-time-default-load-average nil)
+
+;; only 24 hour clock in modeline
 (display-time-mode 1)
 
-(remove-hook 'mu4e-main-mode-hook 'evil-collection-mu4e-update-main-view)
-;; Bookmark save directory
+;; bookmark save directory
 (setq bookmark-default-file "~/.doom.d/bookmarks")
 
+;; latex-viewer
 (setq +latex-viewers '(evince))
-;; Default Projectile Search Path
+
+;; default Projectile Search Path
 (setq projectile-project-search-path '("~/Projects" "/home/lino"))
 
-
-;; Modules
+;; config modules
 (load! "+bindings")
 (load! "+crypt")
 (load! "+pdf-tools")
