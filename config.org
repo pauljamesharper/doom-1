@@ -1,13 +1,29 @@
+#+TITLE: Literate Doom Emacs Configuration
+#+options: toc:nil
+#+startup: overview
+#+begin_src emacs-lisp
+;; -*- lexical-binding: t -*-
+#+end_src
+
+* General
+#+begin_src emacs-lisp :tangle yes
 (setq user-full-name "Linus Sehn"
       user-mail-address "linus@sehn.tech")
-
+#+end_src
+* Bookmarks
+#+begin_src emacs-lisp :tangle yes
 (setq bookmark-default-file "~/.doom.d/bookmarks")
-
+#+end_src
+* UI
+** Fonts
+#+begin_src emacs-lisp :tangle yes
 (setq doom-font (font-spec :family "Iosevka" :size 16)
       doom-variable-pitch-font (font-spec :family "Roboto")
       doom-unicode-font (font-spec :family "all-the-icons")
       doom-big-font (font-spec :family "Iosevka" :size 19))
-
+#+end_src
+** Theme & Modeline
+#+begin_src emacs-lisp :tangle yes
 (setq doom-theme 'doom-one
       doom-themes-enable-bold t
       dired-dwim-target t
@@ -15,21 +31,35 @@
       display-time-default-load-average nil)
 
 (display-time-mode 1)
-
+#+end_src
+** Focus Mode
+#+begin_src emacs-lisp :tangle yes
 (after! writeroom-mode
   (setq writeroom-fullscreen-effect t))
-
+#+end_src
+* Dictionaries & Grammar
+** Default Dictionary
+#+begin_src emacs-lisp :tangle yes
 (setq ispell-dictionary "en_GB")
-
+#+end_src
+** Save word to Dictionary
+#+begin_src emacs-lisp :tangle yes
 (defun my/save-to-dict ()
   (interactive)
   (let ((current-location (point))
         (word (flyspell-get-word)))
     (when (consp word)
       (flyspell-do-correct 'save nil (car word) current-location (cadr word) (caddr word) current-location))))
+#+end_src
+** Grammar
+This requires langtool (which requires =Java 1.8+=). You can acquire it from
+https://languagetool.org/.
 
+#+begin_src emacs-lisp :tangle yes
 (setq langtool-language-tool-jar "~/.langtool")
-
+#+end_src
+** Bindings
+#+begin_src emacs-lisp :tangle yes
 (defun my/save-to-dict ()
   (interactive)
   (let ((current-location (point))
@@ -52,7 +82,10 @@
         :desc "Add to dictionary"      "a"     #'my/save-to-dict
         :desc "Change to german"       "g"     #'my/switch-to-de-dict
         :desc "Change to english"      "e"     #'my/switch-to-en-dict))
-
+#+end_src
+* Deft
+** General
+#+begin_src emacs-lisp :tangle yes
 (setq deft-directory "~/org"
       deft-recursive t
       deft-recursive-ignore-dir-regexp
@@ -64,7 +97,9 @@
                 "\\|auto"
                 "\\|_minted.*"
                 "\\)$"))
-
+#+end_src
+** Custom Functions
+#+begin_src emacs-lisp :tangle yes
 (defun my/kill-buffer-regexp (regexp)
   "Kill buffers matching REGEXP without asking for permission."
   (interactive "sKill buffers matching this regexp: ")
@@ -82,7 +117,11 @@
   (kill-buffer-regexp "*Deft*")
   (setq-default deft-directory "~/org/archive/courses")
   (deft))
-
+#+end_src
+** TODO Bindings
+* E-mail
+** General
+#+begin_src emacs-lisp :tangle yes
 (after! mu4e
   (setq mu4e-root-maildir "~/.mail/")
   (set-email-account! "sehn.tech"
@@ -107,6 +146,10 @@
         smtpmail-stream-type 'ssl
         smtpmail-smtp-service 465))
 
+#+end_src
+
+Don't set =-T= flag for normal delete operation
+#+begin_src emacs-lisp :tangle yes
 (after! mu4e
   (setf (alist-get 'trash mu4e-marks)
         (list :char '("d" . "▼")
@@ -118,7 +161,9 @@
                         ;; no +T before -N so the message is not marked as
                         ;; IMAP-deleted:
                         (mu4e~proc-move docid (mu4e~mark-check-target target) "-N")))))
-
+#+end_src
+** Composer
+#+begin_src emacs-lisp :tangle yes
 (use-package! org-mu4e
   :after mu4e
   :config
@@ -129,7 +174,9 @@
   ;; org-mu4e would do so each time you try again.
   (add-hook! 'message-send-hook
     (setq-local org-mu4e-convert-to-html nil)))
-
+#+end_src
+** Alerts
+#+begin_src emacs-lisp :tangle yes
 (use-package! mu4e-alert
   :after mu4e
   :hook (after-init . mu4e-alert-enable-mode-line-display)
@@ -137,22 +184,32 @@
 
 (setq doom-modeline-mu4e t)
 (mu4e-alert-enable-mode-line-display)
-
+#+end_src
+** Bindings
+#+begin_src emacs-lisp :tangle yes
 (map! :leader
       (:desc "e-mail" "e" #'mu4e))
-
+#+end_src
+* Org
+** General
+#+begin_src emacs-lisp :tangle yes
 (after! org
   (setq org-directory "~/org"
         org-agenda-files (list org-directory)
         org-habit-show-done-always-green t))
+#+end_src
 
+** Keywords
+#+begin_src emacs-lisp :tangle yes
 (after! org
   (setq org-todo-keywords
         '((sequence "TODO(t)" "PROJ(p)" "|" "DONE(d)")
         (sequence "[ ](T)" "[-](P)" "[?](M)" "|" "[X](D)")
         (sequence "NEXT(n)" "WAIT(w)" "HOLD(h)" "|" "ABRT(c)")
         (sequence "TOREAD(r)" "|" "READ(R)"))))
-
+#+end_src
+** Capture Templates
+#+begin_src emacs-lisp :tangle yes
 (after! org
   (setq org-capture-templates
       '(("t" "TODO" entry
@@ -165,9 +222,13 @@
         (file "~/org/distractions.org")
         "* %?\n%T\n** What was I doing\n** What was the trigger?"))
       ))
-
+#+end_src
+** Clocking
+#+begin_src emacs-lisp :tangle yes
 (setq org-clock-mode-line-total 'today)
-
+#+end_src
+** Clock Budget
+#+begin_src emacs-lisp :tangle yes
 (use-package! org-clock-budget
   :config
   ;; set colors for different budget exhaustion states
@@ -208,7 +269,9 @@
         :desc "Show monthly budget"    "m"     #'show-monthly-clock-budget
         :desc "Show weekly budget"     "w"     #'show-weekly-clock-budget
         ))
-
+#+end_src
+** CalDav
+#+begin_src emacs-lisp :tangle yes
 (use-package! org-caldav
   :after org
   :init
@@ -226,7 +289,9 @@
         org-icalendar-use-scheduled '(todo-start event-if-todo event-if-not-todo)
         org-icalendar-exclude-tags '("weekly" "daily" "monthly")
         org-caldav-exclude-tags '("weekly" "daily" "monthly")))
-
+#+end_src
+** Agenda
+#+begin_src emacs-lisp :tangle yes
 (use-package! org-super-agenda
   :after org-agenda
   :init
@@ -264,7 +329,9 @@
                                   ))
     :config
     (org-super-agenda-mode))
-
+#+end_src
+** Bindings
+#+begin_src emacs-lisp :tangle yes
 (map! :map org-mode-map
       (:localleader
         :desc "Hide property drawers"  "p"     #'my/org-cycle-hide-properties-everywhere
@@ -272,9 +339,14 @@
         :desc "Show monthly budget"    "m"     #'show-monthly-clock-budget
         :desc "Show weekly budget"     "w"     #'show-weekly-clock-budget
         ))
-
+#+end_src
+* Bibliography Management and Referencing
+** LaTeX-specific
+#+begin_src emacs-lisp :tangle yes
 (setq reftex-default-bibliography "~/Library/.bib/library.bib")
-
+#+end_src
+** BibTex Completion
+#+begin_src emacs-lisp :tangle yes
 (after! bibtex-completion
   (setq bibtex-completion-bibliography
         '("~/Library/.bib/library.bib"
@@ -284,7 +356,9 @@
         bibtex-completion-notes-path "~/Projects/personal-website/content/post/"
         bibtex-completion-notes-extension ".md"
         bibtex-completion-notes-template-multiple-files (format "---\ntitle: \"${title} (${author-or-editor} ${year})\"\n")))
-
+#+end_src
+** Org-Ref
+#+begin_src emacs-lisp :tangle yes
 (use-package! org-ref
   :config
   (setq reftex-default-bibliography
@@ -304,23 +378,43 @@
             (bibtex-completion-edit-notes
              (list (car (org-ref-get-bibtex-key-and-file thekey))))))))
 
-(org-ref-ivy-cite-completion)
+#+end_src
 
+#+begin_src emacs-lisp :tangle yes
+(org-ref-ivy-cite-completion)
+#+end_src
+** Bindings
+#+begin_src emacs-lisp :tangle yes
 (map! :map org-ref-ivy-cite-keymap
       :desc "move up"     "C-k"     #'org-ref-ivy-move-up
       )
+#+end_src
 
+#+end_src
+* Projectile
+#+begin_src emacs-lisp :tangle yes
 (setq projectile-project-search-path '("~/Projects" "/home/lino"))
-
+#+end_src
+* Programming Languages
+** Python
+#+begin_src emacs-lisp :tangle yes
 (setenv "WORKON_HOME" "/home/lino/anaconda3/envs")
 (pyvenv-mode 1)
-
+#+end_src
+* Mathpix
+** Variables
+#+begin_src emacs-lisp :tangle yes
 (use-package! mathpix
   :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
            (mathpix-app-key "f965173bcdbfec889c20")))
-
+#+end_src
+** Bindings
+#+begin_src emacs-lisp :tangle yes
 (map! :leader
       (:prefix-map ("i" . "insert")
         :desc "Insert math from screen" "m" #'mathpix-screenshot))
-
+#+end_src
+* Toggle Fullscreen
+#+begin_src emacs-lisp :tangle yes
 (toggle-frame-fullscreen)
+#+end_src

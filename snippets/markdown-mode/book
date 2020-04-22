@@ -7,11 +7,11 @@
 subtitle: ""
 summary: "$1"
 authors: []
-tags: ["book"]
+tags: ["Books"]
 categories: ["Summary"]
 date: 2020-$3
 lastmod: 2020-$4
 featured: false
-draft: false
+draft: true
 projects: ["book-summaries"]
 ---

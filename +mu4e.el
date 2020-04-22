@@ -1,7 +1,6 @@
 ;;; ~/.doom.d/+mu4e.el -*- lexical-binding: t; -*-
 
 (after! mu4e
-  (remove-hook 'mu4e-main-mode-hook 'evil-collection-mu4e-update-main-view)
   (setq mu4e-root-maildir "~/.mail/")
   (set-email-account! "sehn.tech"
                       '((mu4e-sent-folder       . "/mailbox/Sent")
