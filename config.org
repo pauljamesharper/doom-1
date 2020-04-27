@@ -83,42 +83,6 @@ https://languagetool.org/.
         :desc "Change to german"       "g"     #'my/switch-to-de-dict
         :desc "Change to english"      "e"     #'my/switch-to-en-dict))
 #+end_src
-* Deft
-** General
-#+begin_src emacs-lisp :tangle yes
-(setq deft-directory "~/org"
-      deft-recursive t
-      deft-recursive-ignore-dir-regexp
-        (concat "\\(?:"
-                "\\."
-                "\\|\\.\\."
-                "\\\|.+stversions"
-                "\\|code"
-                "\\|auto"
-                "\\|_minted.*"
-                "\\)$"))
-#+end_src
-** Custom Functions
-#+begin_src emacs-lisp :tangle yes
-(defun my/kill-buffer-regexp (regexp)
-  "Kill buffers matching REGEXP without asking for permission."
-  (interactive "sKill buffers matching this regexp: ")
-  (cl-letf (((symbol-function 'kill-buffer-ask) #'kill-buffer))
-    (kill-matching-buffers regexp)))
-
-(defun my/show-org-notes ()
-  (interactive)
-  (kill-buffer-regexp "*Deft*")
-  (setq-default deft-directory "~/org")
-  (deft))
-
-(defun my/show-course-notes ()
-  (interactive)
-  (kill-buffer-regexp "*Deft*")
-  (setq-default deft-directory "~/org/archive/courses")
-  (deft))
-#+end_src
-** TODO Bindings
 * E-mail
 ** General
 #+begin_src emacs-lisp :tangle yes
@@ -190,23 +154,67 @@ Don't set =-T= flag for normal delete operation
 (map! :leader
       (:desc "e-mail" "e" #'mu4e))
 #+end_src
-* Org
+* TODO Deft
 ** General
 #+begin_src emacs-lisp :tangle yes
-(after! org
-  (setq org-directory "~/org"
-        org-agenda-files (list org-directory)
-        org-habit-show-done-always-green t))
+(setq deft-directory "~/org"
+      deft-recursive t
+      deft-recursive-ignore-dir-regexp
+        (concat "\\(?:"
+                "\\."
+                "\\|\\.\\."
+                "\\\|.+stversions"
+                "\\|code"
+                "\\|auto"
+                "\\|_minted.*"
+                "\\)$"))
 #+end_src
+** Custom Functions
+#+begin_src emacs-lisp :tangle yes
+(defun my/kill-buffer-regexp (regexp)
+  "Kill buffers matching REGEXP without asking for permission."
+  (interactive "sKill buffers matching this regexp: ")
+  (cl-letf (((symbol-function 'kill-buffer-ask) #'kill-buffer))
+    (kill-matching-buffers regexp)))
+
+(defun my/show-org-notes ()
+  (interactive)
+  (kill-buffer-regexp "*Deft*")
+  (setq-default deft-directory "~/org")
+  (deft))
+
+(defun my/show-course-notes ()
+  (interactive)
+  (kill-buffer-regexp "*Deft*")
+  (setq-default deft-directory "~/org/archive/courses")
+  (deft))
+#+end_src
+** Bindings
+* Org
+#+begin_src emacs-lisp :tangle yes
+(setq org-directory "~/org")
+#+end_src
+** Attach
+#+begin_src emacs-lisp :tangle yes
+(use-package! org-download
+  :after org
+  :config
+  (setq-default org-download-method 'directory
+                org-download-image-dir "./images"
+                org-download-heading-lvl nil))
+#+end_src
+
+#+RESULTS:
+: t
 
 ** Keywords
 #+begin_src emacs-lisp :tangle yes
 (after! org
   (setq org-todo-keywords
         '((sequence "TODO(t)" "PROJ(p)" "|" "DONE(d)")
-        (sequence "[ ](T)" "[-](P)" "[?](M)" "|" "[X](D)")
-        (sequence "NEXT(n)" "WAIT(w)" "HOLD(h)" "|" "ABRT(c)")
-        (sequence "TOREAD(r)" "|" "READ(R)"))))
+          (sequence "[ ](T)" "[-](P)" "[?](M)" "|" "[X](D)")
+          (sequence "NEXT(n)" "WAIT(w)" "HOLD(h)" "|" "ABRT(c)")
+          (sequence "TOREAD(r)" "|" "READ(R)"))))
 #+end_src
 ** Capture Templates
 #+begin_src emacs-lisp :tangle yes
@@ -230,6 +238,7 @@ Don't set =-T= flag for normal delete operation
 ** Clock Budget
 #+begin_src emacs-lisp :tangle yes
 (use-package! org-clock-budget
+  :after org
   :config
   ;; set colors for different budget exhaustion states
   (setq org-clock-budget-ratio-faces '((1.0 hydra-face-red)
@@ -292,6 +301,10 @@ Don't set =-T= flag for normal delete operation
 #+end_src
 ** Agenda
 #+begin_src emacs-lisp :tangle yes
+(after! org
+  (setq org-agenda-files (list org-directory)
+        org-habit-show-done-always-green 't)
+
 (use-package! org-super-agenda
   :after org-agenda
   :init
@@ -328,69 +341,142 @@ Don't set =-T= flag for normal delete operation
                                           :scheduled future)
                                   ))
     :config
-    (org-super-agenda-mode))
+    (org-super-agenda-mode)))
+#+end_src
+** TODO Org-roam
+- set up the main directory
+#+begin_src emacs-lisp :tangle yes
+(after! org-roam
+  (setq org-roam-directory "~/org/roam"))
+#+end_src
+*** Capture Templates
+- make hyphens instead of underscores:
+#+begin_src emacs-lisp :tangle yes
+(defun org-roam--title-to-slug (title)
+    "Convert TITLE to a filename-suitable slug. Uses hyphens rather than underscores."
+    (cl-flet* ((nonspacing-mark-p (char)
+                                  (eq 'Mn (get-char-code-property char 'general-category)))
+               (strip-nonspacing-marks (s)
+                                       (apply #'string (seq-remove #'nonspacing-mark-p
+                                                                   (ucs-normalize-NFD-string s))))
+               (cl-replace (title pair)
+                           (replace-regexp-in-string (car pair) (cdr pair) title)))
+      (let* ((pairs `(("[^[:alnum:][:digit:]]" . "-")  ;; convert anything not alphanumeric
+                      ("--*" . "-")  ;; remove sequential underscores
+                      ("^-" . "")  ;; remove starting underscore
+                      ("-$" . "")))  ;; remove ending underscore
+             (slug (-reduce-from #'cl-replace (strip-nonspacing-marks title) pairs)))
+        (s-downcase slug))))
+#+end_src
+- the actual templates:
+#+begin_src emacs-lisp :tangle yes
+(after! org-roam
+  (setq org-roam-capture-templates
+               '(("d" "default"
+                  plain (function org-roam-capture--get-point)
+                  "%?\n\n\nbibliography:./biblio/library.bib"
+                  :file-name "${slug}"
+                  :head "#+HUGO_BASE_DIR:~/Projects/personal-website\n#+TITLE: ${title}\n"
+                  :unnarrowed t)
+                 ("r" "ref" plain (function org-roam-capture--get-point)
+                  "%?\n\n\nbibliography:./biblio/library.bib"
+                  :file-name "${slug}"
+                  :head "#+HUGO_BASE_DIR:~/Projects/personal-website\n#+TITLE: ${title}\n#+ROAM_KEY: ${ref}\n"
+                  :unnarrowed t))))
+#+end_src
+*** Export Backlinks
+#+begin_src emacs-lisp :tangle yes
+(defun my/org-roam--backlinks-list-with-content (file)
+  (with-temp-buffer
+    (if-let* ((backlinks (org-roam--get-backlinks file))
+              (grouped-backlinks (--group-by (nth 0 it) backlinks)))
+        (progn
+          ;; no display of the number of backlinks
+          ;; (insert (format "\n\n** %d Backlink(s)\n"
+          ;;                 (length backlinks)))
+          (dolist (group grouped-backlinks)
+            (let ((file-from (car group))
+                  (bls (cdr group)))
+              (insert (format "** [[file:%s][%s]]\n"
+                              file-from
+                              (org-roam--get-title-or-slug file-from)))
+              (dolist (backlink bls)
+                (pcase-let ((`(,file-from _ ,props) backlink))
+                  (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
+                  (insert "\n\n")))))))
+    (buffer-string)))
+
+  (defun my/org-export-preprocessor (backend)
+    (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
+      (unless (string= links "")
+        (save-excursion
+          (goto-char (point-max))
+          (insert (concat "\n* Backlinks\n") links)))))
+
+  (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
+#+end_src
+** TODO Bibliography
+#+begin_src emacs-lisp :tangle yes
+(use-package! org-ref
+  :config
+  (setq reftex-default-bibliography
+        '("~/org/roam/biblio/library.bib"
+          "~/org/roam/biblio/platform_state_surveillance.bib"
+          "~/org/roam/biblio/stusti_predpol.bib")
+        org-ref-default-bibliography
+        '("~/org/roam/biblio/library.bib"
+          "~/org/roam/biblio/platform_state_surveillance.bib"
+          "~/org/roam/biblio/stusti_predpol.bib")
+        org-ref-bibliography-notes "~/org/roam/"
+        org-ref-pdf-directory "~/Library"
+        bibtex-completion-library-path "~/Library/"
+        bibtex-completion-notes-path "~/org/roam/"
+        bibtex-completion-pdf-field "file"
+        ))
+#+end_src
+
+#+RESULTS:
+: t
+
+*** LaTeX-export
+#+begin_src emacs-lisp :tangle yes
+(after! org
+  (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")))
+#+end_src
+*** Hugo Export
+#+begin_src emacs-lisp :tangle yes
+(after! ox-hugo
+  (setq org-hugo-default-section-directory "roam"))
+#+end_src
+
+make ox-hugo play nice with org-ref
+#+begin_src emacs-lisp :tangle yes
+(use-package! org-ref-ox-hugo
+  :after org org-ref ox-hugo
+  :config
+  (add-to-list 'org-ref-formatted-citation-formats
+               '("md"
+                 ("article" . "${author}, *${title}*, ${journal}, *${volume}(${number})*, ${pages} (${year}). ${doi}")
+                 ("inproceedings" . "${author}, *${title}*, In ${editor}, ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+                 ("book" . "${author}, *${title}* (${year}), ${address}: ${publisher}.")
+                 ("phdthesis" . "${author}, *${title}* (Doctoral dissertation) (${year}). ${school}, ${address}.")
+                 ("inbook" . "${author}, *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+                 ("incollection" . "${author}, *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+                 ("proceedings" . "${editor} (Eds.), _${booktitle}_ (${year}). ${address}: ${publisher}.")
+                 ("unpublished" . "${author}, *${title}* (${year}). Unpublished manuscript.")
+                 ("misc" . "${author} (${year}). *${title}*. Retrieved from [${howpublished}](${howpublished}). ${note}.")
+                 (nil . "${author}, *${title}* (${year})."))))
 #+end_src
 ** Bindings
 #+begin_src emacs-lisp :tangle yes
 (map! :map org-mode-map
       (:localleader
-        :desc "Hide property drawers"  "p"     #'my/org-cycle-hide-properties-everywhere
         :desc "Show yearly budget"     "y"     #'show-yearly-clock-budget
         :desc "Show monthly budget"    "m"     #'show-monthly-clock-budget
         :desc "Show weekly budget"     "w"     #'show-weekly-clock-budget
         ))
 #+end_src
-* Bibliography Management and Referencing
-** LaTeX-specific
-#+begin_src emacs-lisp :tangle yes
-(setq reftex-default-bibliography "~/Library/.bib/library.bib")
-#+end_src
-** BibTex Completion
-#+begin_src emacs-lisp :tangle yes
-(after! bibtex-completion
-  (setq bibtex-completion-bibliography
-        '("~/Library/.bib/library.bib"
-          "~/Library/.bib/platform_state_surveillance.bib")
-        bibtex-completion-library-path "~/Library/"
-        bibtex-completion-pdf-field "file"
-        bibtex-completion-notes-path "~/Projects/personal-website/content/post/"
-        bibtex-completion-notes-extension ".md"
-        bibtex-completion-notes-template-multiple-files (format "---\ntitle: \"${title} (${author-or-editor} ${year})\"\n")))
-#+end_src
-** Org-Ref
-#+begin_src emacs-lisp :tangle yes
-(use-package! org-ref
-  :config
-  (setq reftex-default-bibliography
-        '("~/Library/.bib/library.bib"
-          "~/Library/.bib/platform_state_surveillance.bib")
-        org-ref-default-bibliography
-        '("~/Library/.bib/library.bib"
-          "~/Library/.bib/platform_state_surveillance.bib")
-        org-ref-pdf-directory '("~/Library")
-        org-ref-bibliography-notes "~/Projects/personal-website/content/post/summaries.org"
-        org-ref-default-citation-link "autocite"
-        org-ref-cite-types '("autocite" "textcite" "autocites" "textcites" "fullcite"))
-
-  (setq org-ref-notes-function
-        (lambda (thekey)
-          (let ((bibtex-completion-bibliography (org-ref-find-bibliography)))
-            (bibtex-completion-edit-notes
-             (list (car (org-ref-get-bibtex-key-and-file thekey))))))))
-
-#+end_src
-
-#+begin_src emacs-lisp :tangle yes
-(org-ref-ivy-cite-completion)
-#+end_src
-** Bindings
-#+begin_src emacs-lisp :tangle yes
-(map! :map org-ref-ivy-cite-keymap
-      :desc "move up"     "C-k"     #'org-ref-ivy-move-up
-      )
-#+end_src
-
-#+end_src
+* LaTeX
 * Projectile
 #+begin_src emacs-lisp :tangle yes
 (setq projectile-project-search-path '("~/Projects" "/home/lino"))

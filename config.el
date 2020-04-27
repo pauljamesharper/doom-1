@@ -53,36 +53,6 @@
         :desc "Change to german"       "g"     #'my/switch-to-de-dict
         :desc "Change to english"      "e"     #'my/switch-to-en-dict))
 
-(setq deft-directory "~/org"
-      deft-recursive t
-      deft-recursive-ignore-dir-regexp
-        (concat "\\(?:"
-                "\\."
-                "\\|\\.\\."
-                "\\\|.+stversions"
-                "\\|code"
-                "\\|auto"
-                "\\|_minted.*"
-                "\\)$"))
-
-(defun my/kill-buffer-regexp (regexp)
-  "Kill buffers matching REGEXP without asking for permission."
-  (interactive "sKill buffers matching this regexp: ")
-  (cl-letf (((symbol-function 'kill-buffer-ask) #'kill-buffer))
-    (kill-matching-buffers regexp)))
-
-(defun my/show-org-notes ()
-  (interactive)
-  (kill-buffer-regexp "*Deft*")
-  (setq-default deft-directory "~/org")
-  (deft))
-
-(defun my/show-course-notes ()
-  (interactive)
-  (kill-buffer-regexp "*Deft*")
-  (setq-default deft-directory "~/org/archive/courses")
-  (deft))
-
 (after! mu4e
   (setq mu4e-root-maildir "~/.mail/")
   (set-email-account! "sehn.tech"
@@ -141,17 +111,51 @@
 (map! :leader
       (:desc "e-mail" "e" #'mu4e))
 
-(after! org
-  (setq org-directory "~/org"
-        org-agenda-files (list org-directory)
-        org-habit-show-done-always-green t))
+(setq deft-directory "~/org"
+      deft-recursive t
+      deft-recursive-ignore-dir-regexp
+        (concat "\\(?:"
+                "\\."
+                "\\|\\.\\."
+                "\\\|.+stversions"
+                "\\|code"
+                "\\|auto"
+                "\\|_minted.*"
+                "\\)$"))
+
+(defun my/kill-buffer-regexp (regexp)
+  "Kill buffers matching REGEXP without asking for permission."
+  (interactive "sKill buffers matching this regexp: ")
+  (cl-letf (((symbol-function 'kill-buffer-ask) #'kill-buffer))
+    (kill-matching-buffers regexp)))
+
+(defun my/show-org-notes ()
+  (interactive)
+  (kill-buffer-regexp "*Deft*")
+  (setq-default deft-directory "~/org")
+  (deft))
+
+(defun my/show-course-notes ()
+  (interactive)
+  (kill-buffer-regexp "*Deft*")
+  (setq-default deft-directory "~/org/archive/courses")
+  (deft))
+
+(setq org-directory "~/org")
+
+(use-package! org-download
+  :after org
+  :config
+  (setq-default org-download-method 'directory
+                org-download-image-dir "./images"
+                org-download-heading-lvl nil))
 
 (after! org
   (setq org-todo-keywords
         '((sequence "TODO(t)" "PROJ(p)" "|" "DONE(d)")
-        (sequence "[ ](T)" "[-](P)" "[?](M)" "|" "[X](D)")
-        (sequence "NEXT(n)" "WAIT(w)" "HOLD(h)" "|" "ABRT(c)")
-        (sequence "TOREAD(r)" "|" "READ(R)"))))
+          (sequence "[ ](T)" "[-](P)" "[?](M)" "|" "[X](D)")
+          (sequence "NEXT(n)" "WAIT(w)" "HOLD(h)" "|" "ABRT(c)")
+          (sequence "TOREAD(r)" "|" "READ(R)"))))
 
 (after! org
   (setq org-capture-templates
@@ -169,6 +173,7 @@
 (setq org-clock-mode-line-total 'today)
 
 (use-package! org-clock-budget
+  :after org
   :config
   ;; set colors for different budget exhaustion states
   (setq org-clock-budget-ratio-faces '((1.0 hydra-face-red)
@@ -227,6 +232,10 @@
         org-icalendar-exclude-tags '("weekly" "daily" "monthly")
         org-caldav-exclude-tags '("weekly" "daily" "monthly")))
 
+(after! org
+  (setq org-agenda-files (list org-directory)
+        org-habit-show-done-always-green 't)
+
 (use-package! org-super-agenda
   :after org-agenda
   :init
@@ -263,52 +272,115 @@
                                           :scheduled future)
                                   ))
     :config
-    (org-super-agenda-mode))
+    (org-super-agenda-mode)))
 
-(map! :map org-mode-map
-      (:localleader
-        :desc "Hide property drawers"  "p"     #'my/org-cycle-hide-properties-everywhere
-        :desc "Show yearly budget"     "y"     #'show-yearly-clock-budget
-        :desc "Show monthly budget"    "m"     #'show-monthly-clock-budget
-        :desc "Show weekly budget"     "w"     #'show-weekly-clock-budget
-        ))
+(after! org-roam
+  (setq org-roam-directory "~/org/roam"))
 
-(setq reftex-default-bibliography "~/Library/.bib/library.bib")
+(defun org-roam--title-to-slug (title)
+    "Convert TITLE to a filename-suitable slug. Uses hyphens rather than underscores."
+    (cl-flet* ((nonspacing-mark-p (char)
+                                  (eq 'Mn (get-char-code-property char 'general-category)))
+               (strip-nonspacing-marks (s)
+                                       (apply #'string (seq-remove #'nonspacing-mark-p
+                                                                   (ucs-normalize-NFD-string s))))
+               (cl-replace (title pair)
+                           (replace-regexp-in-string (car pair) (cdr pair) title)))
+      (let* ((pairs `(("[^[:alnum:][:digit:]]" . "-")  ;; convert anything not alphanumeric
+                      ("--*" . "-")  ;; remove sequential underscores
+                      ("^-" . "")  ;; remove starting underscore
+                      ("-$" . "")))  ;; remove ending underscore
+             (slug (-reduce-from #'cl-replace (strip-nonspacing-marks title) pairs)))
+        (s-downcase slug))))
 
-(after! bibtex-completion
-  (setq bibtex-completion-bibliography
-        '("~/Library/.bib/library.bib"
-          "~/Library/.bib/platform_state_surveillance.bib")
-        bibtex-completion-library-path "~/Library/"
-        bibtex-completion-pdf-field "file"
-        bibtex-completion-notes-path "~/Projects/personal-website/content/post/"
-        bibtex-completion-notes-extension ".md"
-        bibtex-completion-notes-template-multiple-files (format "---\ntitle: \"${title} (${author-or-editor} ${year})\"\n")))
+(after! org-roam
+  (setq org-roam-capture-templates
+               '(("d" "default"
+                  plain (function org-roam-capture--get-point)
+                  "%?\n\n\nbibliography:./biblio/library.bib"
+                  :file-name "${slug}"
+                  :head "#+HUGO_BASE_DIR:~/Projects/personal-website\n#+TITLE: ${title}\n"
+                  :unnarrowed t)
+                 ("r" "ref" plain (function org-roam-capture--get-point)
+                  "%?\n\n\nbibliography:./biblio/library.bib"
+                  :file-name "${slug}"
+                  :head "#+HUGO_BASE_DIR:~/Projects/personal-website\n#+TITLE: ${title}\n#+ROAM_KEY: ${ref}\n"
+                  :unnarrowed t))))
+
+(defun my/org-roam--backlinks-list-with-content (file)
+  (with-temp-buffer
+    (if-let* ((backlinks (org-roam--get-backlinks file))
+              (grouped-backlinks (--group-by (nth 0 it) backlinks)))
+        (progn
+          ;; no display of the number of backlinks
+          ;; (insert (format "\n\n** %d Backlink(s)\n"
+          ;;                 (length backlinks)))
+          (dolist (group grouped-backlinks)
+            (let ((file-from (car group))
+                  (bls (cdr group)))
+              (insert (format "** [[file:%s][%s]]\n"
+                              file-from
+                              (org-roam--get-title-or-slug file-from)))
+              (dolist (backlink bls)
+                (pcase-let ((`(,file-from _ ,props) backlink))
+                  (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
+                  (insert "\n\n")))))))
+    (buffer-string)))
+
+  (defun my/org-export-preprocessor (backend)
+    (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
+      (unless (string= links "")
+        (save-excursion
+          (goto-char (point-max))
+          (insert (concat "\n* Backlinks\n") links)))))
+
+  (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
 (use-package! org-ref
   :config
   (setq reftex-default-bibliography
-        '("~/Library/.bib/library.bib"
-          "~/Library/.bib/platform_state_surveillance.bib")
+        '("~/org/roam/biblio/library.bib"
+          "~/org/roam/biblio/platform_state_surveillance.bib"
+          "~/org/roam/biblio/stusti_predpol.bib")
         org-ref-default-bibliography
-        '("~/Library/.bib/library.bib"
-          "~/Library/.bib/platform_state_surveillance.bib")
-        org-ref-pdf-directory '("~/Library")
-        org-ref-bibliography-notes "~/Projects/personal-website/content/post/summaries.org"
-        org-ref-default-citation-link "autocite"
-        org-ref-cite-types '("autocite" "textcite" "autocites" "textcites" "fullcite"))
+        '("~/org/roam/biblio/library.bib"
+          "~/org/roam/biblio/platform_state_surveillance.bib"
+          "~/org/roam/biblio/stusti_predpol.bib")
+        org-ref-bibliography-notes "~/org/roam/"
+        org-ref-pdf-directory "~/Library"
+        bibtex-completion-library-path "~/Library/"
+        bibtex-completion-notes-path "~/org/roam/"
+        bibtex-completion-pdf-field "file"
+        ))
 
-  (setq org-ref-notes-function
-        (lambda (thekey)
-          (let ((bibtex-completion-bibliography (org-ref-find-bibliography)))
-            (bibtex-completion-edit-notes
-             (list (car (org-ref-get-bibtex-key-and-file thekey))))))))
+(after! org
+  (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")))
 
-(org-ref-ivy-cite-completion)
+(after! ox-hugo
+  (setq org-hugo-default-section-directory "roam"))
 
-(map! :map org-ref-ivy-cite-keymap
-      :desc "move up"     "C-k"     #'org-ref-ivy-move-up
-      )
+(use-package! org-ref-ox-hugo
+  :after org org-ref ox-hugo
+  :config
+  (add-to-list 'org-ref-formatted-citation-formats
+               '("md"
+                 ("article" . "${author}, *${title}*, ${journal}, *${volume}(${number})*, ${pages} (${year}). ${doi}")
+                 ("inproceedings" . "${author}, *${title}*, In ${editor}, ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+                 ("book" . "${author}, *${title}* (${year}), ${address}: ${publisher}.")
+                 ("phdthesis" . "${author}, *${title}* (Doctoral dissertation) (${year}). ${school}, ${address}.")
+                 ("inbook" . "${author}, *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+                 ("incollection" . "${author}, *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+                 ("proceedings" . "${editor} (Eds.), _${booktitle}_ (${year}). ${address}: ${publisher}.")
+                 ("unpublished" . "${author}, *${title}* (${year}). Unpublished manuscript.")
+                 ("misc" . "${author} (${year}). *${title}*. Retrieved from [${howpublished}](${howpublished}). ${note}.")
+                 (nil . "${author}, *${title}* (${year})."))))
+
+(map! :map org-mode-map
+      (:localleader
+        :desc "Show yearly budget"     "y"     #'show-yearly-clock-budget
+        :desc "Show monthly budget"    "m"     #'show-monthly-clock-budget
+        :desc "Show weekly budget"     "w"     #'show-weekly-clock-budget
+        ))
 
 (setq projectile-project-search-path '("~/Projects" "/home/lino"))
 

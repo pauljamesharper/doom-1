@@ -1,5 +1,0 @@
-#+TITLE: test
-autocite:cabane2012
-autocite:zuckerman2019
-autocite:bostrom2014
-autocite:bostrom2013

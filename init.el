@@ -17,7 +17,7 @@
 
        :completion
        (company +childframe)
-       (ivy +fuzzy +prescient +childframe +icons)
+       (ivy +fuzzy +prescient +childframe)
 
        :ui
        deft             
@@ -47,7 +47,7 @@
        snippets          
 
        :emacs
-       (dired +icons +ranger)
+       (dired +icons)
        electric
        (ibuffer +icons)
        vc
@@ -57,8 +57,7 @@
 
        :checkers
        syntax
-       (spell
-        +hunspell)
+       (spell +hunspell)
        grammar
 
        :tools
@@ -104,7 +103,7 @@
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
-       (org +dragndrop +noter +pomodoro +present +roam)
+       (org +pomodoro +present +hugo +noter +roam)
        ;;perl              ; write code no one else can comprehend
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
