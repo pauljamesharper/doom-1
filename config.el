@@ -23,6 +23,8 @@
  '(("^\*helm"
     :size 0.45 :select t :modeline t :quit t :ttl t)))
 
+(add-hook! 'text-mode-hook auto-fill-mode)
+
 (toggle-frame-fullscreen)
 
 (setq ispell-dictionary "en_GB")

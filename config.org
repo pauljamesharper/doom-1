@@ -41,6 +41,13 @@
  '(("^\*helm"
     :size 0.45 :select t :modeline t :quit t :ttl t)))
 #+end_src
+** Auto-fill-mode
+#+begin_src emacs-lisp :tangle yes
+(add-hook! 'text-mode-hook auto-fill-mode)
+#+end_src
+
+#+RESULTS:
+
 ** Toggle Fullscreen on Start-up
 #+begin_src emacs-lisp :tangle yes
 (toggle-frame-fullscreen)
