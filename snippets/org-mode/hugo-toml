@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: hugo-toml
+# uuid:
+# key: trigger-key
+# condition: t   
+# --
+* Summary
+#+begin_src toml :front_matter_extra t
+subtitle = "$1"
+summary = "$2"
+tags = ["$3", "$4"]
+share = true
+profile = true
+commentable = true
+editable = false
+#+end_src
