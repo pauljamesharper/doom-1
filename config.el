@@ -1,7 +1,7 @@
 (setq user-full-name "Linus Sehn"
-      user-mail-address "linus@sehn.tech")
-
-(setq bookmark-default-file "~/.doom.d/bookmarks")
+      user-mail-address "linus@sehn.tech"
+      projectile-project-search-path '("~/Projects" "/home/lino")
+      bookmark-default-file "~/.doom.d/bookmarks")
 
 (setq doom-font (font-spec :family "Iosevka" :size 16)
       doom-variable-pitch-font (font-spec :family "Roboto")
@@ -18,6 +18,12 @@
 
 (after! writeroom-mode
   (setq writeroom-fullscreen-effect t))
+
+(set-popup-rules!
+ '(("^\*helm"
+    :size 0.45 :select t :modeline t :quit t :ttl t)))
+
+(toggle-frame-fullscreen)
 
 (setq ispell-dictionary "en_GB")
 
@@ -111,44 +117,7 @@
 (map! :leader
       (:desc "e-mail" "e" #'mu4e))
 
-(setq deft-directory "~/org"
-      deft-recursive t
-      deft-recursive-ignore-dir-regexp
-        (concat "\\(?:"
-                "\\."
-                "\\|\\.\\."
-                "\\\|.+stversions"
-                "\\|code"
-                "\\|auto"
-                "\\|_minted.*"
-                "\\)$"))
-
-(defun my/kill-buffer-regexp (regexp)
-  "Kill buffers matching REGEXP without asking for permission."
-  (interactive "sKill buffers matching this regexp: ")
-  (cl-letf (((symbol-function 'kill-buffer-ask) #'kill-buffer))
-    (kill-matching-buffers regexp)))
-
-(defun my/show-org-notes ()
-  (interactive)
-  (kill-buffer-regexp "*Deft*")
-  (setq-default deft-directory "~/org")
-  (deft))
-
-(defun my/show-course-notes ()
-  (interactive)
-  (kill-buffer-regexp "*Deft*")
-  (setq-default deft-directory "~/org/archive/courses")
-  (deft))
-
 (setq org-directory "~/org")
-
-(use-package! org-download
-  :after org
-  :config
-  (setq-default org-download-method 'directory
-                org-download-image-dir "./images"
-                org-download-heading-lvl nil))
 
 (after! org
   (setq org-todo-keywords
@@ -156,6 +125,13 @@
           (sequence "[ ](T)" "[-](P)" "[?](M)" "|" "[X](D)")
           (sequence "NEXT(n)" "WAIT(w)" "HOLD(h)" "|" "ABRT(c)")
           (sequence "TOREAD(r)" "|" "READ(R)"))))
+
+(use-package! org-download
+  :after org
+  :config
+  (setq-default org-download-method 'directory
+                org-download-image-dir "./images"
+                org-download-heading-lvl nil))
 
 (after! org
   (setq org-capture-templates
@@ -274,6 +250,14 @@
     :config
     (org-super-agenda-mode)))
 
+(use-package! mathpix
+  :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
+           (mathpix-app-key "f965173bcdbfec889c20")))
+
+(map! :leader
+      (:prefix-map ("i" . "insert")
+        :desc "Insert math from screen" "m" #'mathpix-screenshot))
+
 (after! org-roam
   (setq org-roam-directory "~/org/roam"))
 
@@ -297,61 +281,81 @@
   (setq org-roam-capture-templates
                '(("d" "default"
                   plain (function org-roam-capture--get-point)
-                  "%?\n\n\nbibliography:./biblio/library.bib"
+                  "%?\n\n\nbibliography:biblio/library.bib"
                   :file-name "${slug}"
-                  :head "#+HUGO_BASE_DIR:~/Projects/personal-website\n#+TITLE: ${title}\n"
-                  :unnarrowed t)
-                 ("r" "ref" plain (function org-roam-capture--get-point)
-                  "%?\n\n\nbibliography:./biblio/library.bib"
-                  :file-name "${slug}"
-                  :head "#+HUGO_BASE_DIR:~/Projects/personal-website\n#+TITLE: ${title}\n#+ROAM_KEY: ${ref}\n"
+                  :head "#+TITLE: ${title}\n#+HUGO_BASE_DIR:~/Projects/personal-website\n\n*Links* ::  "
                   :unnarrowed t))))
 
-(defun my/org-roam--backlinks-list-with-content (file)
-  (with-temp-buffer
-    (if-let* ((backlinks (org-roam--get-backlinks file))
-              (grouped-backlinks (--group-by (nth 0 it) backlinks)))
-        (progn
-          ;; no display of the number of backlinks
-          ;; (insert (format "\n\n** %d Backlink(s)\n"
-          ;;                 (length backlinks)))
-          (dolist (group grouped-backlinks)
-            (let ((file-from (car group))
-                  (bls (cdr group)))
-              (insert (format "** [[file:%s][%s]]\n"
-                              file-from
-                              (org-roam--get-title-or-slug file-from)))
-              (dolist (backlink bls)
-                (pcase-let ((`(,file-from _ ,props) backlink))
-                  (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
-                  (insert "\n\n")))))))
-    (buffer-string)))
+(after! (org org-roam)
+    (defun my/org-roam--backlinks-list (file)
+      (if (org-roam--org-roam-file-p file)
+          (--reduce-from
+           (concat acc (format "- *[[file:%s][%s]]*\n"
+                               (file-relative-name (car it) org-roam-directory)
+                               (org-roam--get-title-or-slug (car it))))
+           "" (org-roam-db-query [:select [from]
+                                  :from links
+                                  :where (= to $s1)
+                                  :and from :not :like $s2] file "%private%"))
+        ""))
+    (defun my/org-export-preprocessor (_backend)
+      (let ((links (my/org-roam--backlinks-list (buffer-file-name))))
+        (unless (string= links "")
+          (save-excursion
+            (goto-char (point-max))
+            (insert (concat "\n* Backlinks\n" links))))))
+    (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor))
 
-  (defun my/org-export-preprocessor (backend)
-    (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
-      (unless (string= links "")
-        (save-excursion
-          (goto-char (point-max))
-          (insert (concat "\n* Backlinks\n") links)))))
+(setq! +biblio-pdf-library-dir "~/Library/"
+       +biblio-default-bibliography-files
+       '("~/org/roam/biblio/library.bib"
+         "~/org/roam/biblio/stusti_predpol.bib"
+         "~/org/roam/biblio/platform_state_surveillance.bib")
+       +biblio-notes-path "~/org/roam/")
 
-  (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
+(after! org-roam-bibtex
+    (setq org-roam-bibtex-preformat-keywords
+          '("=key=" "title" "url" "file" "author-or-editor" "keywords" "year"))
+    (setq org-roam-bibtex-templates
+          '(("r" "ref" plain (function org-roam-capture--get-point)
+             ""
+             :file-name "${slug}"
+             :head "#+TITLE: Notes on: ${title} (${author-or-editor}, ${year})\n#+HUGO_BASE_DIR:~/Projects/personal-website\n#+ROAM_KEY: ${ref}
+
+*Links* ::
+\n* Summary\n#+begin_src toml :front_matter_extra t
+subtitle = \"\"
+summary = \"\"
+tags = [\"reading note\", \"\"]\n#+end_src
+\n* Main points\n:PROPERTIES:\n:Custom_ID: ${=key=}\n:URL: ${url}\n:NOTER_DOCUMENT: %(org-roam-bibtex-process-file-field \"${=key=}\")\n:NOTER_PAGE:\n:END:\n\n"
+             :unnarrowed t))))
 
 (use-package! org-ref
+  :when (featurep! :lang org)
+  :after (org bibtex-completion)
+  :preface
+  (setq org-ref-completion-library #'org-ref-helm-bibtex))
   :config
-  (setq reftex-default-bibliography
-        '("~/org/roam/biblio/library.bib"
-          "~/org/roam/biblio/platform_state_surveillance.bib"
-          "~/org/roam/biblio/stusti_predpol.bib")
-        org-ref-default-bibliography
-        '("~/org/roam/biblio/library.bib"
-          "~/org/roam/biblio/platform_state_surveillance.bib"
-          "~/org/roam/biblio/stusti_predpol.bib")
-        org-ref-bibliography-notes "~/org/roam/"
-        org-ref-pdf-directory "~/Library"
-        bibtex-completion-library-path "~/Library/"
-        bibtex-completion-notes-path "~/org/roam/"
-        bibtex-completion-pdf-field "file"
-        ))
+  ;; Although the name is helm-bibtex, it is actually a bibtex-completion function
+  ;; it is the legacy naming of the project helm-bibtex that causes confusion.
+  (setq org-ref-open-pdf-function 'org-ref-get-pdf-filename-helm-bibtex)
+  ;; org-roam-bibtex will define handlers for note taking so not needed to use the
+  ;; ones set for bibtex-completion
+  (unless (featurep! :lang org +roam)
+    ;; Allow org-ref to use the same template mechanism as {helm,ivy}-bibtex for
+    ;; multiple files if the user has chosen to spread their notes.
+    (setq org-ref-notes-function (if (directory-name-p org-ref-notes-directory)
+                                     #'org-ref-notes-function-many-files
+                                   #'org-ref-notes-function-one-file
+                                   )))
+
+(defun my/org-ref-open-pdf-at-point ()
+  "Open the pdf for bibtex key under point if it exists."
+  (interactive)
+  (let* ((results (org-ref-get-bibtex-key-and-file))
+         (key (car results)))
+    (funcall bibtex-completion-pdf-open-function (car (bibtex-completion-find-pdf key)))))
+(setq org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point)
 
 (after! org
   (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")))
@@ -366,7 +370,7 @@
                '("md"
                  ("article" . "${author}, *${title}*, ${journal}, *${volume}(${number})*, ${pages} (${year}). ${doi}")
                  ("inproceedings" . "${author}, *${title}*, In ${editor}, ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
-                 ("book" . "${author}, *${title}* (${year}), ${address}: ${publisher}.")
+                 ("book" . "${author-or-editor}, *${title}* (${year}), ${address}: ${publisher}.")
                  ("phdthesis" . "${author}, *${title}* (Doctoral dissertation) (${year}). ${school}, ${address}.")
                  ("inbook" . "${author}, *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
                  ("incollection" . "${author}, *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
@@ -377,22 +381,41 @@
 
 (map! :map org-mode-map
       (:localleader
+        (:prefix ("a" . "attachments")
+          "c" #'org-download-screenshot
+          "y" #'org-download-yank
+          )
         :desc "Show yearly budget"     "y"     #'show-yearly-clock-budget
         :desc "Show monthly budget"    "m"     #'show-monthly-clock-budget
-        :desc "Show weekly budget"     "w"     #'show-weekly-clock-budget
+        :desc "Show weekly budget"     "w"     #'show-weekly-clock-budgetk
         ))
 
-(setq projectile-project-search-path '("~/Projects" "/home/lino"))
+(setq deft-directory "~/org/roam"
+      deft-recursive t
+      deft-recursive-ignore-dir-regexp
+        (concat "\\(?:"
+                "\\."
+                "\\|\\.\\."
+                "\\\|.+stversions"
+                "\\|code"
+                "\\|auto"
+                "\\|_minted.*"
+                "\\)$"))
 
-(setenv "WORKON_HOME" "/home/lino/anaconda3/envs")
-(pyvenv-mode 1)
+(defun my/kill-buffer-regexp (regexp)
+  "Kill buffers matching REGEXP without asking for permission."
+  (interactive "sKill buffers matching this regexp: ")
+  (cl-letf (((symbol-function 'kill-buffer-ask) #'kill-buffer))
+    (kill-matching-buffers regexp)))
 
-(use-package! mathpix
-  :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
-           (mathpix-app-key "f965173bcdbfec889c20")))
+(defun my/show-org-notes ()
+  (interactive)
+  (kill-buffer-regexp "*Deft*")
+  (setq-default deft-directory "~/org")
+  (deft))
 
-(map! :leader
-      (:prefix-map ("i" . "insert")
-        :desc "Insert math from screen" "m" #'mathpix-screenshot))
-
-(toggle-frame-fullscreen)
+(defun my/show-course-notes ()
+  (interactive)
+  (kill-buffer-regexp "*Deft*")
+  (setq-default deft-directory "~/org/archive/courses")
+  (deft))

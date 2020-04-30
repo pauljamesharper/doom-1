@@ -2,7 +2,22 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(("Downloads"
+(("templates-org"
+ (filename . "~/org/roam/templates.org")
+ (front-context-string . "\ncite:snowden201")
+ (rear-context-string . "ite:zuboff2018\n\n")
+ (position . 415))
+("templates-web"
+ (filename . "~/Projects/personal-website/content/roam/templates.md")
+ (front-context-string)
+ (rear-context-string . "defb03dfbcca6b)\n")
+ (position . 3049))
+("ranger-m"
+ (filename . "~/org/")
+ (front-context-string . "public_key.asc\n ")
+ (rear-context-string . ".1k 11-28 11:24 ")
+ (position . 944))
+("Downloads"
  (filename . "~/Downloads/")
  (front-context-string . "hugo-academic-ma")
  (rear-context-string . "0K Mar  8 01:09 ")
@@ -16,10 +31,10 @@
  (rear-context-string . "6K Oct 28 23:10 ")
  (position . 186))
 ("org-capture-last-stored"
- (filename . "~/org/calendar.org")
- (front-context-string . "*** Emacs Meetup")
- (rear-context-string . "minerinnerung]]\n")
- (position . 28516))
+ (filename . "~/org/roam/path-dependency.org")
+ (front-context-string . "#+TITLE: Path De")
+ (rear-context-string)
+ (position . 1))
 ("watching.org"
  (filename . "~/org/watching.org")
  (front-context-string . "ea Bag\n** Yes, M")
@@ -56,8 +71,8 @@
  (rear-context-string . "8d48a4586\n:END:\n")
  (position . 8013))
 ("org-refile-last-stored"
- (filename . "~/org/actions.org")
- (front-context-string . "*** TODO [#A] pu")
- (rear-context-string . "8d48a4586\n:END:\n")
- (position . 8013))
+ (filename . "~/org/calendar.org")
+ (front-context-string . "**** CS01663 Men")
+ (rear-context-string . "mia\n*** Courses\n")
+ (position . 87))
 )
