@@ -3,7 +3,7 @@
       projectile-project-search-path '("~/Projects" "/home/lino")
       bookmark-default-file "~/.doom.d/bookmarks")
 
-(setq doom-font (font-spec :family "Iosevka" :size 16)
+(setq doom-font (font-spec :family "Iosevka" :size 18)
       doom-variable-pitch-font (font-spec :family "Roboto")
       doom-unicode-font (font-spec :family "all-the-icons")
       doom-big-font (font-spec :family "Iosevka" :size 19))
@@ -108,14 +108,6 @@
   (add-hook! 'message-send-hook
     (setq-local org-mu4e-convert-to-html nil)))
 
-(use-package! mu4e-alert
-  :after mu4e
-  :hook (after-init . mu4e-alert-enable-mode-line-display)
-  :config (mu4e-alert-set-default-style 'libnotify))
-
-(setq doom-modeline-mu4e t)
-(mu4e-alert-enable-mode-line-display)
-
 (map! :leader
       (:desc "e-mail" "e" #'mu4e))
 
@@ -185,12 +177,12 @@
   (org-clock-budget-report)
   )
 
-(map! :map org-mode-map
-      (:localleader
-        :desc "Show yearly budget"     "y"     #'show-yearly-clock-budget
-        :desc "Show monthly budget"    "m"     #'show-monthly-clock-budget
-        :desc "Show weekly budget"     "w"     #'show-weekly-clock-budget
-        ))
+;;(map! :map org-mode-map
+;;      (:localleader
+;;        :desc "Show yearly budget"     "y"     #'show-yearly-clock-budget
+;;        :desc "Show monthly budget"    "m"     #'show-monthly-clock-budget
+;;        :desc "Show weekly budget"     "w"     #'show-weekly-clock-budget
+;;        ))
 
 (use-package! org-caldav
   :after org
@@ -386,11 +378,7 @@ tags = [\"reading note\", \"\"]\n#+end_src
         (:prefix ("a" . "attachments")
           "c" #'org-download-screenshot
           "y" #'org-download-yank
-          )
-        :desc "Show yearly budget"     "y"     #'show-yearly-clock-budget
-        :desc "Show monthly budget"    "m"     #'show-monthly-clock-budget
-        :desc "Show weekly budget"     "w"     #'show-weekly-clock-budgetk
-        ))
+          )))
 
 (setq deft-directory "~/org/roam"
       deft-recursive t

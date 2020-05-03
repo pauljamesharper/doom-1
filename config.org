@@ -15,7 +15,7 @@
 * UI
 ** Fonts
 #+begin_src emacs-lisp :tangle yes
-(setq doom-font (font-spec :family "Iosevka" :size 16)
+(setq doom-font (font-spec :family "Iosevka" :size 18)
       doom-variable-pitch-font (font-spec :family "Roboto")
       doom-unicode-font (font-spec :family "all-the-icons")
       doom-big-font (font-spec :family "Iosevka" :size 19))
@@ -155,7 +155,7 @@ Don't set =-T= flag for normal delete operation
     (setq-local org-mu4e-convert-to-html nil)))
 #+end_src
 ** Alerts
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (use-package! mu4e-alert
   :after mu4e
   :hook (after-init . mu4e-alert-enable-mode-line-display)
@@ -251,12 +251,12 @@ Don't set =-T= flag for normal delete operation
   (org-clock-budget-report)
   )
 
-(map! :map org-mode-map
-      (:localleader
-        :desc "Show yearly budget"     "y"     #'show-yearly-clock-budget
-        :desc "Show monthly budget"    "m"     #'show-monthly-clock-budget
-        :desc "Show weekly budget"     "w"     #'show-weekly-clock-budget
-        ))
+;;(map! :map org-mode-map
+;;      (:localleader
+;;        :desc "Show yearly budget"     "y"     #'show-yearly-clock-budget
+;;        :desc "Show monthly budget"    "m"     #'show-monthly-clock-budget
+;;        :desc "Show weekly budget"     "w"     #'show-weekly-clock-budget
+;;        ))
 #+end_src
 ** CalDav
 #+begin_src emacs-lisp :tangle yes
@@ -561,11 +561,7 @@ make ox-hugo play nice with org-ref
         (:prefix ("a" . "attachments")
           "c" #'org-download-screenshot
           "y" #'org-download-yank
-          )
-        :desc "Show yearly budget"     "y"     #'show-yearly-clock-budget
-        :desc "Show monthly budget"    "m"     #'show-monthly-clock-budget
-        :desc "Show weekly budget"     "w"     #'show-weekly-clock-budgetk
-        ))
+          )))
 #+end_src
 
 #+RESULTS:
