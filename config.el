@@ -177,12 +177,10 @@
   (org-clock-budget-report)
   )
 
-;;(map! :map org-mode-map
-;;      (:localleader
-;;        :desc "Show yearly budget"     "y"     #'show-yearly-clock-budget
-;;        :desc "Show monthly budget"    "m"     #'show-monthly-clock-budget
-;;        :desc "Show weekly budget"     "w"     #'show-weekly-clock-budget
-;;        ))
+(map! :map org-mode-map
+     (:localleader
+       :desc "Show weekly budget"     "w"     #'show-weekly-clock-budget
+       ))
 
 (use-package! org-caldav
   :after org
@@ -289,6 +287,9 @@
 (add-hook! 'org-src-mode-hook 'lsp-org)
 (add-hook! 'org-src-mode-hook 'lsp)
 
+(after! org-roam
+  (setq org-roam-directory "~/org/roam"))
+
 (use-package! mathpix
   :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
            (mathpix-app-key "f965173bcdbfec889c20")))
@@ -296,9 +297,6 @@
 (map! :leader
       (:prefix-map ("i" . "insert")
         :desc "Insert math from screen" "m" #'mathpix-screenshot))
-
-(after! org-roam
-  (setq org-roam-directory "~/org/roam"))
 
 (defun org-roam--title-to-slug (title)
     "Convert TITLE to a filename-suitable slug. Uses hyphens rather than underscores."
@@ -366,7 +364,7 @@
 subtitle = \"\"
 summary = \"\"
 tags = [\"reading note\", \"\"]\n#+end_src
-\n* Main points\n:PROPERTIES:\n:Custom_ID: ${=key=}\n:URL: ${url}\n:NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n:NOTER_PAGE:\n:END:\n\n"
+\n* Main points\n:PROPERTIES:\n:Custom_ID: ${=key=}\n:NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n:NOTER_PAGE:\n:END:\n\n"
              :unnarrowed t))))
 
 (use-package! org-ref

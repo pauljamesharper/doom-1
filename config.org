@@ -251,12 +251,10 @@ Don't set =-T= flag for normal delete operation
   (org-clock-budget-report)
   )
 
-;;(map! :map org-mode-map
-;;      (:localleader
-;;        :desc "Show yearly budget"     "y"     #'show-yearly-clock-budget
-;;        :desc "Show monthly budget"    "m"     #'show-monthly-clock-budget
-;;        :desc "Show weekly budget"     "w"     #'show-weekly-clock-budget
-;;        ))
+(map! :map org-mode-map
+     (:localleader
+       :desc "Show weekly budget"     "w"     #'show-weekly-clock-budget
+       ))
 #+end_src
 ** CalDav
 #+begin_src emacs-lisp :tangle yes
@@ -369,20 +367,16 @@ Don't set =-T= flag for normal delete operation
 
 (add-hook! 'org-src-mode-hook 'lsp-org)
 (add-hook! 'org-src-mode-hook 'lsp)
-
-
 #+end_src
 
 #+RESULTS:
 | nil | Prepare local buffer environment for org source block (PYTHON). | doom-modeline-set-org-src-modeline | org-src-babel-configure-edit-buffer | org-src-mode-configure-edit-buffer | lsp-org-babel-enable |
 
-#+begin_src emacs-lisp :tangle no
-#+end_src
-
-#+RESULTS:
-| dinko-org-python | doom-modeline-set-org-src-modeline | org-src-babel-configure-edit-buffer | org-src-mode-configure-edit-buffer |
-
 ** TODO Org-roam
+#+begin_src emacs-lisp :tangle yes
+(after! org-roam
+  (setq org-roam-directory "~/org/roam"))
+#+end_src
 *** Mathpix integration
 #+begin_src emacs-lisp :tangle yes
 (use-package! mathpix
@@ -396,10 +390,6 @@ Don't set =-T= flag for normal delete operation
         :desc "Insert math from screen" "m" #'mathpix-screenshot))
 #+end_src
 - set up the main directory
-#+begin_src emacs-lisp :tangle yes
-(after! org-roam
-  (setq org-roam-directory "~/org/roam"))
-#+end_src
 *** Capture Templates
 - make hyphens instead of underscores:
 #+begin_src emacs-lisp :tangle yes
@@ -433,9 +423,6 @@ Don't set =-T= flag for normal delete operation
 
 #+RESULTS:
 | d | default | plain | (function org-roam-capture--get-point) | %? |
-
-
-
 
 
 *** Export Backlinks
@@ -494,7 +481,7 @@ Don't set =-T= flag for normal delete operation
 
   (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 #+end_src
-*** TODO Bibliography
+*** Bibliography
 #+begin_src emacs-lisp :tangle yes
 (setq! +biblio-pdf-library-dir "~/Library/"
        +biblio-default-bibliography-files
@@ -523,7 +510,7 @@ Don't set =-T= flag for normal delete operation
 subtitle = \"\"
 summary = \"\"
 tags = [\"reading note\", \"\"]\n#+end_src
-\n* Main points\n:PROPERTIES:\n:Custom_ID: ${=key=}\n:URL: ${url}\n:NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n:NOTER_PAGE:\n:END:\n\n"
+\n* Main points\n:PROPERTIES:\n:Custom_ID: ${=key=}\n:NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n:NOTER_PAGE:\n:END:\n\n"
              :unnarrowed t))))
 #+end_src
 
