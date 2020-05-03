@@ -244,6 +244,51 @@
     :config
     (org-super-agenda-mode)))
 
+(setq centaur-lsp 'lsp-mode)
+(cl-defmacro lsp-org-babel-enable (lang)
+    "Support LANG in org source code block."
+    (cl-check-type lang stringp)
+    (let* ((edit-pre (intern (format "org-babel-edit-prep:%s" lang)))
+           (intern-pre (intern (format "lsp--%s" (symbol-name edit-pre)))))
+      `(progn
+         (defun ,intern-pre (info)
+           (let ((filename (or (->> info caddr (alist-get :file))
+                               buffer-file-name)))
+             (unless filename
+               (user-error "LSP:: specify `:file' property to enable."))
+
+             (setq buffer-file-name filename)
+             (pcase centaur-lsp
+               ('eglot
+                (and (fboundp 'eglot) (eglot)))
+               ('lsp-mode
+                (and (fboundp 'lsp-deferred)
+                     ;; `lsp-auto-guess-root' MUST be non-nil.
+                     (setq lsp-buffer-uri (lsp--path-to-uri filename))
+                     (lsp-deferred))))))
+         (put ',intern-pre 'function-documentation
+              (format "Enable `%s' in the buffer of org source block (%s)."
+                      centaur-lsp (upcase ,lang)))
+
+         (if (fboundp ',edit-pre)
+             (advice-add ',edit-pre :after ',intern-pre)
+           (progn
+             (defun ,edit-pre (info)
+               (,intern-pre info))
+             (put ',edit-pre 'function-documentation
+                  (format "Prepare local buffer environment for org source block (%s)."
+                          (upcase ,lang))))))))
+
+(defun lsp-org()
+    (interactive)
+    (defvar org-babel-lang-list
+        '("python" "ipython"))
+    (dolist (lang org-babel-lang-list)
+      (eval `(lsp-org-babel-enable ,lang))))
+
+(add-hook! 'org-src-mode-hook 'lsp-org)
+(add-hook! 'org-src-mode-hook 'lsp)
+
 (use-package! mathpix
   :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
            (mathpix-app-key "f965173bcdbfec889c20")))
@@ -308,9 +353,9 @@
        +biblio-notes-path "~/org/roam/")
 
 (after! org-roam-bibtex
-    (setq org-roam-bibtex-preformat-keywords
+    (setq orb-preformat-keywords
           '("=key=" "title" "url" "file" "author-or-editor" "keywords" "year"))
-    (setq org-roam-bibtex-templates
+    (setq orb-templates
           '(("r" "ref" plain (function org-roam-capture--get-point)
              ""
              :file-name "${slug}"
@@ -321,7 +366,7 @@
 subtitle = \"\"
 summary = \"\"
 tags = [\"reading note\", \"\"]\n#+end_src
-\n* Main points\n:PROPERTIES:\n:Custom_ID: ${=key=}\n:URL: ${url}\n:NOTER_DOCUMENT: %(org-roam-bibtex-process-file-field \"${=key=}\")\n:NOTER_PAGE:\n:END:\n\n"
+\n* Main points\n:PROPERTIES:\n:Custom_ID: ${=key=}\n:URL: ${url}\n:NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n:NOTER_PAGE:\n:END:\n\n"
              :unnarrowed t))))
 
 (use-package! org-ref

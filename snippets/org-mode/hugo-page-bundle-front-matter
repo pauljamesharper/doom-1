@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: hugo-page-bundle-front-matter
+# uuid:
+# key: trigger-key
+# condition: t
+# --
+#+HUGO_BUNDLE: $1
+#+EXPORT_FILE_NAME: index
