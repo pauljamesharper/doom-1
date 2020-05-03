@@ -1,12 +1,9 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; tools/biblio/packages.el
 
-(package! bibtex-completion :pin "631dc607e8")
-(when (featurep! :completion ivy)
-  (package! ivy-bibtex :pin "631dc607e8"))
-(when (featurep! :completion helm)
-  (package! helm-bibtex :pin "631dc607e8"))
+(package! bibtex-completion :pin "6a884fe8ae")
+(package! helm-bibtex :pin "6a884fe8ae")
 (when (featurep! :lang org)
   (package! org-ref :pin "1eb4ddda00"))
 (when (featurep! :lang org +roam)
-  (package! org-roam-bibtex :pin "6bbdebb39d"))
+  (package! org-roam-bibtex :pin "a97ec6d954"))
