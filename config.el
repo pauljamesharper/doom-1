@@ -380,6 +380,7 @@ tags = [\"reading note\", \"\"]\n#+end_src
       ("M-i" #'org-ref-helm-insert-cite-link)
       ("M-e" #'org-ref-update-pre-post-text)
       ("M-p" #'my/org-ref-open-pdf-at-point)
+      ("M-n" #'org-roam-insert)
       (:leader
         (:prefix "i"
           :desc "Cite source" "c" #'org-ref-helm-insert-cite-link
@@ -423,16 +424,45 @@ tags = [\"reading note\", \"\"]\n#+end_src
   :config
   (add-to-list 'org-ref-formatted-citation-formats
                '("md"
-                 ("article" . "${author}, *${title}*, ${journal}, *${volume}(${number})*, ${pages} (${year}). ${doi}")
-                 ("inproceedings" . "${author}, *${title}*, In ${editor}, ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
-                 ("book" . "${author-or-editor}, *${title}* (${year}), ${address}: ${publisher}.")
-                 ("phdthesis" . "${author}, *${title}* (Doctoral dissertation) (${year}). ${school}, ${address}.")
-                 ("inbook" . "${author}, *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
-                 ("incollection" . "${author}, *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+                 ("article" . "${author}. (${year}). *${title}*, ${journal}, *${volume}(${number})*, ${pages} ${doi}.")
+                 ("inproceedings" . "${author}. *${title}*, In ${editor}, ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+                 ("book" . "${author-or-editor}. (${year}). *${title}*.")
+                 ("phdthesis" . "${author}. *${title}* (Doctoral dissertation) (${year}). ${school}, ${address}.")
+                 ("inbook" . "${author}. *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+                 ("incollection" . "${author}. *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
                  ("proceedings" . "${editor} (Eds.), _${booktitle}_ (${year}). ${address}: ${publisher}.")
-                 ("unpublished" . "${author}, *${title}* (${year}). Unpublished manuscript.")
-                 ("misc" . "${author} (${year}). *${title}*. Retrieved from [${howpublished}](${howpublished}). ${note}.")
-                 (nil . "${author}, *${title}* (${year})."))))
+                 ("unpublished" . "${author}. *${title}* (${year}). Unpublished manuscript.")
+                 ("misc" . "${author} (${year}). *${title}*. Retrieved from [${url}](${url}). ${note}.")
+                 (nil . "${author}. (${year}). *${title}* "))))
+
+(defun my/org-ref-get-md-bibliography (&optional sort)
+  "Create an md bibliography when there are keys.
+if SORT is non-nil the bibliography is sorted alphabetically by key."
+  (let ((keys (org-ref-get-bibtex-keys sort)))
+    (when keys
+      (concat
+       "\n"
+       (mapconcat (lambda (x) (org-ref-get-bibtex-entry-md x)) keys "\n\n")
+       "\n"))))
+
+(defun org-ref-bibliography-format (keyword desc format)
+  "Formatting function for bibliography links."
+  (cond
+   ((eq format 'org) (org-ref-get-org-bibliography))
+   ((eq format 'ascii) (org-ref-get-ascii-bibliography))
+   ((eq format 'md) (my/org-ref-get-md-bibliography))
+   ((eq format 'odt) (org-ref-get-odt-bibliography))
+   ((eq format 'html) (org-ref-get-html-bibliography))
+   ((eq format 'latex)
+    ;; write out the latex bibliography command
+    (format "\\bibliography{%s}"
+	    (replace-regexp-in-string
+	     "\\.bib" ""
+	     (mapconcat
+	      'identity
+	      (mapcar 'file-relative-name
+		      (split-string keyword ","))
+	      ","))))))
 
 (map! :map org-mode-map
       (:localleader

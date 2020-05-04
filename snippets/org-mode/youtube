@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: youtube
+# key: yt
+# condition: t
+# --
+#+begin_export html
+{{< youtube $1 >}}
+#+end_export
