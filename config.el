@@ -367,6 +367,24 @@ tags = [\"reading note\", \"\"]\n#+end_src
 \n* Main points\n:PROPERTIES:\n:Custom_ID: ${=key=}\n:NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n:NOTER_PAGE:\n:END:\n\n"
              :unnarrowed t))))
 
+(use-package! company-bibtex
+  :after org
+  :config
+  (set-company-backend! 'org-mode 'company-bibtex)
+  (setq company-bibtex-bibliography
+    '("/home/lino/org/roam/biblio/library.bib"
+        "/home/lino/org/roam/biblio/stusti_predpol.bib")
+    company-bibtex-org-citation-regex "cite:"))
+
+(map! :map org-mode-map
+      ("M-i" #'org-ref-helm-insert-cite-link)
+      ("M-e" #'org-ref-update-pre-post-text)
+      ("M-p" #'my/org-ref-open-pdf-at-point)
+      (:leader
+        (:prefix "i"
+          :desc "Cite source" "c" #'org-ref-helm-insert-cite-link
+          )))
+
 (use-package! org-ref
   :when (featurep! :lang org)
   :after (org bibtex-completion)
