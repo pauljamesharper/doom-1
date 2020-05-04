@@ -8,6 +8,7 @@
 (package! doom-snippets :ignore t)
 (package! yasnippet-snippets)
 (package! org-caldav)
+(package! company-bibtex)
 (package! org-super-agenda)
 (package! mu4e-alert)
 (package! anki-editor)

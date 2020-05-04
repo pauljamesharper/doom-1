@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: cite-page
+# key: cp
+# condition: t
+# --
+[[cite:$1][$2]]

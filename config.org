@@ -320,8 +320,9 @@ Don't set =-T= flag for normal delete operation
     :config
     (org-super-agenda-mode)))
 #+end_src
-** TODO Org-babel
-*** Python
+** Exocortex
+*** TODO Org-babel
+**** Python
 #+begin_src emacs-lisp :tangle yes
 (setq centaur-lsp 'lsp-mode)
 (cl-defmacro lsp-org-babel-enable (lang)
@@ -372,25 +373,25 @@ Don't set =-T= flag for normal delete operation
 #+RESULTS:
 | nil | Prepare local buffer environment for org source block (PYTHON). | doom-modeline-set-org-src-modeline | org-src-babel-configure-edit-buffer | org-src-mode-configure-edit-buffer | lsp-org-babel-enable |
 
-** TODO Org-roam
+*** TODO Org-roam
 #+begin_src emacs-lisp :tangle yes
 (after! org-roam
   (setq org-roam-directory "~/org/roam"))
 #+end_src
-*** Mathpix integration
+**** Mathpix integration
 #+begin_src emacs-lisp :tangle yes
 (use-package! mathpix
   :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
            (mathpix-app-key "f965173bcdbfec889c20")))
 #+end_src
-*** Bindings
+**** Bindings
 #+begin_src emacs-lisp :tangle yes
 (map! :leader
       (:prefix-map ("i" . "insert")
         :desc "Insert math from screen" "m" #'mathpix-screenshot))
 #+end_src
 - set up the main directory
-*** Capture Templates
+**** Capture Templates
 - make hyphens instead of underscores:
 #+begin_src emacs-lisp :tangle yes
 (defun org-roam--title-to-slug (title)
@@ -424,8 +425,7 @@ Don't set =-T= flag for normal delete operation
 #+RESULTS:
 | d | default | plain | (function org-roam-capture--get-point) | %? |
 
-
-*** Export Backlinks
+**** Export Backlinks
 #+begin_src emacs-lisp :tangle yes
 (after! (org org-roam)
     (defun my/org-roam--backlinks-list (file)
@@ -481,7 +481,7 @@ Don't set =-T= flag for normal delete operation
 
   (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 #+end_src
-*** Bibliography
+**** Bibliography
 #+begin_src emacs-lisp :tangle yes
 (setq! +biblio-pdf-library-dir "~/Library/"
        +biblio-default-bibliography-files
@@ -514,10 +514,56 @@ tags = [\"reading note\", \"\"]\n#+end_src
              :unnarrowed t))))
 #+end_src
 
-#+RESULTS:
-| r | ref | plain | (function org-roam-capture--get-point) |   | :file-name | ${slug} | :head | #+TITLE: Notes on: ${title} (${author-or-editor}, ${year}) |
+- company-bibtex
+#+begin_src emacs-lisp :tangle yes
+(use-package! company-bibtex
+  :after org
+  :config
+  (set-company-backend! 'org-mode 'company-bibtex)
+  (setq company-bibtex-bibliography
+    '("/home/lino/org/roam/biblio/library.bib"
+        "/home/lino/org/roam/biblio/stusti_predpol.bib")
+    company-bibtex-org-citation-regex "cite:"))
+#+end_src
 
-**** Use helm-bibtex
+- efficient keybinds
+#+begin_src emacs-lisp :tangle yes
+(map! :map org-mode-map
+      ("M-i" #'org-ref-helm-insert-cite-link)
+      ("M-e" #'org-ref-update-pre-post-text)
+      ("M-p" #'my/org-ref-open-pdf-at-point)
+      (:leader
+        (:prefix "i"
+          :desc "Cite source" "c" #'org-ref-helm-insert-cite-link
+          )))
+#+end_src
+
+- minimalist cite insertino with ivy
+#+begin_src emacs-lisp :tangle no
+(defun prepost (keys)
+  "Formatter for org-ref citations."
+  (let* ((prenote  (if bibtex-completion-cite-prompt-for-optional-arguments (read-from-minibuffer "Prenote: ") ""))
+         (postnote (if bibtex-completion-cite-prompt-for-optional-arguments (read-from-minibuffer "Postnote: ") "")))
+(if (and (string= "" prenote) (string= "" postnote))
+                (format "%s" (s-join "; " (--map (concat "autocite:" it) keys)))
+    (format "[[%s][%s::%s]]"  (s-join "; " (--map (concat "autocite:" it) keys)) prenote postnote))))
+
+(setq org-ref-bibtex-files '("/home/lino/org/roam/biblio/library.bib"))
+(length (orhc-bibtex-candidates))
+
+(defun cite ()
+  (interactive)
+  (ivy-read "select: " (orhc-bibtex-candidates)
+            :action (lambda (entry)
+                      (let ((key (cdr (assoc "=key=" entry)))
+                            (type (if ivy-current-prefix-arg
+                                      (ivy-read "type: " org-ref-cite-types)
+                                    "cite")))
+                        (with-ivy-window
+                          (insert (format "%s:%s" type key)))))))
+#+end_src
+
+***** Use helm-bibtex
 #+begin_src emacs-lisp :tangle yes
 (use-package! org-ref
   :when (featurep! :lang org)
@@ -540,7 +586,7 @@ tags = [\"reading note\", \"\"]\n#+end_src
 #+end_src
 
 #+RESULTS:
-**** Open pdf at point
+***** Open pdf at point
 #+begin_src emacs-lisp :tangle yes
 (defun my/org-ref-open-pdf-at-point ()
   "Open the pdf for bibtex key under point if it exists."
@@ -554,7 +600,7 @@ tags = [\"reading note\", \"\"]\n#+end_src
 #+RESULTS:
 : my/org-ref-open-pdf-at-point
 
-**** Adding pre and post notes to ivy-bibtex
+***** Adding pre and post notes to ivy-bibtex
 #+begin_src emacs-lisp :tangle no
 (defun bibtex-completion-format-citation-orgref (keys)
   "Formatter for org-ref citations."
@@ -568,12 +614,12 @@ tags = [\"reading note\", \"\"]\n#+end_src
 #+RESULTS:
 : bibtex-completion-format-citation-orgref
 
-**** LaTeX-export
+***** LaTeX-export
 #+begin_src emacs-lisp :tangle yes
 (after! org
   (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")))
 #+end_src
-**** Hugo Export
+***** Hugo Export
 #+begin_src emacs-lisp :tangle yes
 (after! ox-hugo
   (setq org-hugo-default-section-directory "roam"))
@@ -601,7 +647,7 @@ make ox-hugo play nice with org-ref
 #+RESULTS:
 : t
 
-*** Bindings
+**** Bindings
 #+begin_src emacs-lisp :tangle yes
 (map! :map org-mode-map
       (:localleader
@@ -613,8 +659,8 @@ make ox-hugo play nice with org-ref
 
 #+RESULTS:
 
-** TODO Deft
-*** General
+*** TODO Deft
+**** General
 #+begin_src emacs-lisp :tangle yes
 (setq deft-directory "~/org/roam"
       deft-recursive t
@@ -632,7 +678,7 @@ make ox-hugo play nice with org-ref
 #+RESULTS:
 : \(?:\.\|\.\.\|.+stversions\|code\|auto\|_minted.*\)$
 
-*** Custom Functions
+**** Custom Functions
 #+begin_src emacs-lisp :tangle yes
 (defun my/kill-buffer-regexp (regexp)
   "Kill buffers matching REGEXP without asking for permission."
@@ -652,7 +698,7 @@ make ox-hugo play nice with org-ref
   (setq-default deft-directory "~/org/archive/courses")
   (deft))
 #+end_src
-*** Bindings
+**** Bindings
 * Languages
 ** LaTeX
 ** Python
