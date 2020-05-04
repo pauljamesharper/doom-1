@@ -452,3 +452,6 @@ tags = [\"reading note\", \"\"]\n#+end_src
   (kill-buffer-regexp "*Deft*")
   (setq-default deft-directory "~/org/archive/courses")
   (deft))
+
+(map! :map pdf-view-mode-map
+      "C-c i" 'org-noter-insert-note)

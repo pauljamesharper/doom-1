@@ -653,6 +653,15 @@ make ox-hugo play nice with org-ref
   (deft))
 #+end_src
 *** Bindings
+* PDF
+** Bindings
+#+begin_src emacs-lisp :tangle yes
+(map! :map pdf-view-mode-map
+      "C-c i" 'org-noter-insert-note)
+#+end_src
+
+#+RESULTS:
+
 * Languages
 ** LaTeX
 ** Python
