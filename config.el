@@ -320,7 +320,7 @@
                   plain (function org-roam-capture--get-point)
                   "%?\n\n\nbibliography:biblio/library.bib"
                   :file-name "${slug}"
-                  :head "#+TITLE: ${title}\n#+HUGO_BASE_DIR:~/Projects/personal-website\n\n*Links* ::  "
+                  :head "#+TITLE: ${title}\n#+HUGO_BASE_DIR:~/Projects/personal-website\n\nLinks ::  "
                   :unnarrowed t))))
 
 (after! (org org-roam)
@@ -359,7 +359,7 @@
              :file-name "${slug}"
              :head "#+TITLE: Notes on: ${title} (${author-or-editor}, ${year})\n#+HUGO_BASE_DIR:~/Projects/personal-website\n#+ROAM_KEY: ${ref}
 
-*Links* ::
+Links ::
 \n* Summary\n#+begin_src toml :front_matter_extra t
 subtitle = \"\"
 summary = \"\"
@@ -414,7 +414,8 @@ tags = [\"reading note\", \"\"]\n#+end_src
 (setq org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point)
 
 (after! org
-  (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")))
+  (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")
+        org-export-with-smart-quotes t))
 
 (after! ox-hugo
   (setq org-hugo-default-section-directory "roam"))

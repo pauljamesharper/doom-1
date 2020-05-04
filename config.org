@@ -1,4 +1,4 @@
-#+TITLE: Literate Doom Emacs Configuration
+#+title: Literate Doom Emacs Configuration
 #+options: toc:nil
 #+startup: overview
 #+begin_src emacs-lisp
@@ -418,7 +418,7 @@ Don't set =-T= flag for normal delete operation
                   plain (function org-roam-capture--get-point)
                   "%?\n\n\nbibliography:biblio/library.bib"
                   :file-name "${slug}"
-                  :head "#+TITLE: ${title}\n#+HUGO_BASE_DIR:~/Projects/personal-website\n\n*Links* ::  "
+                  :head "#+TITLE: ${title}\n#+HUGO_BASE_DIR:~/Projects/personal-website\n\nLinks ::  "
                   :unnarrowed t))))
 #+end_src
 
@@ -505,7 +505,7 @@ Don't set =-T= flag for normal delete operation
              :file-name "${slug}"
              :head "#+TITLE: Notes on: ${title} (${author-or-editor}, ${year})\n#+HUGO_BASE_DIR:~/Projects/personal-website\n#+ROAM_KEY: ${ref}
 
-*Links* ::
+Links ::
 \n* Summary\n#+begin_src toml :front_matter_extra t
 subtitle = \"\"
 summary = \"\"
@@ -621,8 +621,13 @@ tags = [\"reading note\", \"\"]\n#+end_src
 ***** LaTeX-export
 #+begin_src emacs-lisp :tangle yes
 (after! org
-  (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")))
+  (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")
+        org-export-with-smart-quotes t))
 #+end_src
+
+#+RESULTS:
+: t
+
 ***** Hugo Export
 #+begin_src emacs-lisp :tangle yes
 (after! ox-hugo
