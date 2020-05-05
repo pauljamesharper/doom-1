@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
-# name: cite-page
+# name: citep-page
 # key: cp
 # condition: t
 # --
-[[cite:$1][$2]]
+[[citep:$1][$2]]

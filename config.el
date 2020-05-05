@@ -374,7 +374,7 @@ tags = [\"reading note\", \"\"]\n#+end_src
   (setq company-bibtex-bibliography
     '("/home/lino/org/roam/biblio/library.bib"
         "/home/lino/org/roam/biblio/stusti_predpol.bib")
-    company-bibtex-org-citation-regex "[[:alnum:]+_]*"))
+    company-bibtex-org-citation-regex "cite[a-z]+:+"))
 
 (map! :map org-mode-map
       ("M-i" #'org-ref-helm-insert-cite-link)

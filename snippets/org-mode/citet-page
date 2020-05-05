@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: citet-page
+# key: ct
+# condition: t
+# --
+[[citet:$1][$2]]
