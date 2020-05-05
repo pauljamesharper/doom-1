@@ -15,7 +15,7 @@
 * UI
 ** Fonts
 #+begin_src emacs-lisp :tangle yes
-(setq doom-font (font-spec :family "Iosevka" :size 18)
+(setq doom-font (font-spec :family "Iosevka" :size 16)
       doom-variable-pitch-font (font-spec :family "Roboto")
       doom-unicode-font (font-spec :family "all-the-icons")
       doom-big-font (font-spec :family "Iosevka" :size 19))
@@ -45,9 +45,6 @@
 #+begin_src emacs-lisp :tangle yes
 (add-hook! 'text-mode-hook auto-fill-mode)
 #+end_src
-
-#+RESULTS:
-
 ** Toggle Fullscreen on Start-up
 #+begin_src emacs-lisp :tangle yes
 (toggle-frame-fullscreen)
@@ -410,6 +407,10 @@ Don't set =-T= flag for normal delete operation
              (slug (-reduce-from #'cl-replace (strip-nonspacing-marks title) pairs)))
         (s-downcase slug))))
 #+end_src
+
+#+RESULTS:
+: org-roam--title-to-slug
+
 - the actual templates:
 #+begin_src emacs-lisp :tangle yes
 (after! org-roam
@@ -523,8 +524,11 @@ tags = [\"reading note\", \"\"]\n#+end_src
   (setq company-bibtex-bibliography
     '("/home/lino/org/roam/biblio/library.bib"
         "/home/lino/org/roam/biblio/stusti_predpol.bib")
-    company-bibtex-org-citation-regex "cite:"))
+    company-bibtex-org-citation-regex "[[:alnum:]+_]*"))
 #+end_src
+
+#+RESULTS:
+: t
 
 - efficient keybinds
 #+begin_src emacs-lisp :tangle yes

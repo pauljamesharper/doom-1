@@ -3,7 +3,7 @@
       projectile-project-search-path '("~/Projects" "/home/lino")
       bookmark-default-file "~/.doom.d/bookmarks")
 
-(setq doom-font (font-spec :family "Iosevka" :size 18)
+(setq doom-font (font-spec :family "Iosevka" :size 16)
       doom-variable-pitch-font (font-spec :family "Roboto")
       doom-unicode-font (font-spec :family "all-the-icons")
       doom-big-font (font-spec :family "Iosevka" :size 19))
@@ -374,7 +374,7 @@ tags = [\"reading note\", \"\"]\n#+end_src
   (setq company-bibtex-bibliography
     '("/home/lino/org/roam/biblio/library.bib"
         "/home/lino/org/roam/biblio/stusti_predpol.bib")
-    company-bibtex-org-citation-regex "cite:"))
+    company-bibtex-org-citation-regex "[[:alnum:]+_]*"))
 
 (map! :map org-mode-map
       ("M-i" #'org-ref-helm-insert-cite-link)
