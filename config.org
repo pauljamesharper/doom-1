@@ -1,5 +1,7 @@
 #+title: Literate Doom Emacs Configuration
+#+hugo_base_dir:~/Projects/personal-website
 #+options: toc:nil
+#+options: h:5
 #+startup: overview
 #+begin_src emacs-lisp
 ;; -*- lexical-binding: t -*-
@@ -12,11 +14,15 @@
       projectile-project-search-path '("~/Projects" "/home/lino")
       bookmark-default-file "~/.doom.d/bookmarks")
 #+end_src
+
+#+RESULTS:
+: ~/.doom.d/bookmarks
+
 * UI
 ** Fonts
 #+begin_src emacs-lisp :tangle yes
 (setq doom-font (font-spec :family "Iosevka" :size 16)
-      doom-variable-pitch-font (font-spec :family "Roboto")
+      doom-variable-pitch-font (font-spec :family "Iosevka")
       doom-unicode-font (font-spec :family "all-the-icons")
       doom-big-font (font-spec :family "Iosevka" :size 19))
 #+end_src
@@ -179,19 +185,6 @@ Don't set =-T= flag for normal delete operation
           (sequence "NEXT(n)" "WAIT(w)" "HOLD(h)" "|" "ABRT(c)")
           (sequence "TOREAD(r)" "|" "READ(R)"))))
 #+end_src
-** Download
-#+begin_src emacs-lisp :tangle yes
-(use-package! org-download
-  :after org
-  :config
-  (setq-default org-download-method 'directory
-                org-download-image-dir "./images"
-                org-download-heading-lvl nil))
-#+end_src
-
-#+RESULTS:
-: t
-
 ** Capture Templates
 #+begin_src emacs-lisp :tangle yes
 (after! org
@@ -318,78 +311,82 @@ Don't set =-T= flag for normal delete operation
     (org-super-agenda-mode)))
 #+end_src
 ** Exocortex
-*** TODO Org-babel
-**** Python
+*** search
 #+begin_src emacs-lisp :tangle yes
-(setq centaur-lsp 'lsp-mode)
-(cl-defmacro lsp-org-babel-enable (lang)
-    "Support LANG in org source code block."
-    (cl-check-type lang stringp)
-    (let* ((edit-pre (intern (format "org-babel-edit-prep:%s" lang)))
-           (intern-pre (intern (format "lsp--%s" (symbol-name edit-pre)))))
-      `(progn
-         (defun ,intern-pre (info)
-           (let ((filename (or (->> info caddr (alist-get :file))
-                               buffer-file-name)))
-             (unless filename
-               (user-error "LSP:: specify `:file' property to enable."))
+(defun my/search-exocortex ()
+  "Perform a text search on `org-directory'."
+  (interactive)
+  (require 'org)
+  (let ((default-directory "~/org/roam"))
+    (+default/search-project-for-symbol-at-point "")))
 
-             (setq buffer-file-name filename)
-             (pcase centaur-lsp
-               ('eglot
-                (and (fboundp 'eglot) (eglot)))
-               ('lsp-mode
-                (and (fboundp 'lsp-deferred)
-                     ;; `lsp-auto-guess-root' MUST be non-nil.
-                     (setq lsp-buffer-uri (lsp--path-to-uri filename))
-                     (lsp-deferred))))))
-         (put ',intern-pre 'function-documentation
-              (format "Enable `%s' in the buffer of org source block (%s)."
-                      centaur-lsp (upcase ,lang)))
-
-         (if (fboundp ',edit-pre)
-             (advice-add ',edit-pre :after ',intern-pre)
-           (progn
-             (defun ,edit-pre (info)
-               (,intern-pre info))
-             (put ',edit-pre 'function-documentation
-                  (format "Prepare local buffer environment for org source block (%s)."
-                          (upcase ,lang))))))))
-
-(defun lsp-org()
-    (interactive)
-    (defvar org-babel-lang-list
-        '("python" "ipython"))
-    (dolist (lang org-babel-lang-list)
-      (eval `(lsp-org-babel-enable ,lang))))
-
-(add-hook! 'org-src-mode-hook 'lsp-org)
-(add-hook! 'org-src-mode-hook 'lsp)
+(defun my/search-website ()
+  "Perform a text search on `org-directory'."
+  (interactive)
+  (require 'org)
+  (let ((default-directory "~/Projects/personal-website/content/"))
+    (+default/search-project-for-symbol-at-point "")))
+#+end_src
+*** download
+#+begin_src emacs-lisp :tangle yes
+(use-package! org-download
+  :after org
+  :config
+  (setq-default org-download-method 'directory
+                org-download-image-dir "./images"
+                org-download-heading-lvl nil))
 #+end_src
 
-#+RESULTS:
-| nil | Prepare local buffer environment for org source block (PYTHON). | doom-modeline-set-org-src-modeline | org-src-babel-configure-edit-buffer | org-src-mode-configure-edit-buffer | lsp-org-babel-enable |
+*** biblio
+#+begin_src emacs-lisp :tangle yes
+(setq! +biblio-pdf-library-dir "~/Library/"
+       +biblio-default-bibliography-files
+       '("~/org/roam/biblio/library.bib"
+         "~/org/roam/biblio/stusti_predpol.bib"
+         "~/org/roam/biblio/platform_state_surveillance.bib")
+       +biblio-notes-path "~/org/roam/")
+#+end_src
 
-*** TODO Org-roam
+*** org-roam
+**** directory
 #+begin_src emacs-lisp :tangle yes
 (after! org-roam
   (setq org-roam-directory "~/org/roam"))
 #+end_src
-**** Mathpix integration
+**** capture templates
+***** Normal capture note
 #+begin_src emacs-lisp :tangle yes
-(use-package! mathpix
-  :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
-           (mathpix-app-key "f965173bcdbfec889c20")))
+(after! org-roam
+  (setq org-roam-capture-templates
+               '(("d" "default"
+                  plain (function org-roam-capture--get-point)
+                  "%?\n\n\nbibliography:biblio/library.bib"
+                  :file-name "${slug}"
+                  :head "#+TITLE: ${title}\n#+HUGO_BASE_DIR:~/Projects/personal-website\n\nLinks ::  "
+                  :unnarrowed t))))
 #+end_src
-**** Bindings
+
+Capture template for reference notes
 #+begin_src emacs-lisp :tangle yes
-(map! :leader
-      (:prefix-map ("i" . "insert")
-        :desc "Insert math from screen" "m" #'mathpix-screenshot))
+(after! org-roam-bibtex
+    (setq orb-preformat-keywords
+          '("=key=" "title" "url" "file" "author-or-editor" "keywords" "year"))
+    (setq orb-templates
+          '(("r" "ref" plain (function org-roam-capture--get-point)
+             ""
+             :file-name "${slug}"
+             :head "#+TITLE: Notes on: ${title} (${author-or-editor}, ${year})\n#+HUGO_BASE_DIR:~/Projects/personal-website\n#+ROAM_KEY: ${ref}
+
+Links ::
+\n* Summary\n#+begin_src toml :front_matter_extra t
+subtitle = \"\"
+summary = \"\"
+tags = [\"reading note\", \"\"]\n#+end_src
+\n* Main points\n:PROPERTIES:\n:Custom_ID: ${=key=}\n:NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n:NOTER_PAGE:\n:END:\n\n"
+             :unnarrowed t))))
 #+end_src
-- set up the main directory
-**** Capture Templates
-- make hyphens instead of underscores:
+
+***** Use hyphen instead of underscore for slug
 #+begin_src emacs-lisp :tangle yes
 (defun org-roam--title-to-slug (title)
     "Convert TITLE to a filename-suitable slug. Uses hyphens rather than underscores."
@@ -408,25 +405,7 @@ Don't set =-T= flag for normal delete operation
         (s-downcase slug))))
 #+end_src
 
-#+RESULTS:
-: org-roam--title-to-slug
-
-- the actual templates:
-#+begin_src emacs-lisp :tangle yes
-(after! org-roam
-  (setq org-roam-capture-templates
-               '(("d" "default"
-                  plain (function org-roam-capture--get-point)
-                  "%?\n\n\nbibliography:biblio/library.bib"
-                  :file-name "${slug}"
-                  :head "#+TITLE: ${title}\n#+HUGO_BASE_DIR:~/Projects/personal-website\n\nLinks ::  "
-                  :unnarrowed t))))
-#+end_src
-
-#+RESULTS:
-| d | default | plain | (function org-roam-capture--get-point) | %? |
-
-**** Export Backlinks
+**** export backlinks
 #+begin_src emacs-lisp :tangle yes
 (after! (org org-roam)
     (defun my/org-roam--backlinks-list (file)
@@ -482,96 +461,68 @@ Don't set =-T= flag for normal delete operation
 
   (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 #+end_src
-**** Bibliography
+*** org-babel
 #+begin_src emacs-lisp :tangle yes
-(setq! +biblio-pdf-library-dir "~/Library/"
-       +biblio-default-bibliography-files
-       '("~/org/roam/biblio/library.bib"
-         "~/org/roam/biblio/stusti_predpol.bib"
-         "~/org/roam/biblio/platform_state_surveillance.bib")
-       +biblio-notes-path "~/org/roam/")
+(setq centaur-lsp 'lsp-mode)
+(cl-defmacro lsp-org-babel-enable (lang)
+    "Support LANG in org source code block."
+    (cl-check-type lang stringp)
+    (let* ((edit-pre (intern (format "org-babel-edit-prep:%s" lang)))
+           (intern-pre (intern (format "lsp--%s" (symbol-name edit-pre)))))
+      `(progn
+         (defun ,intern-pre (info)
+           (let ((filename (or (->> info caddr (alist-get :file))
+                               buffer-file-name)))
+             (unless filename
+               (user-error "LSP:: specify `:file' property to enable."))
 
+             (setq buffer-file-name filename)
+             (pcase centaur-lsp
+               ('eglot
+                (and (fboundp 'eglot) (eglot)))
+               ('lsp-mode
+                (and (fboundp 'lsp-deferred)
+                     ;; `lsp-auto-guess-root' MUST be non-nil.
+                     (setq lsp-buffer-uri (lsp--path-to-uri filename))
+                     (lsp-deferred))))))
+         (put ',intern-pre 'function-documentation
+              (format "Enable `%s' in the buffer of org source block (%s)."
+                      centaur-lsp (upcase ,lang)))
+
+         (if (fboundp ',edit-pre)
+             (advice-add ',edit-pre :after ',intern-pre)
+           (progn
+             (defun ,edit-pre (info)
+               (,intern-pre info))
+             (put ',edit-pre 'function-documentation
+                  (format "Prepare local buffer environment for org source block (%s)."
+                          (upcase ,lang))))))))
+
+(defun lsp-org()
+    (interactive)
+    (defvar org-babel-lang-list
+        '("python" "ipython"))
+    (dolist (lang org-babel-lang-list)
+      (eval `(lsp-org-babel-enable ,lang))))
+
+(add-hook! 'org-src-mode-hook 'lsp-org)
+(add-hook! 'org-src-mode-hook 'lsp)
 #+end_src
 
 #+RESULTS:
-: ~/org/roam/
+| nil | Prepare local buffer environment for org source block (PYTHON). | doom-modeline-set-org-src-modeline | org-src-babel-configure-edit-buffer | org-src-mode-configure-edit-buffer | lsp-org-babel-enable |
 
-#+begin_src emacs-lisp :tangle yes
-(after! org-roam-bibtex
-    (setq orb-preformat-keywords
-          '("=key=" "title" "url" "file" "author-or-editor" "keywords" "year"))
-    (setq orb-templates
-          '(("r" "ref" plain (function org-roam-capture--get-point)
-             ""
-             :file-name "${slug}"
-             :head "#+TITLE: Notes on: ${title} (${author-or-editor}, ${year})\n#+HUGO_BASE_DIR:~/Projects/personal-website\n#+ROAM_KEY: ${ref}
-
-Links ::
-\n* Summary\n#+begin_src toml :front_matter_extra t
-subtitle = \"\"
-summary = \"\"
-tags = [\"reading note\", \"\"]\n#+end_src
-\n* Main points\n:PROPERTIES:\n:Custom_ID: ${=key=}\n:NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n:NOTER_PAGE:\n:END:\n\n"
-             :unnarrowed t))))
-#+end_src
-
-- company-bibtex
+*** company-bibtex
 #+begin_src emacs-lisp :tangle yes
 (use-package! company-bibtex
   :after org
   :config
   (set-company-backend! 'org-mode 'company-bibtex)
-  (setq company-bibtex-bibliography
-    '("/home/lino/org/roam/biblio/library.bib"
-        "/home/lino/org/roam/biblio/stusti_predpol.bib")
-    company-bibtex-org-citation-regex "cite[a-z]+:+"))
+  (setq company-bibtex-bibliography "/home/lino/org/roam/biblio/library.bib"
+        company-bibtex-org-citation-regex "cite[a-z]+:+"))
 #+end_src
 
-#+RESULTS:
-: t
-
-- efficient keybinds
-#+begin_src emacs-lisp :tangle yes
-(map! :map org-mode-map
-      ("M-i" #'org-ref-helm-insert-cite-link)
-      ("M-e" #'org-ref-update-pre-post-text)
-      ("M-p" #'my/org-ref-open-pdf-at-point)
-      ("M-n" #'org-roam-insert)
-      (:leader
-        (:prefix "i"
-          :desc "Cite source" "c" #'org-ref-helm-insert-cite-link
-          )))
-#+end_src
-
-#+RESULTS:
-: org-ref-helm-insert-cite-link
-
-- minimalist cite insertino with ivy
-#+begin_src emacs-lisp :tangle no
-(defun prepost (keys)
-  "Formatter for org-ref citations."
-  (let* ((prenote  (if bibtex-completion-cite-prompt-for-optional-arguments (read-from-minibuffer "Prenote: ") ""))
-         (postnote (if bibtex-completion-cite-prompt-for-optional-arguments (read-from-minibuffer "Postnote: ") "")))
-(if (and (string= "" prenote) (string= "" postnote))
-                (format "%s" (s-join "; " (--map (concat "autocite:" it) keys)))
-    (format "[[%s][%s::%s]]"  (s-join "; " (--map (concat "autocite:" it) keys)) prenote postnote))))
-
-(setq org-ref-bibtex-files '("/home/lino/org/roam/biblio/library.bib"))
-(length (orhc-bibtex-candidates))
-
-(defun cite ()
-  (interactive)
-  (ivy-read "select: " (orhc-bibtex-candidates)
-            :action (lambda (entry)
-                      (let ((key (cdr (assoc "=key=" entry)))
-                            (type (if ivy-current-prefix-arg
-                                      (ivy-read "type: " org-ref-cite-types)
-                                    "cite")))
-                        (with-ivy-window
-                          (insert (format "%s:%s" type key)))))))
-#+end_src
-
-***** Use helm-bibtex
+*** org-ref
 #+begin_src emacs-lisp :tangle yes
 (use-package! org-ref
   :when (featurep! :lang org)
@@ -593,8 +544,7 @@ tags = [\"reading note\", \"\"]\n#+end_src
                                    )))
 #+end_src
 
-#+RESULTS:
-***** Open pdf at point
+**** open pdf
 #+begin_src emacs-lisp :tangle yes
 (defun my/org-ref-open-pdf-at-point ()
   "Open the pdf for bibtex key under point if it exists."
@@ -608,31 +558,15 @@ tags = [\"reading note\", \"\"]\n#+end_src
 #+RESULTS:
 : my/org-ref-open-pdf-at-point
 
-***** Adding pre and post notes to ivy-bibtex
-#+begin_src emacs-lisp :tangle no
-(defun bibtex-completion-format-citation-orgref (keys)
-  "Formatter for org-ref citations."
-  (let* ((prenote  (if bibtex-completion-cite-prompt-for-optional-arguments (read-from-minibuffer "Prenote: ") ""))
-         (postnote (if bibtex-completion-cite-prompt-for-optional-arguments (read-from-minibuffer "Postnote: ") "")))
-(if (and (string= "" prenote) (string= "" postnote))
-                (format "%s" (s-join "; " (--map (concat "cite:" it) keys)))
-    (format "[[%s][%s::%s]]"  (s-join "; " (--map (concat "cite:" it) keys)) prenote postnote))))
-#+end_src
-
-#+RESULTS:
-: bibtex-completion-format-citation-orgref
-
-***** LaTeX-export
+*** export
+**** ox-latex
 #+begin_src emacs-lisp :tangle yes
 (after! org
   (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")
         org-export-with-smart-quotes t))
 #+end_src
 
-#+RESULTS:
-: t
-
-***** Hugo Export
+**** ox-hugo
 #+begin_src emacs-lisp :tangle yes
 (after! ox-hugo
   (setq org-hugo-default-section-directory "roam"))
@@ -695,68 +629,63 @@ if SORT is non-nil the bibliography is sorted alphabetically by key."
 #+RESULTS:
 : org-ref-bibliography-format
 
-**** Bindings
+#+RESULTS:
+
+*** mathpix
+#+begin_src emacs-lisp :tangle yes
+(use-package! mathpix
+  :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
+           (mathpix-app-key "f965173bcdbfec889c20")))
+#+end_src
+#+begin_src emacs-lisp :tangle yes
+(map! :leader
+      (:prefix-map ("i" . "insert")
+        :desc "Insert math from screen" "m" #'mathpix-screenshot))
+#+end_src
+- set up the main directory
+* Bindings
+** global
+#+begin_src emacs-lisp :tangle yes
+(map! :leader
+      (:prefix "s"
+       :desc "Search exocortex" "e" #'org-roam-find-file
+       :desc "Search refs" "r" #'org-roam-find-ref
+       :desc "Search website" "w" #'my/search-website
+       :desc "Search full exocortex" "x" #'my/search-exocortex
+       ))
+#+end_src
+
+#+RESULTS:
+: my/search-exocortex
+
+** org-mode-map
 #+begin_src emacs-lisp :tangle yes
 (map! :map org-mode-map
+      ("M-i" #'org-ref-helm-insert-cite-link)
+      ("M-e" #'org-ref-update-pre-post-text)
+      ("M-p" #'my/org-ref-open-pdf-at-point)
+      ("M-n" #'org-roam-insert)
+      (:leader
+        (:prefix "i"
+          :desc "Cite source" "c" #'org-ref-helm-insert-cite-link
+          )
       (:localleader
         (:prefix ("a" . "attachments")
           "c" #'org-download-screenshot
           "y" #'org-download-yank
-          )))
+          )
+        )
+      )
+      )
 #+end_src
 
 #+RESULTS:
 
-*** TODO Deft
-**** General
-#+begin_src emacs-lisp :tangle yes
-(setq deft-directory "~/org/roam"
-      deft-recursive t
-      deft-recursive-ignore-dir-regexp
-        (concat "\\(?:"
-                "\\."
-                "\\|\\.\\."
-                "\\\|.+stversions"
-                "\\|code"
-                "\\|auto"
-                "\\|_minted.*"
-                "\\)$"))
-#+end_src
 
 #+RESULTS:
-: \(?:\.\|\.\.\|.+stversions\|code\|auto\|_minted.*\)$
-
-**** Custom Functions
-#+begin_src emacs-lisp :tangle yes
-(defun my/kill-buffer-regexp (regexp)
-  "Kill buffers matching REGEXP without asking for permission."
-  (interactive "sKill buffers matching this regexp: ")
-  (cl-letf (((symbol-function 'kill-buffer-ask) #'kill-buffer))
-    (kill-matching-buffers regexp)))
-
-(defun my/show-org-notes ()
-  (interactive)
-  (kill-buffer-regexp "*Deft*")
-  (setq-default deft-directory "~/org")
-  (deft))
-
-(defun my/show-course-notes ()
-  (interactive)
-  (kill-buffer-regexp "*Deft*")
-  (setq-default deft-directory "~/org/archive/courses")
-  (deft))
-#+end_src
-*** Bindings
-* PDF
-** Bindings
+: my/search-exocortex
+** pdf-view-map
 #+begin_src emacs-lisp :tangle yes
 (map! :map pdf-view-mode-map
       "C-c i" 'org-noter-insert-note)
 #+end_src
-
-#+RESULTS:
-
-**** Bindings
-* Languages
-** LaTeX
-** Python

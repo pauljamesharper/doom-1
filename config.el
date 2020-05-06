@@ -4,7 +4,7 @@
       bookmark-default-file "~/.doom.d/bookmarks")
 
 (setq doom-font (font-spec :family "Iosevka" :size 16)
-      doom-variable-pitch-font (font-spec :family "Roboto")
+      doom-variable-pitch-font (font-spec :family "Iosevka")
       doom-unicode-font (font-spec :family "all-the-icons")
       doom-big-font (font-spec :family "Iosevka" :size 19))
 
@@ -119,13 +119,6 @@
           (sequence "[ ](T)" "[-](P)" "[?](M)" "|" "[X](D)")
           (sequence "NEXT(n)" "WAIT(w)" "HOLD(h)" "|" "ABRT(c)")
           (sequence "TOREAD(r)" "|" "READ(R)"))))
-
-(use-package! org-download
-  :after org
-  :config
-  (setq-default org-download-method 'directory
-                org-download-image-dir "./images"
-                org-download-heading-lvl nil))
 
 (after! org
   (setq org-capture-templates
@@ -242,6 +235,99 @@
     :config
     (org-super-agenda-mode)))
 
+(defun my/search-exocortex ()
+  "Perform a text search on `org-directory'."
+  (interactive)
+  (require 'org)
+  (let ((default-directory "~/org/roam"))
+    (+default/search-project-for-symbol-at-point "")))
+
+(defun my/search-website ()
+  "Perform a text search on `org-directory'."
+  (interactive)
+  (require 'org)
+  (let ((default-directory "~/Projects/personal-website/content/"))
+    (+default/search-project-for-symbol-at-point "")))
+
+(use-package! org-download
+  :after org
+  :config
+  (setq-default org-download-method 'directory
+                org-download-image-dir "./images"
+                org-download-heading-lvl nil))
+
+(setq! +biblio-pdf-library-dir "~/Library/"
+       +biblio-default-bibliography-files
+       '("~/org/roam/biblio/library.bib"
+         "~/org/roam/biblio/stusti_predpol.bib"
+         "~/org/roam/biblio/platform_state_surveillance.bib")
+       +biblio-notes-path "~/org/roam/")
+
+(after! org-roam
+  (setq org-roam-directory "~/org/roam"))
+
+(after! org-roam
+  (setq org-roam-capture-templates
+               '(("d" "default"
+                  plain (function org-roam-capture--get-point)
+                  "%?\n\n\nbibliography:biblio/library.bib"
+                  :file-name "${slug}"
+                  :head "#+TITLE: ${title}\n#+HUGO_BASE_DIR:~/Projects/personal-website\n\nLinks ::  "
+                  :unnarrowed t))))
+
+(after! org-roam-bibtex
+    (setq orb-preformat-keywords
+          '("=key=" "title" "url" "file" "author-or-editor" "keywords" "year"))
+    (setq orb-templates
+          '(("r" "ref" plain (function org-roam-capture--get-point)
+             ""
+             :file-name "${slug}"
+             :head "#+TITLE: Notes on: ${title} (${author-or-editor}, ${year})\n#+HUGO_BASE_DIR:~/Projects/personal-website\n#+ROAM_KEY: ${ref}
+
+Links ::
+\n* Summary\n#+begin_src toml :front_matter_extra t
+subtitle = \"\"
+summary = \"\"
+tags = [\"reading note\", \"\"]\n#+end_src
+\n* Main points\n:PROPERTIES:\n:Custom_ID: ${=key=}\n:NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n:NOTER_PAGE:\n:END:\n\n"
+             :unnarrowed t))))
+
+(defun org-roam--title-to-slug (title)
+    "Convert TITLE to a filename-suitable slug. Uses hyphens rather than underscores."
+    (cl-flet* ((nonspacing-mark-p (char)
+                                  (eq 'Mn (get-char-code-property char 'general-category)))
+               (strip-nonspacing-marks (s)
+                                       (apply #'string (seq-remove #'nonspacing-mark-p
+                                                                   (ucs-normalize-NFD-string s))))
+               (cl-replace (title pair)
+                           (replace-regexp-in-string (car pair) (cdr pair) title)))
+      (let* ((pairs `(("[^[:alnum:][:digit:]]" . "-")  ;; convert anything not alphanumeric
+                      ("--*" . "-")  ;; remove sequential underscores
+                      ("^-" . "")  ;; remove starting underscore
+                      ("-$" . "")))  ;; remove ending underscore
+             (slug (-reduce-from #'cl-replace (strip-nonspacing-marks title) pairs)))
+        (s-downcase slug))))
+
+(after! (org org-roam)
+    (defun my/org-roam--backlinks-list (file)
+      (if (org-roam--org-roam-file-p file)
+          (--reduce-from
+           (concat acc (format "- *[[file:%s][%s]]*\n"
+                               (file-relative-name (car it) org-roam-directory)
+                               (org-roam--get-title-or-slug (car it))))
+           "" (org-roam-db-query [:select [from]
+                                  :from links
+                                  :where (= to $s1)
+                                  :and from :not :like $s2] file "%private%"))
+        ""))
+    (defun my/org-export-preprocessor (_backend)
+      (let ((links (my/org-roam--backlinks-list (buffer-file-name))))
+        (unless (string= links "")
+          (save-excursion
+            (goto-char (point-max))
+            (insert (concat "\n* Backlinks\n" links))))))
+    (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor))
+
 (setq centaur-lsp 'lsp-mode)
 (cl-defmacro lsp-org-babel-enable (lang)
     "Support LANG in org source code block."
@@ -287,104 +373,12 @@
 (add-hook! 'org-src-mode-hook 'lsp-org)
 (add-hook! 'org-src-mode-hook 'lsp)
 
-(after! org-roam
-  (setq org-roam-directory "~/org/roam"))
-
-(use-package! mathpix
-  :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
-           (mathpix-app-key "f965173bcdbfec889c20")))
-
-(map! :leader
-      (:prefix-map ("i" . "insert")
-        :desc "Insert math from screen" "m" #'mathpix-screenshot))
-
-(defun org-roam--title-to-slug (title)
-    "Convert TITLE to a filename-suitable slug. Uses hyphens rather than underscores."
-    (cl-flet* ((nonspacing-mark-p (char)
-                                  (eq 'Mn (get-char-code-property char 'general-category)))
-               (strip-nonspacing-marks (s)
-                                       (apply #'string (seq-remove #'nonspacing-mark-p
-                                                                   (ucs-normalize-NFD-string s))))
-               (cl-replace (title pair)
-                           (replace-regexp-in-string (car pair) (cdr pair) title)))
-      (let* ((pairs `(("[^[:alnum:][:digit:]]" . "-")  ;; convert anything not alphanumeric
-                      ("--*" . "-")  ;; remove sequential underscores
-                      ("^-" . "")  ;; remove starting underscore
-                      ("-$" . "")))  ;; remove ending underscore
-             (slug (-reduce-from #'cl-replace (strip-nonspacing-marks title) pairs)))
-        (s-downcase slug))))
-
-(after! org-roam
-  (setq org-roam-capture-templates
-               '(("d" "default"
-                  plain (function org-roam-capture--get-point)
-                  "%?\n\n\nbibliography:biblio/library.bib"
-                  :file-name "${slug}"
-                  :head "#+TITLE: ${title}\n#+HUGO_BASE_DIR:~/Projects/personal-website\n\nLinks ::  "
-                  :unnarrowed t))))
-
-(after! (org org-roam)
-    (defun my/org-roam--backlinks-list (file)
-      (if (org-roam--org-roam-file-p file)
-          (--reduce-from
-           (concat acc (format "- *[[file:%s][%s]]*\n"
-                               (file-relative-name (car it) org-roam-directory)
-                               (org-roam--get-title-or-slug (car it))))
-           "" (org-roam-db-query [:select [from]
-                                  :from links
-                                  :where (= to $s1)
-                                  :and from :not :like $s2] file "%private%"))
-        ""))
-    (defun my/org-export-preprocessor (_backend)
-      (let ((links (my/org-roam--backlinks-list (buffer-file-name))))
-        (unless (string= links "")
-          (save-excursion
-            (goto-char (point-max))
-            (insert (concat "\n* Backlinks\n" links))))))
-    (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor))
-
-(setq! +biblio-pdf-library-dir "~/Library/"
-       +biblio-default-bibliography-files
-       '("~/org/roam/biblio/library.bib"
-         "~/org/roam/biblio/stusti_predpol.bib"
-         "~/org/roam/biblio/platform_state_surveillance.bib")
-       +biblio-notes-path "~/org/roam/")
-
-(after! org-roam-bibtex
-    (setq orb-preformat-keywords
-          '("=key=" "title" "url" "file" "author-or-editor" "keywords" "year"))
-    (setq orb-templates
-          '(("r" "ref" plain (function org-roam-capture--get-point)
-             ""
-             :file-name "${slug}"
-             :head "#+TITLE: Notes on: ${title} (${author-or-editor}, ${year})\n#+HUGO_BASE_DIR:~/Projects/personal-website\n#+ROAM_KEY: ${ref}
-
-Links ::
-\n* Summary\n#+begin_src toml :front_matter_extra t
-subtitle = \"\"
-summary = \"\"
-tags = [\"reading note\", \"\"]\n#+end_src
-\n* Main points\n:PROPERTIES:\n:Custom_ID: ${=key=}\n:NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n:NOTER_PAGE:\n:END:\n\n"
-             :unnarrowed t))))
-
 (use-package! company-bibtex
   :after org
   :config
   (set-company-backend! 'org-mode 'company-bibtex)
-  (setq company-bibtex-bibliography
-    '("/home/lino/org/roam/biblio/library.bib"
-        "/home/lino/org/roam/biblio/stusti_predpol.bib")
-    company-bibtex-org-citation-regex "cite[a-z]+:+"))
-
-(map! :map org-mode-map
-      ("M-i" #'org-ref-helm-insert-cite-link)
-      ("M-e" #'org-ref-update-pre-post-text)
-      ("M-p" #'my/org-ref-open-pdf-at-point)
-      ("M-n" #'org-roam-insert)
-      (:leader
-        (:prefix "i"
-          :desc "Cite source" "c" #'org-ref-helm-insert-cite-link
-          )))
+  (setq company-bibtex-bibliography "/home/lino/org/roam/biblio/library.bib"
+        company-bibtex-org-citation-regex "cite[a-z]+:+"))
 
 (use-package! org-ref
   :when (featurep! :lang org)
@@ -465,42 +459,39 @@ if SORT is non-nil the bibliography is sorted alphabetically by key."
 		      (split-string keyword ","))
 	      ","))))))
 
+(use-package! mathpix
+  :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
+           (mathpix-app-key "f965173bcdbfec889c20")))
+
+(map! :leader
+      (:prefix-map ("i" . "insert")
+        :desc "Insert math from screen" "m" #'mathpix-screenshot))
+
+(map! :leader
+      (:prefix "s"
+       :desc "Search exocortex" "e" #'org-roam-find-file
+       :desc "Search refs" "r" #'org-roam-find-ref
+       :desc "Search website" "w" #'my/search-website
+       :desc "Search full exocortex" "x" #'my/search-exocortex
+       ))
+
 (map! :map org-mode-map
+      ("M-i" #'org-ref-helm-insert-cite-link)
+      ("M-e" #'org-ref-update-pre-post-text)
+      ("M-p" #'my/org-ref-open-pdf-at-point)
+      ("M-n" #'org-roam-insert)
+      (:leader
+        (:prefix "i"
+          :desc "Cite source" "c" #'org-ref-helm-insert-cite-link
+          )
       (:localleader
         (:prefix ("a" . "attachments")
           "c" #'org-download-screenshot
           "y" #'org-download-yank
-          )))
-
-(setq deft-directory "~/org/roam"
-      deft-recursive t
-      deft-recursive-ignore-dir-regexp
-        (concat "\\(?:"
-                "\\."
-                "\\|\\.\\."
-                "\\\|.+stversions"
-                "\\|code"
-                "\\|auto"
-                "\\|_minted.*"
-                "\\)$"))
-
-(defun my/kill-buffer-regexp (regexp)
-  "Kill buffers matching REGEXP without asking for permission."
-  (interactive "sKill buffers matching this regexp: ")
-  (cl-letf (((symbol-function 'kill-buffer-ask) #'kill-buffer))
-    (kill-matching-buffers regexp)))
-
-(defun my/show-org-notes ()
-  (interactive)
-  (kill-buffer-regexp "*Deft*")
-  (setq-default deft-directory "~/org")
-  (deft))
-
-(defun my/show-course-notes ()
-  (interactive)
-  (kill-buffer-regexp "*Deft*")
-  (setq-default deft-directory "~/org/archive/courses")
-  (deft))
+          )
+        )
+      )
+      )
 
 (map! :map pdf-view-mode-map
       "C-c i" 'org-noter-insert-note)
