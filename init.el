@@ -20,7 +20,6 @@
        (ivy +fuzzy +prescient +childframe)
 
        :ui
-       deft             
        doom
        doom-dashboard
        doom-quit
@@ -29,7 +28,7 @@
        nav-flash
        ophints
        (popup +all +defaults)
-       ;;(pretty-code +iosevka)
+       (pretty-code +iosevka)
        treemacs
        vc-gutter
        vi-tilde-fringe

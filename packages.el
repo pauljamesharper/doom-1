@@ -5,8 +5,8 @@
 ;; (package! another-package :recipe (:fetcher github :repo "username/repo"))
 ;; (package! builtin-package :disable t)
 
-(package! doom-snippets :ignore t)
-(package! yasnippet-snippets)
+;; (package! doom-snippets :ignore t)
+;; (package! yasnippet-snippets)
 (package! org-caldav)
 (package! company-bibtex)
 (package! org-super-agenda)
