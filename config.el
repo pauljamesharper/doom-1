@@ -430,34 +430,36 @@ tags = [\"reading note\", \"\"]\n#+end_src
                  ("misc" . "${author} (${year}). *${title}*. Retrieved from [${url}](${url}). ${web_note}.")
                  (nil . "${author}. (${year}). *${title}* "))))
 
-(defun my/org-ref-get-md-bibliography (&optional sort)
-  "Create an md bibliography when there are keys.
-if SORT is non-nil the bibliography is sorted alphabetically by key."
-  (let ((keys (org-ref-get-bibtex-keys sort)))
-    (when keys
-      (concat
-       "\n"
-       (mapconcat (lambda (x) (org-ref-get-bibtex-entry-md x)) keys "\n\n")
-       "\n"))))
+(after! org-ref
+    (defun my/org-ref-get-md-bibliography (&optional sort)
+    "Create an md bibliography when there are keys.
+     if SORT is non-nil the bibliography is sorted alphabetically by key."
+    (let ((keys (org-ref-get-bibtex-keys sort)))
+        (when keys
+        (concat
+        "\n"
+        (mapconcat (lambda (x) (org-ref-get-bibtex-entry-md x)) keys "\n\n")
+        "\n"))))
 
-(defun org-ref-bibliography-format (keyword desc format)
-  "Formatting function for bibliography links."
-  (cond
-   ((eq format 'org) (org-ref-get-org-bibliography))
-   ((eq format 'ascii) (org-ref-get-ascii-bibliography))
-   ((eq format 'md) (my/org-ref-get-md-bibliography))
-   ((eq format 'odt) (org-ref-get-odt-bibliography))
-   ((eq format 'html) (org-ref-get-html-bibliography))
-   ((eq format 'latex)
-    ;; write out the latex bibliography command
-    (format "\\bibliography{%s}"
-	    (replace-regexp-in-string
-	     "\\.bib" ""
-	     (mapconcat
-	      'identity
-	      (mapcar 'file-relative-name
-		      (split-string keyword ","))
-	      ","))))))
+    (defun org-ref-bibliography-format (keyword desc format)
+    "Redefined Formatting function for bibliography links
+     using my custom md bibliogrpyh function."
+    (cond
+    ((eq format 'org) (org-ref-get-org-bibliography))
+    ((eq format 'ascii) (org-ref-get-ascii-bibliography))
+    ((eq format 'md) (my/org-ref-get-md-bibliography))
+    ((eq format 'odt) (org-ref-get-odt-bibliography))
+    ((eq format 'html) (org-ref-get-html-bibliography))
+    ((eq format 'latex)
+        ;; write out the latex bibliography command
+        (format "\\bibliography{%s}"
+            (replace-regexp-in-string
+            "\\.bib" ""
+            (mapconcat
+            'identity
+            (mapcar 'file-relative-name
+                (split-string keyword ","))
+            ",")))))))
 
 (use-package! mathpix
   :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
