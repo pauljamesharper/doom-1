@@ -373,13 +373,6 @@ tags = [\"reading note\", \"\"]\n#+end_src
 (add-hook! 'org-src-mode-hook 'lsp-org)
 (add-hook! 'org-src-mode-hook 'lsp)
 
-(use-package! company-bibtex
-  :after org
-  :config
-  (set-company-backend! 'org-mode 'company-bibtex)
-  (setq company-bibtex-bibliography "/home/lino/org/roam/biblio/library.bib"
-        company-bibtex-org-citation-regex "cite[a-z]+:+"))
-
 (use-package! org-ref
   :when (featurep! :lang org)
   :after (org bibtex-completion)
@@ -468,6 +461,13 @@ tags = [\"reading note\", \"\"]\n#+end_src
 (map! :leader
       (:prefix-map ("i" . "insert")
         :desc "Insert math from screen" "m" #'mathpix-screenshot))
+
+(use-package! company-bibtex
+  :after org
+  :config
+  (set-company-backend! 'org-mode 'company-bibtex)
+  (setq company-bibtex-bibliography "/home/lino/org/roam/biblio/library.bib"
+        company-bibtex-org-citation-regex "cite[a-z]+:+"))
 
 (map! :leader
       (:prefix "s"
