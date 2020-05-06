@@ -433,7 +433,7 @@ tags = [\"reading note\", \"\"]\n#+end_src
                  ("incollection" . "${author}. *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
                  ("proceedings" . "${editor} (Eds.), _${booktitle}_ (${year}). ${address}: ${publisher}.")
                  ("unpublished" . "${author}. *${title}* (${year}). Unpublished manuscript.")
-                 ("misc" . "${author} (${year}). *${title}*. Retrieved from [${url}](${url}). ${note}.")
+                 ("misc" . "${author} (${year}). *${title}*. Retrieved from [${url}](${url}). ${web_note}.")
                  (nil . "${author}. (${year}). *${title}* "))))
 
 (defun my/org-ref-get-md-bibliography (&optional sort)
