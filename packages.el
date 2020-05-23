@@ -1,18 +1,11 @@
 ;;; ~/.doom.d/packages.el
 
-;;; Examples:
-;; (package! some-package)
-;; (package! another-package :recipe (:fetcher github :repo "username/repo"))
-;; (package! builtin-package :disable t)
-
-;; (package! doom-snippets :ignore t)
-;; (package! yasnippet-snippets)
 (package! org-caldav)
-(package! company-bibtex)
 (package! org-super-agenda)
 (package! mu4e-alert)
 (package! anki-editor)
 (package! org-download)
+(package! company-bibtex)
 (package! org-clock-budget
   :recipe (:host github :repo "linozen/org-clock-budget"))
 (package! mathpix

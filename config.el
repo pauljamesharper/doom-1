@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t -*-
+
 (setq user-full-name "Linus Sehn"
       user-mail-address "linus@sehn.tech"
       projectile-project-search-path '("~/Projects" "/home/lino")
@@ -26,6 +28,9 @@
 (add-hook! 'text-mode-hook auto-fill-mode)
 
 (toggle-frame-fullscreen)
+
+(after! company-box
+  (setq company-box-max-candidates 5))
 
 (setq ispell-dictionary "en_GB")
 
@@ -235,20 +240,6 @@
     :config
     (org-super-agenda-mode)))
 
-(defun my/search-exocortex ()
-  "Perform a text search on `org-directory'."
-  (interactive)
-  (require 'org)
-  (let ((default-directory "~/org/exocortex"))
-    (+default/search-project-for-symbol-at-point "")))
-
-(defun my/search-website ()
-  "Perform a text search on `org-directory'."
-  (interactive)
-  (require 'org)
-  (let ((default-directory "~/Projects/personal-website/content/"))
-    (+default/search-project-for-symbol-at-point "")))
-
 (use-package! org-download
   :after org
   :config
@@ -256,12 +247,70 @@
                 org-download-image-dir "./images"
                 org-download-heading-lvl nil))
 
-(setq! +biblio-pdf-library-dir "~/Library/"
-       +biblio-default-bibliography-files
-       '("/home/lino/org/exocortex/biblio/library.bib"
-         "/home/lino/org/exocortex/biblio/stusti_predpol.bib"
-         "/home/lino/org/exocortex/biblio/platform_state_surveillance.bib")
+(setq centaur-lsp 'lsp-mode)
+(cl-defmacro lsp-org-babel-enable (lang)
+    "Support LANG in org source code block."
+    (cl-check-type lang stringp)
+    (let* ((edit-pre (intern (format "org-babel-edit-prep:%s" lang)))
+           (intern-pre (intern (format "lsp--%s" (symbol-name edit-pre)))))
+      `(progn
+         (defun ,intern-pre (info)
+           (let ((filename (or (->> info caddr (alist-get :file))
+                               buffer-file-name)))
+             (unless filename
+               (user-error "LSP:: specify `:file' property to enable."))
+
+             (setq buffer-file-name filename)
+             (pcase centaur-lsp
+               ('eglot
+                (and (fboundp 'eglot) (eglot)))
+               ('lsp-mode
+                (and (fboundp 'lsp-deferred)
+                     ;; `lsp-auto-guess-root' MUST be non-nil.
+                     (setq lsp-buffer-uri (lsp--path-to-uri filename))
+                     (lsp-deferred))))))
+         (put ',intern-pre 'function-documentation
+              (format "Enable `%s' in the buffer of org source block (%s)."
+                      centaur-lsp (upcase ,lang)))
+
+         (if (fboundp ',edit-pre)
+             (advice-add ',edit-pre :after ',intern-pre)
+           (progn
+             (defun ,edit-pre (info)
+               (,intern-pre info))
+             (put ',edit-pre 'function-documentation
+                  (format "Prepare local buffer environment for org source block (%s)."
+                          (upcase ,lang))))))))
+
+(defun lsp-org()
+    (interactive)
+    (defvar org-babel-lang-list
+        '("python" "ipython"))
+    (dolist (lang org-babel-lang-list)
+      (eval `(lsp-org-babel-enable ,lang))))
+
+(add-hook! 'org-src-mode-hook 'lsp-org)
+(add-hook! 'org-src-mode-hook 'lsp)
+
+(use-package! mathpix
+  :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
+           (mathpix-app-key "f965173bcdbfec889c20")))
+
+(map! :leader
+      (:prefix-map ("i" . "insert")
+        :desc "Insert math from screen" "m" #'mathpix-screenshot))
+
+(setq! +biblio-pdf-library-dir "home/lino/Library/"
+       +biblio-default-bibliography-files "/home/lino/org/exocortex/biblio/library.bib"
        +biblio-notes-path "/home/lino/org/exocortex/refs/")
+
+(use-package! company-bibtex
+  :when (featurep! :completion company)
+  :after org-roam
+  :config
+  (set-company-backend! 'org-mode '(company-bibtex company-org-roam company-yasnippet company-dabbrev))
+  (setq company-bibtex-bibliography "~/org/exocortex/biblio/library.bib"
+        company-bibtex-org-citation-regex "cite[a-z]+:+"))
 
 (after! org-roam
   (setq org-roam-directory "~/org/exocortex"
@@ -369,6 +418,10 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
 "
              :unnarrowed t))))
 
+(after! org
+  (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")
+        org-export-with-smart-quotes t))
+
 (after! (org org-roam)
     (defun my/org-roam--backlinks-list (file)
       (if (org-roam--org-roam-file-p file)
@@ -389,94 +442,28 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
             (insert (concat "\n* Backlinks\n" links))))))
     (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor))
 
-(setq centaur-lsp 'lsp-mode)
-(cl-defmacro lsp-org-babel-enable (lang)
-    "Support LANG in org source code block."
-    (cl-check-type lang stringp)
-    (let* ((edit-pre (intern (format "org-babel-edit-prep:%s" lang)))
-           (intern-pre (intern (format "lsp--%s" (symbol-name edit-pre)))))
-      `(progn
-         (defun ,intern-pre (info)
-           (let ((filename (or (->> info caddr (alist-get :file))
-                               buffer-file-name)))
-             (unless filename
-               (user-error "LSP:: specify `:file' property to enable."))
-
-             (setq buffer-file-name filename)
-             (pcase centaur-lsp
-               ('eglot
-                (and (fboundp 'eglot) (eglot)))
-               ('lsp-mode
-                (and (fboundp 'lsp-deferred)
-                     ;; `lsp-auto-guess-root' MUST be non-nil.
-                     (setq lsp-buffer-uri (lsp--path-to-uri filename))
-                     (lsp-deferred))))))
-         (put ',intern-pre 'function-documentation
-              (format "Enable `%s' in the buffer of org source block (%s)."
-                      centaur-lsp (upcase ,lang)))
-
-         (if (fboundp ',edit-pre)
-             (advice-add ',edit-pre :after ',intern-pre)
-           (progn
-             (defun ,edit-pre (info)
-               (,intern-pre info))
-             (put ',edit-pre 'function-documentation
-                  (format "Prepare local buffer environment for org source block (%s)."
-                          (upcase ,lang))))))))
-
-(defun lsp-org()
-    (interactive)
-    (defvar org-babel-lang-list
-        '("python" "ipython"))
-    (dolist (lang org-babel-lang-list)
-      (eval `(lsp-org-babel-enable ,lang))))
-
-(add-hook! 'org-src-mode-hook 'lsp-org)
-(add-hook! 'org-src-mode-hook 'lsp)
-
-<<<<<<< HEAD
-(use-package! company-bibtex
-  :after org
-  :config
-  (set-company-backend! 'org-mode 'company-bibtex)
-  (setq company-bibtex-bibliography "~/org/exocortex/biblio/library.bib"
-        company-bibtex-org-citation-regex "cite[a-z]+:+"))
-
-=======
->>>>>>> b82daab096699c6f23e3a923d8081c7573062528
-(use-package! org-ref
-  :when (featurep! :lang org)
-  :after (org bibtex-completion)
-  :preface
-  (setq org-ref-completion-library #'org-ref-helm-bibtex))
-  :config
-  ;; Although the name is helm-bibtex, it is actually a bibtex-completion function
-  ;; it is the legacy naming of the project helm-bibtex that causes confusion.
-  (setq org-ref-open-pdf-function 'org-ref-get-pdf-filename-helm-bibtex)
-  ;; org-roam-bibtex will define handlers for note taking so not needed to use the
-  ;; ones set for bibtex-completion
-  (unless (featurep! :lang org +roam)
-    ;; Allow org-ref to use the same template mechanism as {helm,ivy}-bibtex for
-    ;; multiple files if the user has chosen to spread their notes.
-    (setq org-ref-notes-function (if (directory-name-p org-ref-notes-directory)
-                                     #'org-ref-notes-function-many-files
-                                   #'org-ref-notes-function-one-file
-                                   )))
-
-(defun my/org-ref-open-pdf-at-point ()
-  "Open the pdf for bibtex key under point if it exists."
-  (interactive)
-  (let* ((results (org-ref-get-bibtex-key-and-file))
-         (key (car results)))
-    (funcall bibtex-completion-pdf-open-function (car (bibtex-completion-find-pdf key)))))
-(setq org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point)
-
-(after! org
-  (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")
-        org-export-with-smart-quotes t))
-
 (after! ox-hugo
   (setq org-hugo-default-section-directory "zettel"))
+
+(after! (org org-roam)
+    (defun my/org-roam--backlinks-list (file)
+      (if (org-roam--org-roam-file-p file)
+          (--reduce-from
+           (concat acc (format "- *[[file:%s][%s]]*\n"
+                               (file-relative-name (car it) org-roam-directory)
+                               (org-roam--get-title-or-slug (car it))))
+           "" (org-roam-db-query [:select [from]
+                                  :from links
+                                  :where (= to $s1)
+                                  :and from :not :like $s2] file "%private%"))
+        ""))
+    (defun my/org-export-preprocessor (_backend)
+      (let ((links (my/org-roam--backlinks-list (buffer-file-name))))
+        (unless (string= links "")
+          (save-excursion
+            (goto-char (point-max))
+            (insert (concat "\n* Backlinks\n" links))))))
+    (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor))
 
 (use-package! org-ref-ox-hugo
   :after org org-ref ox-hugo
@@ -497,11 +484,7 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
 (after! org-ref
     (defun my/org-ref-get-md-bibliography (&optional sort)
     "Create an md bibliography when there are keys.
-<<<<<<< HEAD
-    if SORT is non-nil the bibliography is sorted alphabetically by key."
-=======
      if SORT is non-nil the bibliography is sorted alphabetically by key."
->>>>>>> b82daab096699c6f23e3a923d8081c7573062528
     (let ((keys (org-ref-get-bibtex-keys sort)))
         (when keys
         (concat
@@ -510,12 +493,9 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
         "\n"))))
 
     (defun org-ref-bibliography-format (keyword desc format)
-<<<<<<< HEAD
     "Formatting function for bibliography links."
-=======
     "Redefined Formatting function for bibliography links
      using my custom md bibliogrpyh function."
->>>>>>> b82daab096699c6f23e3a923d8081c7573062528
     (cond
     ((eq format 'org) (org-ref-get-org-bibliography))
     ((eq format 'ascii) (org-ref-get-ascii-bibliography))
@@ -532,24 +512,6 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
             (mapcar 'file-relative-name
                 (split-string keyword ","))
             ",")))))))
-<<<<<<< HEAD
-=======
-
-(use-package! mathpix
-  :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
-           (mathpix-app-key "f965173bcdbfec889c20")))
-
-(map! :leader
-      (:prefix-map ("i" . "insert")
-        :desc "Insert math from screen" "m" #'mathpix-screenshot))
->>>>>>> b82daab096699c6f23e3a923d8081c7573062528
-
-(use-package! company-bibtex
-  :after org
-  :config
-  (set-company-backend! 'org-mode 'company-bibtex)
-  (setq company-bibtex-bibliography "/home/lino/org/roam/biblio/library.bib"
-        company-bibtex-org-citation-regex "cite[a-z]+:+"))
 
 (map! :leader
       (:prefix "s"

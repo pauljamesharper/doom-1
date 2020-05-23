@@ -3,41 +3,29 @@
 #+options: toc:nil
 #+options: h:5
 #+startup: overview
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes :results silent
 ;; -*- lexical-binding: t -*-
 #+end_src
 
-#+RESULTS:
-
 * General
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
 (setq user-full-name "Linus Sehn"
       user-mail-address "linus@sehn.tech"
       projectile-project-search-path '("~/Projects" "/home/lino")
       bookmark-default-file "~/.doom.d/bookmarks")
 #+end_src
 
-#+RESULTS:
-: ~/.doom.d/bookmarks
-
 * UI
 ** Fonts
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
 (setq doom-font (font-spec :family "Iosevka" :size 16)
       doom-variable-pitch-font (font-spec :family "Iosevka")
       doom-unicode-font (font-spec :family "all-the-icons")
       doom-big-font (font-spec :family "Iosevka" :size 20))
 #+end_src
 
-#+RESULTS:
-<<<<<<< HEAD
-: #<font-spec nil nil Iosevka nil nil nil nil nil 20 nil nil nil nil>
-=======
-: #<font-spec nil nil Iosevka nil nil nil nil nil 19 nil nil nil nil>
->>>>>>> b82daab096699c6f23e3a923d8081c7573062528
-
 ** Theme & Modeline
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
 (setq doom-theme 'doom-one
       doom-themes-enable-bold t
       dired-dwim-target t
@@ -47,41 +35,40 @@
 (display-time-mode 1)
 #+end_src
 
-#+RESULTS:
-: t
-
 ** Focus Mode
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
 (after! writeroom-mode
   (setq writeroom-fullscreen-effect t))
 #+end_src
 
-#+RESULTS:
-
 ** Popups
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
 (set-popup-rules!
  '(("^\*helm"
     :size 0.45 :select t :modeline t :quit t :ttl t)))
 #+end_src
 
 ** Auto-fill-mode
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
 (add-hook! 'text-mode-hook auto-fill-mode)
 #+end_src
 
 ** Toggle Fullscreen on Start-up
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
 (toggle-frame-fullscreen)
 #+end_src
-
+** Completion
+#+begin_src emacs-lisp :tangle yes :results silent
+(after! company-box
+  (setq company-box-max-candidates 5))
+#+end_src
 * Dictionaries & Grammar
 ** Default Dictionary
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
 (setq ispell-dictionary "en_GB")
 #+end_src
 ** Save word to Dictionary
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
 (defun my/save-to-dict ()
   (interactive)
   (let ((current-location (point))
@@ -93,15 +80,12 @@
 This requires langtool (which requires =Java 1.8+=). You can acquire it from
 https://languagetool.org/.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
 (setq langtool-language-tool-jar "~/.langtool")
 #+end_src
 
-#+RESULTS:
-: ~/.langtool
-
 ** Bindings
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
 (defun my/save-to-dict ()
   (interactive)
   (let ((current-location (point))
@@ -126,12 +110,9 @@ https://languagetool.org/.
         :desc "Change to english"      "e"     #'my/switch-to-en-dict))
 #+end_src
 
-#+RESULTS:
-: my/switch-to-en-dict
-
 * E-mail
 ** General
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
 (after! mu4e
   (setq mu4e-root-maildir "~/.mail/")
   (set-email-account! "sehn.tech"
@@ -158,10 +139,8 @@ https://languagetool.org/.
 
 #+end_src
 
-#+RESULTS:
-
 Don't set =-T= flag for normal delete operation
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
 (after! mu4e
   (setf (alist-get 'trash mu4e-marks)
         (list :char '("d" . "▼")
@@ -175,10 +154,8 @@ Don't set =-T= flag for normal delete operation
                         (mu4e~proc-move docid (mu4e~mark-check-target target) "-N")))))
 #+end_src
 
-#+RESULTS:
-
 ** Composer
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
 (use-package! org-mu4e
   :after mu4e
   :config
@@ -191,8 +168,6 @@ Don't set =-T= flag for normal delete operation
     (setq-local org-mu4e-convert-to-html nil)))
 #+end_src
 
-#+RESULTS:
-
 ** Alerts
 #+begin_src emacs-lisp :tangle no
 (use-package! mu4e-alert
@@ -204,24 +179,18 @@ Don't set =-T= flag for normal delete operation
 (mu4e-alert-enable-mode-line-display)
 #+end_src
 
-#+RESULTS:
-: [nil 24242 38634 639763 nil mu4e-alert--get-mu-unread-emails-1 (mu4e-alert--email-processor) nil 214000]
-
 ** Bindings
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
 (map! :leader
       (:desc "e-mail" "e" #'mu4e))
 #+end_src
 
-#+RESULTS:
-: mu4e
-
 * Org-mode
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
 (setq org-directory "~/org")
 #+end_src
 ** Keywords
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
 (after! org
   (setq org-todo-keywords
         '((sequence "TODO(t)" "PROJ(p)" "|" "DONE(d)")
@@ -230,14 +199,8 @@ Don't set =-T= flag for normal delete operation
           (sequence "TOREAD(r)" "|" "READ(R)"))))
 #+end_src
 
-#+RESULTS:
-| sequence | TODO(t)   | PROJ(p) |         |         | DONE(d) |         |
-| sequence | [ ](T)    | [-](P)  | [?](M)  |         |         | [X](D)  |
-| sequence | NEXT(n)   | WAIT(w) | HOLD(h) |         |         | ABRT(c) |
-| sequence | TOREAD(r) |         |         | READ(R) |         |         |
-
 ** Capture Templates
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
 (after! org
   (setq org-capture-templates
       '(("t" "TODO" entry
@@ -252,19 +215,13 @@ Don't set =-T= flag for normal delete operation
       ))
 #+end_src
 
-#+RESULTS:
-| t | TODO | entry | (file+headline ~/org/actions.org Other) | * TODO [#A] %? |
-
 ** Clocking
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
 (setq org-clock-mode-line-total 'today)
 #+end_src
 
-#+RESULTS:
-: today
-
 ** Clock Budget
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
 (use-package! org-clock-budget
   :after org
   :config
@@ -306,10 +263,8 @@ Don't set =-T= flag for normal delete operation
        ))
 #+end_src
 
-#+RESULTS:
-
 ** CalDav
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
 (use-package! org-caldav
   :after org
   :init
@@ -329,11 +284,8 @@ Don't set =-T= flag for normal delete operation
         org-caldav-exclude-tags '("weekly" "daily" "monthly")))
 #+end_src
 
-#+RESULTS:
-: t
-
 ** Agenda
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
 (after! org
   (setq org-agenda-files (list org-directory)
         org-habit-show-done-always-green 't)
@@ -377,32 +329,9 @@ Don't set =-T= flag for normal delete operation
     (org-super-agenda-mode)))
 #+end_src
 
-#+RESULTS:
-: t
-
 ** Exocortex
-*** search
-#+begin_src emacs-lisp :tangle yes
-(defun my/search-exocortex ()
-  "Perform a text search on `org-directory'."
-  (interactive)
-  (require 'org)
-  (let ((default-directory "~/org/exocortex"))
-    (+default/search-project-for-symbol-at-point "")))
-
-(defun my/search-website ()
-  "Perform a text search on `org-directory'."
-  (interactive)
-  (require 'org)
-  (let ((default-directory "~/Projects/personal-website/content/"))
-    (+default/search-project-for-symbol-at-point "")))
-#+end_src
-
-#+RESULTS:
-: my/search-website
-
-*** download
-#+begin_src emacs-lisp :tangle yes
+*** Screenshots
+#+begin_src emacs-lisp :tangle yes :results silent
 (use-package! org-download
   :after org
   :config
@@ -411,263 +340,8 @@ Don't set =-T= flag for normal delete operation
                 org-download-heading-lvl nil))
 #+end_src
 
-#+RESULTS:
-: t
-
-*** biblio
-#+begin_src emacs-lisp :tangle yes
-(setq! +biblio-pdf-library-dir "~/Library/"
-       +biblio-default-bibliography-files
-       '("/home/lino/org/exocortex/biblio/library.bib"
-         "/home/lino/org/exocortex/biblio/stusti_predpol.bib"
-         "/home/lino/org/exocortex/biblio/platform_state_surveillance.bib")
-       +biblio-notes-path "/home/lino/org/exocortex/refs/")
-#+end_src
-
-#+RESULTS:
-<<<<<<< HEAD
-: /home/lino/org/exocortex/refs/
-=======
-: ~/org/roam/
->>>>>>> b82daab096699c6f23e3a923d8081c7573062528
-
-*** org-roam
-**** directory
-#+begin_src emacs-lisp :tangle yes
-(after! org-roam
-  (setq org-roam-directory "~/org/exocortex"
-        org-roam-db-location "~/exocortex.db"
-        org-roam-graph-exclude-matcher "private"))
-#+end_src
-
-#+RESULTS:
-<<<<<<< HEAD
-: private
-=======
-: ~/org/roam
->>>>>>> b82daab096699c6f23e3a923d8081c7573062528
-
-**** capture templates
-***** slug
-#+begin_src emacs-lisp :tangle yes
-(after! org-roam
-  (defun org-roam--title-to-slug (title)
-    "Convert TITLE to a filename-suitable slug. Uses hyphens rather than underscores."
-    (cl-flet* ((nonspacing-mark-p (char)
-                                  (eq 'Mn (get-char-code-property char 'general-category)))
-               (strip-nonspacing-marks (s)
-                                       (apply #'string (seq-remove #'nonspacing-mark-p
-                                                                   (ucs-normalize-NFD-string s))))
-               (cl-replace (title pair)
-                           (replace-regexp-in-string (car pair) (cdr pair) title)))
-      (let* ((pairs `(("[^[:alnum:][:digit:]]" . "-")  ;; convert anything not alphanumeric
-                      ("--*" . "-")  ;; remove sequential underscores
-                      ("^-" . "")  ;; remove starting underscore
-                      ("-$" . "")))  ;; remove ending underscore
-             (slug (-reduce-from #'cl-replace (strip-nonspacing-marks title) pairs)))
-        (s-downcase slug)))))
-#+end_src
-
-#+RESULTS:
-: org-roam--title-to-slug
-
-***** from within org-mode
-#+begin_src emacs-lisp :tangle yes
-(after! org-roam
-  (setq org-roam-capture-templates
-               '(("d" "default"
-                  plain (function org-roam-capture--get-point)
-                  "%?\n\n\nbibliography:biblio/library.bib"
-                  :file-name "${slug}"
-                  :head "#+title: ${title}\n#+hugo_base_dir:~/Projects/personal-website
-
-Links ::
-\n#+begin_src toml :front_matter_extra t
-subtitle = \"\"
-summary = \"\"
-tags = [\"concept note\", \"\"]\n#+end_src
-
-
-
-\n* Bibliography
-bibliography:/home/lino/org/exocortex/biblio/library.bib
-"
-                  :unnarrowed t)
-          ("p" "private" plain (function org-roam-capture--get-point)
-           "%?"
-           :file-name "private-${slug}"
-           :head "#+title: ${title}\n
-
-Links ::
-
-\n* Bibliography
-bibliography:/home/lino/org/exocortex/biblio/library.bib
-​* Footnotes
-​* COMMENT Local Variables                          :ARCHIVE:
-# Local Variables:
-# eval: (org-hugo-auto-export-mode -1)
-# End:
-"
-           :unnarrowed t))))
-#+end_src
-
-#+RESULTS:
-| d | default | plain | (function org-roam-capture--get-point) | %? |
-
-***** from browser
-#+begin_src emacs-lisp :tangle yes
-(after! org-roam
-  (setq org-roam-capture-ref-templates
-        '(("r" "ref" plain (function org-roam-capture--get-point)
-           "%?"
-           :file-name "refs/${slug}"
-           :head "#+title: Notes on: ${title}
-#+hugo_base_dir:~/Projects/personal-website
-#+hugo_section:refs
-#+roam_key: ${ref}
-
-Source :: ${ref}
-Links ::
-\n#+begin_src toml :front_matter_extra t
-subtitle = \"\"
-summary = \"\"
-tags = [\"ref note\", \"\"]\n#+end_src
-
-
-
-\n* Bibliography
-bibliography:/home/lino/org/exocortex/biblio/library.bib"
-           :unnarrowed t))))
-
-(use-package! org-roam-protocol
-  :after org-protocol)
-
-#+end_src
-
-#+RESULTS:
-<<<<<<< HEAD
-***** from citation
-=======
-| d | default | plain | (function org-roam-capture--get-point) | %? |
-
-
-
-Capture template for reference notes
->>>>>>> b82daab096699c6f23e3a923d8081c7573062528
-#+begin_src emacs-lisp :tangle yes
-(after! org-roam-bibtex
-    (setq orb-preformat-keywords
-          '("=key=" "title" "url" "file" "author-or-editor" "keywords" "year"))
-    (setq orb-templates
-          '(("c" "cite-ref" plain (function org-roam-capture--get-point)
-             ""
-             :file-name "refs/${slug}"
-             :head "#+title: Notes on: ${title} (${author-or-editor}, ${year})\n#+hugo_base_dir:~/Projects/personal-website\n#+hugo_section:refs\n#+roam_key: ${ref}
-
-Links ::
-\n#+begin_src toml :front_matter_extra t
-subtitle = \"\"
-summary = \"\"
-tags = [\"ref note\", \"\"]\n#+end_src
-\n* Main points\n:PROPERTIES:\n:NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n:NOTER_PAGE:\n:END:\n\n
-
-\n* Bibliography
-bibliography:/home/lino/org/exocortex/biblio/library.bib
-"
-             :unnarrowed t))))
-#+end_src
-
-#+RESULTS:
-<<<<<<< HEAD
-| c | cite-ref | plain | (function org-roam-capture--get-point) |   | :file-name | refs/${slug} | :head | #+title: Notes on: ${title} (${author-or-editor}, ${year}) |
-=======
-| r | ref | plain | (function org-roam-capture--get-point) |   | :file-name | ${slug} | :head | #+TITLE: Notes on: ${title} (${author-or-editor}, ${year}) |
-
-***** Use hyphen instead of underscore for slug
-#+begin_src emacs-lisp :tangle yes
-(defun org-roam--title-to-slug (title)
-    "Convert TITLE to a filename-suitable slug. Uses hyphens rather than underscores."
-    (cl-flet* ((nonspacing-mark-p (char)
-                                  (eq 'Mn (get-char-code-property char 'general-category)))
-               (strip-nonspacing-marks (s)
-                                       (apply #'string (seq-remove #'nonspacing-mark-p
-                                                                   (ucs-normalize-NFD-string s))))
-               (cl-replace (title pair)
-                           (replace-regexp-in-string (car pair) (cdr pair) title)))
-      (let* ((pairs `(("[^[:alnum:][:digit:]]" . "-")  ;; convert anything not alphanumeric
-                      ("--*" . "-")  ;; remove sequential underscores
-                      ("^-" . "")  ;; remove starting underscore
-                      ("-$" . "")))  ;; remove ending underscore
-             (slug (-reduce-from #'cl-replace (strip-nonspacing-marks title) pairs)))
-        (s-downcase slug))))
-#+end_src
->>>>>>> b82daab096699c6f23e3a923d8081c7573062528
-
-#+RESULTS:
-: org-roam--title-to-slug
-
-**** export backlinks
-#+begin_src emacs-lisp :tangle yes
-(after! (org org-roam)
-    (defun my/org-roam--backlinks-list (file)
-      (if (org-roam--org-roam-file-p file)
-          (--reduce-from
-           (concat acc (format "- *[[file:%s][%s]]*\n"
-                               (file-relative-name (car it) org-roam-directory)
-                               (org-roam--get-title-or-slug (car it))))
-           "" (org-roam-db-query [:select [from]
-                                  :from links
-                                  :where (= to $s1)
-                                  :and from :not :like $s2] file "%private%"))
-        ""))
-    (defun my/org-export-preprocessor (_backend)
-      (let ((links (my/org-roam--backlinks-list (buffer-file-name))))
-        (unless (string= links "")
-          (save-excursion
-            (goto-char (point-max))
-            (insert (concat "\n* Backlinks\n" links))))))
-    (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor))
-#+end_src
-
-#+RESULTS:
-| my/org-export-preprocessor | org-blackfriday--reset-org-blackfriday--code-block-num-backticks |
-
-#+begin_src emacs-lisp :tangle no
-(defun my/org-roam--backlinks-list-with-content (file)
-  (with-temp-buffer
-    (if-let* ((backlinks (org-roam--get-backlinks file))
-              (grouped-backlinks (--group-by (nth 0 it) backlinks)))
-        (progn
-          ;; no display of the number of backlinks
-          ;; (insert (format "\n\n** %d Backlink(s)\n"
-          ;;                 (length backlinks)))
-          (dolist (group grouped-backlinks)
-            (let ((file-from (car group))
-                  (bls (cdr group)))
-              (insert (format "- *[[file:%s][%s]]*\n\n"
-                              file-from
-                              (org-roam--get-title-or-slug file-from)))
-              (dolist (backlink bls)
-                (pcase-let ((`(,file-from _ ,props) backlink))
-                  (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
-                  (insert "\n\n")))))))
-    (buffer-string)))
-
-  (defun my/org-export-preprocessor (backend)
-    (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
-      (unless (string= links "")
-        (save-excursion
-          (goto-char (point-max))
-          (insert (concat "\n* Backlinks\n") links)))))
-
-  (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
-#+end_src
-
-#+RESULTS:
-| my/org-export-preprocessor | org-blackfriday--reset-org-blackfriday--code-block-num-backticks |
-
-*** org-babel
-#+begin_src emacs-lisp :tangle yes
+*** Code
+#+begin_src emacs-lisp :tangle yes :results silent
 (setq centaur-lsp 'lsp-mode)
 (cl-defmacro lsp-org-babel-enable (lang)
     "Support LANG in org source code block."
@@ -714,28 +388,50 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
 (add-hook! 'org-src-mode-hook 'lsp)
 #+end_src
 
-#+RESULTS:
-<<<<<<< HEAD
-| nil | Prepare local buffer environment for org source block (PYTHON). | doom-modeline-set-org-src-modeline | org-src-babel-configure-edit-buffer | org-src-mode-configure-edit-buffer | lsp-org-babel-enable |
+*** Maths
+#+begin_src emacs-lisp :tangle yes :results silent
+(use-package! mathpix
+  :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
+           (mathpix-app-key "f965173bcdbfec889c20")))
+#+end_src
 
-*** company-bibtex
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
+(map! :leader
+      (:prefix-map ("i" . "insert")
+        :desc "Insert math from screen" "m" #'mathpix-screenshot))
+#+end_src
+
+- set up the main directory
+*** Bibliography
+**** Paths
+#+begin_src emacs-lisp :tangle yes :results silent
+(setq! +biblio-pdf-library-dir "home/lino/Library/"
+       +biblio-default-bibliography-files "/home/lino/org/exocortex/biblio/library.bib"
+       +biblio-notes-path "/home/lino/org/exocortex/refs/")
+#+end_src
+
+**** BibTeX Completion
+#+begin_src emacs-lisp :tangle yes :results silent
 (use-package! company-bibtex
-  :after org
+  :when (featurep! :completion company)
+  :after org-roam
   :config
-  (set-company-backend! 'org-mode 'company-bibtex)
+  (set-company-backend! 'org-mode '(company-bibtex company-org-roam company-yasnippet company-dabbrev))
   (setq company-bibtex-bibliography "~/org/exocortex/biblio/library.bib"
         company-bibtex-org-citation-regex "cite[a-z]+:+"))
 #+end_src
-=======
-| org-src-babel-configure-edit-buffer | org-src-mode-configure-edit-buffer | doom-modeline-set-org-src-modeline | lsp | lsp-org |
->>>>>>> b82daab096699c6f23e3a923d8081c7573062528
+**** Open PDF
+#+begin_src emacs-lisp :tangle no :results silent
+(defun my/org-ref-open-pdf-at-point ()
+  "Open the pdf for bibtex key under point if it exists."
+  (interactive)
+  (let* ((results (org-ref-get-bibtex-key-and-file))
+         (key (car results)))
+    (funcall bibtex-completion-pdf-open-function (car (bibtex-completion-find-pdf key)))))
+(setq org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point)
+#+end_src
 
-#+RESULTS:
-: t
-
-*** org-ref
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no :results silent
 (use-package! org-ref
   :when (featurep! :lang org)
   :after (org bibtex-completion)
@@ -744,7 +440,7 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
   :config
   ;; Although the name is helm-bibtex, it is actually a bibtex-completion function
   ;; it is the legacy naming of the project helm-bibtex that causes confusion.
-  (setq org-ref-open-pdf-function 'org-ref-get-pdf-filename-helm-bibtex)
+  (setq org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point)
   ;; org-roam-bibtex will define handlers for note taking so not needed to use the
   ;; ones set for bibtex-completion
   (unless (featurep! :lang org +roam)
@@ -756,48 +452,260 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
                                    )))
 #+end_src
 
-#+RESULTS:
-
-**** open pdf
-#+begin_src emacs-lisp :tangle yes
-(defun my/org-ref-open-pdf-at-point ()
-  "Open the pdf for bibtex key under point if it exists."
-  (interactive)
-  (let* ((results (org-ref-get-bibtex-key-and-file))
-         (key (car results)))
-    (funcall bibtex-completion-pdf-open-function (car (bibtex-completion-find-pdf key)))))
-(setq org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point)
+*** Zettelkasten
+**** Directory
+#+begin_src emacs-lisp :tangle yes :results silent
+(after! org-roam
+  (setq org-roam-directory "~/org/exocortex"
+        org-roam-db-location "~/exocortex.db"
+        org-roam-graph-exclude-matcher "private"))
 #+end_src
 
-#+RESULTS:
-: my/org-ref-open-pdf-at-point
+**** Capture Templates
+***** File Name
+#+begin_src emacs-lisp :tangle yes :results silent
+(after! org-roam
+  (defun org-roam--title-to-slug (title)
+    "Convert TITLE to a filename-suitable slug. Uses hyphens rather than underscores."
+    (cl-flet* ((nonspacing-mark-p (char)
+                                  (eq 'Mn (get-char-code-property char 'general-category)))
+               (strip-nonspacing-marks (s)
+                                       (apply #'string (seq-remove #'nonspacing-mark-p
+                                                                   (ucs-normalize-NFD-string s))))
+               (cl-replace (title pair)
+                           (replace-regexp-in-string (car pair) (cdr pair) title)))
+      (let* ((pairs `(("[^[:alnum:][:digit:]]" . "-")  ;; convert anything not alphanumeric
+                      ("--*" . "-")  ;; remove sequential underscores
+                      ("^-" . "")  ;; remove starting underscore
+                      ("-$" . "")))  ;; remove ending underscore
+             (slug (-reduce-from #'cl-replace (strip-nonspacing-marks title) pairs)))
+        (s-downcase slug)))))
+#+end_src
 
-*** export
-**** ox-latex
-#+begin_src emacs-lisp :tangle yes
+***** From within org-mode
+#+begin_src emacs-lisp :tangle yes :results silent
+(after! org-roam
+  (setq org-roam-capture-templates
+               '(("d" "default"
+                  plain (function org-roam-capture--get-point)
+                  "%?\n\n\nbibliography:biblio/library.bib"
+                  :file-name "${slug}"
+                  :head "#+title: ${title}\n#+hugo_base_dir:~/Projects/personal-website
+
+Links ::
+\n#+begin_src toml :front_matter_extra t
+subtitle = \"\"
+summary = \"\"
+tags = [\"concept note\", \"\"]\n#+end_src
+
+
+
+\n* Bibliography
+bibliography:/home/lino/org/exocortex/biblio/library.bib
+"
+                  :unnarrowed t)
+          ("p" "private" plain (function org-roam-capture--get-point)
+           "%?"
+           :file-name "private-${slug}"
+           :head "#+title: ${title}\n
+
+Links ::
+
+\n* Bibliography
+bibliography:/home/lino/org/exocortex/biblio/library.bib
+​* Footnotes
+​* COMMENT Local Variables                          :ARCHIVE:
+# Local Variables:
+# eval: (org-hugo-auto-export-mode -1)
+# End:
+"
+           :unnarrowed t))))
+#+end_src
+
+***** From browser
+#+begin_src emacs-lisp :tangle yes :results silent
+(after! org-roam
+  (setq org-roam-capture-ref-templates
+        '(("r" "ref" plain (function org-roam-capture--get-point)
+           "%?"
+           :file-name "refs/${slug}"
+           :head "#+title: Notes on: ${title}
+#+hugo_base_dir:~/Projects/personal-website
+#+hugo_section:refs
+#+roam_key: ${ref}
+
+Source :: ${ref}
+Links ::
+\n#+begin_src toml :front_matter_extra t
+subtitle = \"\"
+summary = \"\"
+tags = [\"ref note\", \"\"]\n#+end_src
+
+
+
+\n* Bibliography
+bibliography:/home/lino/org/exocortex/biblio/library.bib"
+           :unnarrowed t))))
+
+(use-package! org-roam-protocol
+  :after org-protocol)
+
+#+end_src
+
+***** From citation
+
+
+
+Capture template for reference notes
+>>>>>>> b82daab096699c6f23e3a923d8081c7573062528
+#+begin_src emacs-lisp :tangle yes :results silent
+(after! org-roam-bibtex
+    (setq orb-preformat-keywords
+          '("=key=" "title" "url" "file" "author-or-editor" "keywords" "year"))
+    (setq orb-templates
+          '(("c" "cite-ref" plain (function org-roam-capture--get-point)
+             ""
+             :file-name "refs/${slug}"
+             :head "#+title: Notes on: ${title} (${author-or-editor}, ${year})\n#+hugo_base_dir:~/Projects/personal-website\n#+hugo_section:refs\n#+roam_key: ${ref}
+
+Links ::
+\n#+begin_src toml :front_matter_extra t
+subtitle = \"\"
+summary = \"\"
+tags = [\"ref note\", \"\"]\n#+end_src
+\n* Main points\n:PROPERTIES:\n:NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n:NOTER_PAGE:\n:END:\n\n
+
+\n* Bibliography
+bibliography:/home/lino/org/exocortex/biblio/library.bib
+"
+             :unnarrowed t))))
+#+end_src
+
+*** Export
+**** Export to PDF
+#+begin_src emacs-lisp :tangle yes :results silent
 (after! org
   (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")
         org-export-with-smart-quotes t))
 #+end_src
 
-#+RESULTS:
-: t
+**** Export Backlinks
+#+begin_src emacs-lisp :tangle yes :results silent
+(after! (org org-roam)
+    (defun my/org-roam--backlinks-list (file)
+      (if (org-roam--org-roam-file-p file)
+          (--reduce-from
+           (concat acc (format "- *[[file:%s][%s]]*\n"
+                               (file-relative-name (car it) org-roam-directory)
+                               (org-roam--get-title-or-slug (car it))))
+           "" (org-roam-db-query [:select [from]
+                                  :from links
+                                  :where (= to $s1)
+                                  :and from :not :like $s2] file "%private%"))
+        ""))
+    (defun my/org-export-preprocessor (_backend)
+      (let ((links (my/org-roam--backlinks-list (buffer-file-name))))
+        (unless (string= links "")
+          (save-excursion
+            (goto-char (point-max))
+            (insert (concat "\n* Backlinks\n" links))))))
+    (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor))
+#+end_src
 
-**** ox-hugo
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
+(defun my/org-roam--backlinks-list-with-content (file)
+  (with-temp-buffer
+    (if-let* ((backlinks (org-roam--get-backlinks file))
+              (grouped-backlinks (--group-by (nth 0 it) backlinks)))
+        (progn
+          ;; no display of the number of backlinks
+          ;; (insert (format "\n\n** %d Backlink(s)\n"
+          ;;                 (length backlinks)))
+          (dolist (group grouped-backlinks)
+            (let ((file-from (car group))
+                  (bls (cdr group)))
+              (insert (format "- *[[file:%s][%s]]*\n\n"
+                              file-from
+                              (org-roam--get-title-or-slug file-from)))
+              (dolist (backlink bls)
+                (pcase-let ((`(,file-from _ ,props) backlink))
+                  (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
+                  (insert "\n\n")))))))
+    (buffer-string)))
+
+  (defun my/org-export-preprocessor (backend)
+    (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
+      (unless (string= links "")
+        (save-excursion
+          (goto-char (point-max))
+          (insert (concat "\n* Backlinks\n") links)))))
+
+  (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
+#+end_src
+
+**** Export to Website
+***** Default Section
+#+begin_src emacs-lisp :tangle yes :results silent
 (after! ox-hugo
   (setq org-hugo-default-section-directory "zettel"))
 #+end_src
 
-#+RESULTS:
-<<<<<<< HEAD
-: zettel
-=======
-: roam
->>>>>>> b82daab096699c6f23e3a923d8081c7573062528
+***** Export Backlinks
+#+begin_src emacs-lisp :tangle yes :results silent
+(after! (org org-roam)
+    (defun my/org-roam--backlinks-list (file)
+      (if (org-roam--org-roam-file-p file)
+          (--reduce-from
+           (concat acc (format "- *[[file:%s][%s]]*\n"
+                               (file-relative-name (car it) org-roam-directory)
+                               (org-roam--get-title-or-slug (car it))))
+           "" (org-roam-db-query [:select [from]
+                                  :from links
+                                  :where (= to $s1)
+                                  :and from :not :like $s2] file "%private%"))
+        ""))
+    (defun my/org-export-preprocessor (_backend)
+      (let ((links (my/org-roam--backlinks-list (buffer-file-name))))
+        (unless (string= links "")
+          (save-excursion
+            (goto-char (point-max))
+            (insert (concat "\n* Backlinks\n" links))))))
+    (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor))
+#+end_src
 
-make ox-hugo play nice with org-ref
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
+(defun my/org-roam--backlinks-list-with-content (file)
+  (with-temp-buffer
+    (if-let* ((backlinks (org-roam--get-backlinks file))
+              (grouped-backlinks (--group-by (nth 0 it) backlinks)))
+        (progn
+          ;; no display of the number of backlinks
+          ;; (insert (format "\n\n** %d Backlink(s)\n"
+          ;;                 (length backlinks)))
+          (dolist (group grouped-backlinks)
+            (let ((file-from (car group))
+                  (bls (cdr group)))
+              (insert (format "- *[[file:%s][%s]]*\n\n"
+                              file-from
+                              (org-roam--get-title-or-slug file-from)))
+              (dolist (backlink bls)
+                (pcase-let ((`(,file-from _ ,props) backlink))
+                  (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
+                  (insert "\n\n")))))))
+    (buffer-string)))
+
+  (defun my/org-export-preprocessor (backend)
+    (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
+      (unless (string= links "")
+        (save-excursion
+          (goto-char (point-max))
+          (insert (concat "\n* Backlinks\n") links)))))
+
+  (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
+#+end_src
+
+***** Export Bibliography
+#+begin_src emacs-lisp :tangle yes :results silent
 (use-package! org-ref-ox-hugo
   :after org org-ref ox-hugo
   :config
@@ -815,18 +723,11 @@ make ox-hugo play nice with org-ref
                  (nil . "${author}. (${year}). *${title}* "))))
 #+end_src
 
-#+RESULTS:
-: t
-
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes :results silent
 (after! org-ref
     (defun my/org-ref-get-md-bibliography (&optional sort)
     "Create an md bibliography when there are keys.
-<<<<<<< HEAD
-    if SORT is non-nil the bibliography is sorted alphabetically by key."
-=======
      if SORT is non-nil the bibliography is sorted alphabetically by key."
->>>>>>> b82daab096699c6f23e3a923d8081c7573062528
     (let ((keys (org-ref-get-bibtex-keys sort)))
         (when keys
         (concat
@@ -835,12 +736,9 @@ make ox-hugo play nice with org-ref
         "\n"))))
 
     (defun org-ref-bibliography-format (keyword desc format)
-<<<<<<< HEAD
     "Formatting function for bibliography links."
-=======
     "Redefined Formatting function for bibliography links
      using my custom md bibliogrpyh function."
->>>>>>> b82daab096699c6f23e3a923d8081c7573062528
     (cond
     ((eq format 'org) (org-ref-get-org-bibliography))
     ((eq format 'ascii) (org-ref-get-ascii-bibliography))
@@ -859,50 +757,9 @@ make ox-hugo play nice with org-ref
             ",")))))))
 #+end_src
 
-#+RESULTS:
-: org-ref-bibliography-format
-
-<<<<<<< HEAD
-=======
-#+RESULTS:
-
-*** mathpix
-#+begin_src emacs-lisp :tangle yes
-(use-package! mathpix
-  :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
-           (mathpix-app-key "f965173bcdbfec889c20")))
-#+end_src
-
-#+RESULTS:
-: mathpix
-
-#+begin_src emacs-lisp :tangle yes
-(map! :leader
-      (:prefix-map ("i" . "insert")
-        :desc "Insert math from screen" "m" #'mathpix-screenshot))
-#+end_src
-
-#+RESULTS:
-: mathpix-screenshot
-
-- set up the main directory
-*** company-bibtex
-#+begin_src emacs-lisp :tangle yes
-(use-package! company-bibtex
-  :after org
-  :config
-  (set-company-backend! 'org-mode 'company-bibtex)
-  (setq company-bibtex-bibliography "/home/lino/org/roam/biblio/library.bib"
-        company-bibtex-org-citation-regex "cite[a-z]+:+"))
-#+end_src
-
-#+RESULTS:
-: t
-
->>>>>>> b82daab096699c6f23e3a923d8081c7573062528
 * Bindings
-** global
-#+begin_src emacs-lisp :tangle yes
+** Global
+#+begin_src emacs-lisp :tangle yes :results silent
 (map! :leader
       (:prefix "s"
        :desc "Search exocortex" "e" #'org-roam-find-file
@@ -913,8 +770,8 @@ make ox-hugo play nice with org-ref
        ))
 #+end_src
 
-** org-mode-map
-#+begin_src emacs-lisp :tangle yes
+** Org-mode
+#+begin_src emacs-lisp :tangle yes :results silent
 (map! :map org-mode-map
       ("M-i" #'org-ref-helm-insert-cite-link)
       ("M-e" #'org-ref-update-pre-post-text)
@@ -934,15 +791,8 @@ make ox-hugo play nice with org-ref
       )
 #+end_src
 
-#+RESULTS:
-
-
-#+RESULTS:
-: my/search-exocortex
-** pdf-view-map
-#+begin_src emacs-lisp :tangle yes
+** PDF
+#+begin_src emacs-lisp :tangle yes :results silent
 (map! :map pdf-view-mode-map
       "C-c i" 'org-noter-insert-note)
 #+end_src
-
-#+RESULTS:

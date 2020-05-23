@@ -51,8 +51,8 @@ In case of directory the path must end with a slash."
   (defvar bibtex-completion-notes-template-multiple-files nil)
    :config
 
-  (when (featurep! :completion ivy)
-    (add-to-list 'ivy-re-builders-alist '(ivy-bibtex . ivy--regex-plus)))
+  ;; (when (featurep! :completion ivy)
+  ;;   (add-to-list 'ivy-re-builders-alist '(ivy-bibtex . ivy--regex-plus)))
 
   (setq bibtex-completion-additional-search-fields '(keywords)
         ;; This tell bibtex-completion to look at the File field of the bibtex
@@ -70,21 +70,47 @@ In case of directory the path must end with a slash."
 
 ;; TODO which set of keys that should be bound for commonly used functions
 ;; see https://github.com/jkitchin/org-ref/blob/master/org-ref-core.el#L3998
+(use-package! org-ref
+  :when (featurep! :lang org)
+  :after org
+  :preface
+  ;; This need to be set before the package is loaded, because org-ref will
+  ;; automatically `require' an associated package during its loading.
+  (setq org-ref-completion-library #'org-ref-helm-bibtex)
+  :config
+  (defun my/org-ref-open-pdf-at-point ()
+    "Open the pdf for bibtex key under point if it exists."
+    (interactive)
+    (let* ((results (org-ref-get-bibtex-key-and-file))
+          (key (car results)))
+      (funcall bibtex-completion-pdf-open-function (car (bibtex-completion-find-pdf key)))))
+  ;; Although the name is helm-bibtex, it is actually a bibtex-completion function
+  ;; it is the legacy naming of the project helm-bibtex that causes confusion.
+  (setq org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point)
+  ;; org-roam-bibtex will define handlers for note taking so not needed to use the
+  ;; ones set for bibtex-completion
+  (unless (featurep! :lang org +roam)
+    ;; Allow org-ref to use the same template mechanism as {helm,ivy}-bibtex for
+    ;; multiple files if the user has chosen to spread their notes.
+    (setq org-ref-notes-function (if (directory-name-p org-ref-notes-directory)
+                                     #'org-ref-notes-function-many-files
+                                   #'org-ref-notes-function-one-file))))
+
 
 (use-package! org-roam-bibtex
   :when (featurep! :lang org +roam)
   :preface
   ;; if the user has not set a template mechanism set a reasonable one of them
   ;; The package already tests for nil itself so we define a dummy tester
-  (defvar orb-preformat-keywords nil)
-  (defvar orb-templates nil)
+  (defvar org-roam-bibtex-preformat-keywords nil)
+  (defvar org-roam-bibtex-templates nil)
   :hook (org-roam-mode . org-roam-bibtex-mode)
   :config
-  (unless orb-preformat-keywords
-    (setq orb-preformat-keywords
+  (unless org-roam-bibtex-preformat-keywords
+    (setq org-roam-bibtex-preformat-keywords
           '("=key=" "title" "url" "file" "author-or-editor" "keywords")))
-  (unless orb-templates
-    (setq orb-templates
+  (unless org-roam-bibtex-templates
+    (setq org-roam-bibtex-templates
           '(("r" "ref" plain (function org-roam-capture--get-point)
              ""
              :file-name "${slug}"
@@ -93,5 +119,5 @@ In case of directory the path must end with a slash."
 - tags ::
 - keywords :: ${keywords}
 
-\n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n"
+\n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(org-roam-bibtex-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n"
              :unnarrowed t)))))
