@@ -240,6 +240,20 @@
     :config
     (org-super-agenda-mode)))
 
+(defun my/search-exocortex ()
+  "Perform a text search on `org-directory'."
+  (interactive)
+  (require 'org)
+  (let ((default-directory "~/org/roam"))
+    (+default/search-project-for-symbol-at-point "")))
+
+(defun my/search-website ()
+  "Perform a text search on `org-directory'."
+  (interactive)
+  (require 'org)
+  (let ((default-directory "~/Projects/personal-website/content/"))
+    (+default/search-project-for-symbol-at-point "")))
+
 (use-package! org-download
   :after org
   :config
@@ -362,13 +376,7 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
 Links ::
 
 \n* Bibliography
-bibliography:/home/lino/org/exocortex/biblio/library.bib
-​* Footnotes
-​* COMMENT Local Variables                          :ARCHIVE:
-# Local Variables:
-# eval: (org-hugo-auto-export-mode -1)
-# End:
-"
+bibliography:/home/lino/org/exocortex/biblio/library.bib"
            :unnarrowed t))))
 
 (after! org-roam

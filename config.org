@@ -330,6 +330,22 @@ Don't set =-T= flag for normal delete operation
 #+end_src
 
 ** Exocortex
+*** Search
+#+begin_src emacs-lisp :tangle yes :results silent
+(defun my/search-exocortex ()
+  "Perform a text search on `org-directory'."
+  (interactive)
+  (require 'org)
+  (let ((default-directory "~/org/roam"))
+    (+default/search-project-for-symbol-at-point "")))
+
+(defun my/search-website ()
+  "Perform a text search on `org-directory'."
+  (interactive)
+  (require 'org)
+  (let ((default-directory "~/Projects/personal-website/content/"))
+    (+default/search-project-for-symbol-at-point "")))
+#+end_src
 *** Screenshots
 #+begin_src emacs-lisp :tangle yes :results silent
 (use-package! org-download
@@ -339,7 +355,6 @@ Don't set =-T= flag for normal delete operation
                 org-download-image-dir "./images"
                 org-download-heading-lvl nil))
 #+end_src
-
 *** Code
 #+begin_src emacs-lisp :tangle yes :results silent
 (setq centaur-lsp 'lsp-mode)
@@ -512,13 +527,7 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
 Links ::
 
 \n* Bibliography
-bibliography:/home/lino/org/exocortex/biblio/library.bib
-​* Footnotes
-​* COMMENT Local Variables                          :ARCHIVE:
-# Local Variables:
-# eval: (org-hugo-auto-export-mode -1)
-# End:
-"
+bibliography:/home/lino/org/exocortex/biblio/library.bib"
            :unnarrowed t))))
 #+end_src
 
