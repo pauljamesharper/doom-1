@@ -434,6 +434,7 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
 (add-hook! 'org-src-mode-hook 'lsp-org)
 (add-hook! 'org-src-mode-hook 'lsp)
 
+<<<<<<< HEAD
 (use-package! company-bibtex
   :after org
   :config
@@ -441,6 +442,8 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
   (setq company-bibtex-bibliography "~/org/exocortex/biblio/library.bib"
         company-bibtex-org-citation-regex "cite[a-z]+:+"))
 
+=======
+>>>>>>> b82daab096699c6f23e3a923d8081c7573062528
 (use-package! org-ref
   :when (featurep! :lang org)
   :after (org bibtex-completion)
@@ -488,13 +491,17 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
                  ("incollection" . "${author}. *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
                  ("proceedings" . "${editor} (Eds.), _${booktitle}_ (${year}). ${address}: ${publisher}.")
                  ("unpublished" . "${author}. *${title}* (${year}). Unpublished manuscript.")
-                 ("misc" . "${author} (${year}). *${title}*. Retrieved from [${url}](${url}). ${note}.")
+                 ("misc" . "${author} (${year}). *${title}*. Retrieved from [${url}](${url}). ${web_note}.")
                  (nil . "${author}. (${year}). *${title}* "))))
 
 (after! org-ref
     (defun my/org-ref-get-md-bibliography (&optional sort)
     "Create an md bibliography when there are keys.
+<<<<<<< HEAD
     if SORT is non-nil the bibliography is sorted alphabetically by key."
+=======
+     if SORT is non-nil the bibliography is sorted alphabetically by key."
+>>>>>>> b82daab096699c6f23e3a923d8081c7573062528
     (let ((keys (org-ref-get-bibtex-keys sort)))
         (when keys
         (concat
@@ -503,7 +510,12 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
         "\n"))))
 
     (defun org-ref-bibliography-format (keyword desc format)
+<<<<<<< HEAD
     "Formatting function for bibliography links."
+=======
+    "Redefined Formatting function for bibliography links
+     using my custom md bibliogrpyh function."
+>>>>>>> b82daab096699c6f23e3a923d8081c7573062528
     (cond
     ((eq format 'org) (org-ref-get-org-bibliography))
     ((eq format 'ascii) (org-ref-get-ascii-bibliography))
@@ -520,6 +532,24 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
             (mapcar 'file-relative-name
                 (split-string keyword ","))
             ",")))))))
+<<<<<<< HEAD
+=======
+
+(use-package! mathpix
+  :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
+           (mathpix-app-key "f965173bcdbfec889c20")))
+
+(map! :leader
+      (:prefix-map ("i" . "insert")
+        :desc "Insert math from screen" "m" #'mathpix-screenshot))
+>>>>>>> b82daab096699c6f23e3a923d8081c7573062528
+
+(use-package! company-bibtex
+  :after org
+  :config
+  (set-company-backend! 'org-mode 'company-bibtex)
+  (setq company-bibtex-bibliography "/home/lino/org/roam/biblio/library.bib"
+        company-bibtex-org-citation-regex "cite[a-z]+:+"))
 
 (map! :leader
       (:prefix "s"

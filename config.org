@@ -7,6 +7,8 @@
 ;; -*- lexical-binding: t -*-
 #+end_src
 
+#+RESULTS:
+
 * General
 #+begin_src emacs-lisp :tangle yes
 (setq user-full-name "Linus Sehn"
@@ -28,7 +30,11 @@
 #+end_src
 
 #+RESULTS:
+<<<<<<< HEAD
 : #<font-spec nil nil Iosevka nil nil nil nil nil 20 nil nil nil nil>
+=======
+: #<font-spec nil nil Iosevka nil nil nil nil nil 19 nil nil nil nil>
+>>>>>>> b82daab096699c6f23e3a923d8081c7573062528
 
 ** Theme & Modeline
 #+begin_src emacs-lisp :tangle yes
@@ -40,25 +46,35 @@
 
 (display-time-mode 1)
 #+end_src
+
+#+RESULTS:
+: t
+
 ** Focus Mode
 #+begin_src emacs-lisp :tangle yes
 (after! writeroom-mode
   (setq writeroom-fullscreen-effect t))
 #+end_src
+
+#+RESULTS:
+
 ** Popups
 #+begin_src emacs-lisp :tangle yes
 (set-popup-rules!
  '(("^\*helm"
     :size 0.45 :select t :modeline t :quit t :ttl t)))
 #+end_src
+
 ** Auto-fill-mode
 #+begin_src emacs-lisp :tangle yes
 (add-hook! 'text-mode-hook auto-fill-mode)
 #+end_src
+
 ** Toggle Fullscreen on Start-up
 #+begin_src emacs-lisp :tangle yes
 (toggle-frame-fullscreen)
 #+end_src
+
 * Dictionaries & Grammar
 ** Default Dictionary
 #+begin_src emacs-lisp :tangle yes
@@ -80,6 +96,10 @@ https://languagetool.org/.
 #+begin_src emacs-lisp :tangle yes
 (setq langtool-language-tool-jar "~/.langtool")
 #+end_src
+
+#+RESULTS:
+: ~/.langtool
+
 ** Bindings
 #+begin_src emacs-lisp :tangle yes
 (defun my/save-to-dict ()
@@ -105,6 +125,10 @@ https://languagetool.org/.
         :desc "Change to german"       "g"     #'my/switch-to-de-dict
         :desc "Change to english"      "e"     #'my/switch-to-en-dict))
 #+end_src
+
+#+RESULTS:
+: my/switch-to-en-dict
+
 * E-mail
 ** General
 #+begin_src emacs-lisp :tangle yes
@@ -134,6 +158,8 @@ https://languagetool.org/.
 
 #+end_src
 
+#+RESULTS:
+
 Don't set =-T= flag for normal delete operation
 #+begin_src emacs-lisp :tangle yes
 (after! mu4e
@@ -148,6 +174,9 @@ Don't set =-T= flag for normal delete operation
                         ;; IMAP-deleted:
                         (mu4e~proc-move docid (mu4e~mark-check-target target) "-N")))))
 #+end_src
+
+#+RESULTS:
+
 ** Composer
 #+begin_src emacs-lisp :tangle yes
 (use-package! org-mu4e
@@ -161,6 +190,9 @@ Don't set =-T= flag for normal delete operation
   (add-hook! 'message-send-hook
     (setq-local org-mu4e-convert-to-html nil)))
 #+end_src
+
+#+RESULTS:
+
 ** Alerts
 #+begin_src emacs-lisp :tangle no
 (use-package! mu4e-alert
@@ -171,11 +203,19 @@ Don't set =-T= flag for normal delete operation
 (setq doom-modeline-mu4e t)
 (mu4e-alert-enable-mode-line-display)
 #+end_src
+
+#+RESULTS:
+: [nil 24242 38634 639763 nil mu4e-alert--get-mu-unread-emails-1 (mu4e-alert--email-processor) nil 214000]
+
 ** Bindings
 #+begin_src emacs-lisp :tangle yes
 (map! :leader
       (:desc "e-mail" "e" #'mu4e))
 #+end_src
+
+#+RESULTS:
+: mu4e
+
 * Org-mode
 #+begin_src emacs-lisp :tangle yes
 (setq org-directory "~/org")
@@ -211,10 +251,18 @@ Don't set =-T= flag for normal delete operation
         "* %?\n%T\n** What was I doing\n** What was the trigger?"))
       ))
 #+end_src
+
+#+RESULTS:
+| t | TODO | entry | (file+headline ~/org/actions.org Other) | * TODO [#A] %? |
+
 ** Clocking
 #+begin_src emacs-lisp :tangle yes
 (setq org-clock-mode-line-total 'today)
 #+end_src
+
+#+RESULTS:
+: today
+
 ** Clock Budget
 #+begin_src emacs-lisp :tangle yes
 (use-package! org-clock-budget
@@ -257,6 +305,9 @@ Don't set =-T= flag for normal delete operation
        :desc "Show weekly budget"     "w"     #'show-weekly-clock-budget
        ))
 #+end_src
+
+#+RESULTS:
+
 ** CalDav
 #+begin_src emacs-lisp :tangle yes
 (use-package! org-caldav
@@ -277,6 +328,10 @@ Don't set =-T= flag for normal delete operation
         org-icalendar-exclude-tags '("weekly" "daily" "monthly")
         org-caldav-exclude-tags '("weekly" "daily" "monthly")))
 #+end_src
+
+#+RESULTS:
+: t
+
 ** Agenda
 #+begin_src emacs-lisp :tangle yes
 (after! org
@@ -321,6 +376,10 @@ Don't set =-T= flag for normal delete operation
     :config
     (org-super-agenda-mode)))
 #+end_src
+
+#+RESULTS:
+: t
+
 ** Exocortex
 *** search
 #+begin_src emacs-lisp :tangle yes
@@ -338,6 +397,10 @@ Don't set =-T= flag for normal delete operation
   (let ((default-directory "~/Projects/personal-website/content/"))
     (+default/search-project-for-symbol-at-point "")))
 #+end_src
+
+#+RESULTS:
+: my/search-website
+
 *** download
 #+begin_src emacs-lisp :tangle yes
 (use-package! org-download
@@ -347,6 +410,9 @@ Don't set =-T= flag for normal delete operation
                 org-download-image-dir "./images"
                 org-download-heading-lvl nil))
 #+end_src
+
+#+RESULTS:
+: t
 
 *** biblio
 #+begin_src emacs-lisp :tangle yes
@@ -359,7 +425,11 @@ Don't set =-T= flag for normal delete operation
 #+end_src
 
 #+RESULTS:
+<<<<<<< HEAD
 : /home/lino/org/exocortex/refs/
+=======
+: ~/org/roam/
+>>>>>>> b82daab096699c6f23e3a923d8081c7573062528
 
 *** org-roam
 **** directory
@@ -371,7 +441,11 @@ Don't set =-T= flag for normal delete operation
 #+end_src
 
 #+RESULTS:
+<<<<<<< HEAD
 : private
+=======
+: ~/org/roam
+>>>>>>> b82daab096699c6f23e3a923d8081c7573062528
 
 **** capture templates
 ***** slug
@@ -471,7 +545,15 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib"
 #+end_src
 
 #+RESULTS:
+<<<<<<< HEAD
 ***** from citation
+=======
+| d | default | plain | (function org-roam-capture--get-point) | %? |
+
+
+
+Capture template for reference notes
+>>>>>>> b82daab096699c6f23e3a923d8081c7573062528
 #+begin_src emacs-lisp :tangle yes
 (after! org-roam-bibtex
     (setq orb-preformat-keywords
@@ -496,7 +578,33 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
 #+end_src
 
 #+RESULTS:
+<<<<<<< HEAD
 | c | cite-ref | plain | (function org-roam-capture--get-point) |   | :file-name | refs/${slug} | :head | #+title: Notes on: ${title} (${author-or-editor}, ${year}) |
+=======
+| r | ref | plain | (function org-roam-capture--get-point) |   | :file-name | ${slug} | :head | #+TITLE: Notes on: ${title} (${author-or-editor}, ${year}) |
+
+***** Use hyphen instead of underscore for slug
+#+begin_src emacs-lisp :tangle yes
+(defun org-roam--title-to-slug (title)
+    "Convert TITLE to a filename-suitable slug. Uses hyphens rather than underscores."
+    (cl-flet* ((nonspacing-mark-p (char)
+                                  (eq 'Mn (get-char-code-property char 'general-category)))
+               (strip-nonspacing-marks (s)
+                                       (apply #'string (seq-remove #'nonspacing-mark-p
+                                                                   (ucs-normalize-NFD-string s))))
+               (cl-replace (title pair)
+                           (replace-regexp-in-string (car pair) (cdr pair) title)))
+      (let* ((pairs `(("[^[:alnum:][:digit:]]" . "-")  ;; convert anything not alphanumeric
+                      ("--*" . "-")  ;; remove sequential underscores
+                      ("^-" . "")  ;; remove starting underscore
+                      ("-$" . "")))  ;; remove ending underscore
+             (slug (-reduce-from #'cl-replace (strip-nonspacing-marks title) pairs)))
+        (s-downcase slug))))
+#+end_src
+>>>>>>> b82daab096699c6f23e3a923d8081c7573062528
+
+#+RESULTS:
+: org-roam--title-to-slug
 
 **** export backlinks
 #+begin_src emacs-lisp :tangle yes
@@ -554,6 +662,10 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
 
   (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 #+end_src
+
+#+RESULTS:
+| my/org-export-preprocessor | org-blackfriday--reset-org-blackfriday--code-block-num-backticks |
+
 *** org-babel
 #+begin_src emacs-lisp :tangle yes
 (setq centaur-lsp 'lsp-mode)
@@ -603,6 +715,7 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
 #+end_src
 
 #+RESULTS:
+<<<<<<< HEAD
 | nil | Prepare local buffer environment for org source block (PYTHON). | doom-modeline-set-org-src-modeline | org-src-babel-configure-edit-buffer | org-src-mode-configure-edit-buffer | lsp-org-babel-enable |
 
 *** company-bibtex
@@ -614,6 +727,9 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
   (setq company-bibtex-bibliography "~/org/exocortex/biblio/library.bib"
         company-bibtex-org-citation-regex "cite[a-z]+:+"))
 #+end_src
+=======
+| org-src-babel-configure-edit-buffer | org-src-mode-configure-edit-buffer | doom-modeline-set-org-src-modeline | lsp | lsp-org |
+>>>>>>> b82daab096699c6f23e3a923d8081c7573062528
 
 #+RESULTS:
 : t
@@ -640,6 +756,8 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
                                    )))
 #+end_src
 
+#+RESULTS:
+
 **** open pdf
 #+begin_src emacs-lisp :tangle yes
 (defun my/org-ref-open-pdf-at-point ()
@@ -662,6 +780,9 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
         org-export-with-smart-quotes t))
 #+end_src
 
+#+RESULTS:
+: t
+
 **** ox-hugo
 #+begin_src emacs-lisp :tangle yes
 (after! ox-hugo
@@ -669,7 +790,11 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
 #+end_src
 
 #+RESULTS:
+<<<<<<< HEAD
 : zettel
+=======
+: roam
+>>>>>>> b82daab096699c6f23e3a923d8081c7573062528
 
 make ox-hugo play nice with org-ref
 #+begin_src emacs-lisp :tangle yes
@@ -686,7 +811,7 @@ make ox-hugo play nice with org-ref
                  ("incollection" . "${author}. *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
                  ("proceedings" . "${editor} (Eds.), _${booktitle}_ (${year}). ${address}: ${publisher}.")
                  ("unpublished" . "${author}. *${title}* (${year}). Unpublished manuscript.")
-                 ("misc" . "${author} (${year}). *${title}*. Retrieved from [${url}](${url}). ${note}.")
+                 ("misc" . "${author} (${year}). *${title}*. Retrieved from [${url}](${url}). ${web_note}.")
                  (nil . "${author}. (${year}). *${title}* "))))
 #+end_src
 
@@ -697,7 +822,11 @@ make ox-hugo play nice with org-ref
 (after! org-ref
     (defun my/org-ref-get-md-bibliography (&optional sort)
     "Create an md bibliography when there are keys.
+<<<<<<< HEAD
     if SORT is non-nil the bibliography is sorted alphabetically by key."
+=======
+     if SORT is non-nil the bibliography is sorted alphabetically by key."
+>>>>>>> b82daab096699c6f23e3a923d8081c7573062528
     (let ((keys (org-ref-get-bibtex-keys sort)))
         (when keys
         (concat
@@ -706,7 +835,12 @@ make ox-hugo play nice with org-ref
         "\n"))))
 
     (defun org-ref-bibliography-format (keyword desc format)
+<<<<<<< HEAD
     "Formatting function for bibliography links."
+=======
+    "Redefined Formatting function for bibliography links
+     using my custom md bibliogrpyh function."
+>>>>>>> b82daab096699c6f23e3a923d8081c7573062528
     (cond
     ((eq format 'org) (org-ref-get-org-bibliography))
     ((eq format 'ascii) (org-ref-get-ascii-bibliography))
@@ -728,6 +862,44 @@ make ox-hugo play nice with org-ref
 #+RESULTS:
 : org-ref-bibliography-format
 
+<<<<<<< HEAD
+=======
+#+RESULTS:
+
+*** mathpix
+#+begin_src emacs-lisp :tangle yes
+(use-package! mathpix
+  :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
+           (mathpix-app-key "f965173bcdbfec889c20")))
+#+end_src
+
+#+RESULTS:
+: mathpix
+
+#+begin_src emacs-lisp :tangle yes
+(map! :leader
+      (:prefix-map ("i" . "insert")
+        :desc "Insert math from screen" "m" #'mathpix-screenshot))
+#+end_src
+
+#+RESULTS:
+: mathpix-screenshot
+
+- set up the main directory
+*** company-bibtex
+#+begin_src emacs-lisp :tangle yes
+(use-package! company-bibtex
+  :after org
+  :config
+  (set-company-backend! 'org-mode 'company-bibtex)
+  (setq company-bibtex-bibliography "/home/lino/org/roam/biblio/library.bib"
+        company-bibtex-org-citation-regex "cite[a-z]+:+"))
+#+end_src
+
+#+RESULTS:
+: t
+
+>>>>>>> b82daab096699c6f23e3a923d8081c7573062528
 * Bindings
 ** global
 #+begin_src emacs-lisp :tangle yes
@@ -772,3 +944,5 @@ make ox-hugo play nice with org-ref
 (map! :map pdf-view-mode-map
       "C-c i" 'org-noter-insert-note)
 #+end_src
+
+#+RESULTS:
