@@ -562,11 +562,6 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib"
 #+end_src
 
 ***** From citation
-
-
-
-Capture template for reference notes
->>>>>>> b82daab096699c6f23e3a923d8081c7573062528
 #+begin_src emacs-lisp :tangle yes :results silent
 (after! org-roam-bibtex
     (setq orb-preformat-keywords
