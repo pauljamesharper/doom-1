@@ -6,7 +6,7 @@
 (setq doom-font (font-spec :family "Iosevka" :size 16)
       doom-variable-pitch-font (font-spec :family "Iosevka")
       doom-unicode-font (font-spec :family "all-the-icons")
-      doom-big-font (font-spec :family "Iosevka" :size 19))
+      doom-big-font (font-spec :family "Iosevka" :size 20))
 
 (setq doom-theme 'doom-one
       doom-themes-enable-bold t
@@ -126,7 +126,7 @@
         (file+headline "~/org/actions.org" "Other")
         "* TODO [#A] %?\n%a\n")
         ("a" "APPOINTMENT" entry
-        (file+headline "~/org/calendar.org" "Appointments")
+        (file+headline "~/org/calendar.org" "2020_Q2")
         "* %?\n%(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
         ("d" "DISTRACTION" entry
         (file "~/org/distractions.org")
@@ -239,7 +239,7 @@
   "Perform a text search on `org-directory'."
   (interactive)
   (require 'org)
-  (let ((default-directory "~/org/roam"))
+  (let ((default-directory "~/org/exocortex"))
     (+default/search-project-for-symbol-at-point "")))
 
 (defun my/search-website ()
@@ -258,41 +258,18 @@
 
 (setq! +biblio-pdf-library-dir "~/Library/"
        +biblio-default-bibliography-files
-       '("~/org/roam/biblio/library.bib"
-         "~/org/roam/biblio/stusti_predpol.bib"
-         "~/org/roam/biblio/platform_state_surveillance.bib")
-       +biblio-notes-path "~/org/roam/")
+       '("/home/lino/org/exocortex/biblio/library.bib"
+         "/home/lino/org/exocortex/biblio/stusti_predpol.bib"
+         "/home/lino/org/exocortex/biblio/platform_state_surveillance.bib")
+       +biblio-notes-path "/home/lino/org/exocortex/refs/")
 
 (after! org-roam
-  (setq org-roam-directory "~/org/roam"))
+  (setq org-roam-directory "~/org/exocortex"
+        org-roam-db-location "~/exocortex.db"
+        org-roam-graph-exclude-matcher "private"))
 
 (after! org-roam
-  (setq org-roam-capture-templates
-               '(("d" "default"
-                  plain (function org-roam-capture--get-point)
-                  "%?\n\n\nbibliography:biblio/library.bib"
-                  :file-name "${slug}"
-                  :head "#+TITLE: ${title}\n#+HUGO_BASE_DIR:~/Projects/personal-website\n\nLinks ::  "
-                  :unnarrowed t))))
-
-(after! org-roam-bibtex
-    (setq orb-preformat-keywords
-          '("=key=" "title" "url" "file" "author-or-editor" "keywords" "year"))
-    (setq orb-templates
-          '(("r" "ref" plain (function org-roam-capture--get-point)
-             ""
-             :file-name "${slug}"
-             :head "#+TITLE: Notes on: ${title} (${author-or-editor}, ${year})\n#+HUGO_BASE_DIR:~/Projects/personal-website\n#+ROAM_KEY: ${ref}
-
-Links ::
-\n* Summary\n#+begin_src toml :front_matter_extra t
-subtitle = \"\"
-summary = \"\"
-tags = [\"reading note\", \"\"]\n#+end_src
-\n* Main points\n:PROPERTIES:\n:Custom_ID: ${=key=}\n:NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n:NOTER_PAGE:\n:END:\n\n"
-             :unnarrowed t))))
-
-(defun org-roam--title-to-slug (title)
+  (defun org-roam--title-to-slug (title)
     "Convert TITLE to a filename-suitable slug. Uses hyphens rather than underscores."
     (cl-flet* ((nonspacing-mark-p (char)
                                   (eq 'Mn (get-char-code-property char 'general-category)))
@@ -306,7 +283,91 @@ tags = [\"reading note\", \"\"]\n#+end_src
                       ("^-" . "")  ;; remove starting underscore
                       ("-$" . "")))  ;; remove ending underscore
              (slug (-reduce-from #'cl-replace (strip-nonspacing-marks title) pairs)))
-        (s-downcase slug))))
+        (s-downcase slug)))))
+
+(after! org-roam
+  (setq org-roam-capture-templates
+               '(("d" "default"
+                  plain (function org-roam-capture--get-point)
+                  "%?\n\n\nbibliography:biblio/library.bib"
+                  :file-name "${slug}"
+                  :head "#+title: ${title}\n#+hugo_base_dir:~/Projects/personal-website
+
+Links ::
+\n#+begin_src toml :front_matter_extra t
+subtitle = \"\"
+summary = \"\"
+tags = [\"concept note\", \"\"]\n#+end_src
+
+
+
+\n* Bibliography
+bibliography:/home/lino/org/exocortex/biblio/library.bib
+"
+                  :unnarrowed t)
+          ("p" "private" plain (function org-roam-capture--get-point)
+           "%?"
+           :file-name "private-${slug}"
+           :head "#+title: ${title}\n
+
+Links ::
+
+\n* Bibliography
+bibliography:/home/lino/org/exocortex/biblio/library.bib
+​* Footnotes
+​* COMMENT Local Variables                          :ARCHIVE:
+# Local Variables:
+# eval: (org-hugo-auto-export-mode -1)
+# End:
+"
+           :unnarrowed t))))
+
+(after! org-roam
+  (setq org-roam-capture-ref-templates
+        '(("r" "ref" plain (function org-roam-capture--get-point)
+           "%?"
+           :file-name "refs/${slug}"
+           :head "#+title: Notes on: ${title}
+#+hugo_base_dir:~/Projects/personal-website
+#+hugo_section:refs
+#+roam_key: ${ref}
+
+Source :: ${ref}
+Links ::
+\n#+begin_src toml :front_matter_extra t
+subtitle = \"\"
+summary = \"\"
+tags = [\"ref note\", \"\"]\n#+end_src
+
+
+
+\n* Bibliography
+bibliography:/home/lino/org/exocortex/biblio/library.bib"
+           :unnarrowed t))))
+
+(use-package! org-roam-protocol
+  :after org-protocol)
+
+(after! org-roam-bibtex
+    (setq orb-preformat-keywords
+          '("=key=" "title" "url" "file" "author-or-editor" "keywords" "year"))
+    (setq orb-templates
+          '(("c" "cite-ref" plain (function org-roam-capture--get-point)
+             ""
+             :file-name "refs/${slug}"
+             :head "#+title: Notes on: ${title} (${author-or-editor}, ${year})\n#+hugo_base_dir:~/Projects/personal-website\n#+hugo_section:refs\n#+roam_key: ${ref}
+
+Links ::
+\n#+begin_src toml :front_matter_extra t
+subtitle = \"\"
+summary = \"\"
+tags = [\"ref note\", \"\"]\n#+end_src
+\n* Main points\n:PROPERTIES:\n:NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n:NOTER_PAGE:\n:END:\n\n
+
+\n* Bibliography
+bibliography:/home/lino/org/exocortex/biblio/library.bib
+"
+             :unnarrowed t))))
 
 (after! (org org-roam)
     (defun my/org-roam--backlinks-list (file)
@@ -377,7 +438,7 @@ tags = [\"reading note\", \"\"]\n#+end_src
   :after org
   :config
   (set-company-backend! 'org-mode 'company-bibtex)
-  (setq company-bibtex-bibliography "/home/lino/org/roam/biblio/library.bib"
+  (setq company-bibtex-bibliography "~/org/exocortex/biblio/library.bib"
         company-bibtex-org-citation-regex "cite[a-z]+:+"))
 
 (use-package! org-ref
@@ -412,7 +473,7 @@ tags = [\"reading note\", \"\"]\n#+end_src
         org-export-with-smart-quotes t))
 
 (after! ox-hugo
-  (setq org-hugo-default-section-directory "roam"))
+  (setq org-hugo-default-section-directory "zettel"))
 
 (use-package! org-ref-ox-hugo
   :after org org-ref ox-hugo
@@ -430,46 +491,40 @@ tags = [\"reading note\", \"\"]\n#+end_src
                  ("misc" . "${author} (${year}). *${title}*. Retrieved from [${url}](${url}). ${note}.")
                  (nil . "${author}. (${year}). *${title}* "))))
 
-(defun my/org-ref-get-md-bibliography (&optional sort)
-  "Create an md bibliography when there are keys.
-if SORT is non-nil the bibliography is sorted alphabetically by key."
-  (let ((keys (org-ref-get-bibtex-keys sort)))
-    (when keys
-      (concat
-       "\n"
-       (mapconcat (lambda (x) (org-ref-get-bibtex-entry-md x)) keys "\n\n")
-       "\n"))))
+(after! org-ref
+    (defun my/org-ref-get-md-bibliography (&optional sort)
+    "Create an md bibliography when there are keys.
+    if SORT is non-nil the bibliography is sorted alphabetically by key."
+    (let ((keys (org-ref-get-bibtex-keys sort)))
+        (when keys
+        (concat
+        "\n"
+        (mapconcat (lambda (x) (org-ref-get-bibtex-entry-md x)) keys "\n\n")
+        "\n"))))
 
-(defun org-ref-bibliography-format (keyword desc format)
-  "Formatting function for bibliography links."
-  (cond
-   ((eq format 'org) (org-ref-get-org-bibliography))
-   ((eq format 'ascii) (org-ref-get-ascii-bibliography))
-   ((eq format 'md) (my/org-ref-get-md-bibliography))
-   ((eq format 'odt) (org-ref-get-odt-bibliography))
-   ((eq format 'html) (org-ref-get-html-bibliography))
-   ((eq format 'latex)
-    ;; write out the latex bibliography command
-    (format "\\bibliography{%s}"
-	    (replace-regexp-in-string
-	     "\\.bib" ""
-	     (mapconcat
-	      'identity
-	      (mapcar 'file-relative-name
-		      (split-string keyword ","))
-	      ","))))))
-
-(use-package! mathpix
-  :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
-           (mathpix-app-key "f965173bcdbfec889c20")))
-
-(map! :leader
-      (:prefix-map ("i" . "insert")
-        :desc "Insert math from screen" "m" #'mathpix-screenshot))
+    (defun org-ref-bibliography-format (keyword desc format)
+    "Formatting function for bibliography links."
+    (cond
+    ((eq format 'org) (org-ref-get-org-bibliography))
+    ((eq format 'ascii) (org-ref-get-ascii-bibliography))
+    ((eq format 'md) (my/org-ref-get-md-bibliography))
+    ((eq format 'odt) (org-ref-get-odt-bibliography))
+    ((eq format 'html) (org-ref-get-html-bibliography))
+    ((eq format 'latex)
+        ;; write out the latex bibliography command
+        (format "\\bibliography{%s}"
+            (replace-regexp-in-string
+            "\\.bib" ""
+            (mapconcat
+            'identity
+            (mapcar 'file-relative-name
+                (split-string keyword ","))
+            ",")))))))
 
 (map! :leader
       (:prefix "s"
        :desc "Search exocortex" "e" #'org-roam-find-file
+       :desc "Search concepts" "c" #'org-roam-bibtex-find-non-ref-file
        :desc "Search refs" "r" #'org-roam-find-ref
        :desc "Search website" "w" #'my/search-website
        :desc "Search full exocortex" "x" #'my/search-exocortex

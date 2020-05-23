@@ -6,4 +6,4 @@
 (when (featurep! :lang org)
   (package! org-ref :pin "1eb4ddda00"))
 (when (featurep! :lang org +roam)
-  (package! org-roam-bibtex :pin "a97ec6d954"))
+  (package! org-roam-bibtex :pin "565c3794cf"))
