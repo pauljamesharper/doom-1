@@ -60,7 +60,7 @@
 ** Completion
 #+begin_src emacs-lisp :tangle yes :results silent
 (after! company-box
-  (setq company-box-max-candidates 5))
+  (setq company-box-max-candidates 10))
 #+end_src
 * Dictionaries & Grammar
 ** Default Dictionary
@@ -477,7 +477,7 @@ Don't set =-T= flag for normal delete operation
 #+end_src
 
 **** Capture Templates
-***** File Name
+***** Slugs with hyphens
 #+begin_src emacs-lisp :tangle yes :results silent
 (after! org-roam
   (defun org-roam--title-to-slug (title)

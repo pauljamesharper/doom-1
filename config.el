@@ -30,7 +30,7 @@
 (toggle-frame-fullscreen)
 
 (after! company-box
-  (setq company-box-max-candidates 5))
+  (setq company-box-max-candidates 10))
 
 (setq ispell-dictionary "en_GB")
 

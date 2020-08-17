@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: ipython
-# key: ipy_
+# key: ipy
 # --
 #+begin_src ipython :session :ipyfile ${1:$$(concat (make-temp-name "./images/ipython-") ".png")} :exports both :results raw drawer
 $0
