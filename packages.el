@@ -6,9 +6,8 @@
 (package! anki-editor)
 (package! org-download)
 (package! company-bibtex)
+(package! citeproc-org)
 (package! org-clock-budget
   :recipe (:host github :repo "linozen/org-clock-budget"))
 (package! mathpix
   :recipe (:host github :repo "linozen/mathpix.el" :branch "master"))
-(package! org-ref-ox-hugo
-  :recipe (:host github :repo "linozen/org-ref-ox-hugo" :branch "custom/overrides"))
