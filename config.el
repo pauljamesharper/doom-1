@@ -125,6 +125,12 @@
           (sequence "NEXT(n)" "WAIT(w)" "HOLD(h)" "|" "ABRT(c)")
           (sequence "TOREAD(r)" "|" "READ(R)"))))
 
+(use-package org-sidebar
+  :after org
+  :config
+  (setq org-sidebar-tree-side 'right)
+)
+
 (after! org
   (setq org-capture-templates
       '(("t" "TODO" entry
@@ -480,7 +486,8 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
 
 (after! citeproc-org
   (setq citeproc-org-suppress-affixes-cite-link-types '("citet" "cite*")
-        citeproc-org-suppress-author-cite-link-types '("cite*")))
+        citeproc-org-suppress-author-cite-link-types '("cite*")
+        citeproc-org-ignore-backends '(latex beamer icalendar)))
 
 (after! org-ref
     (defun my/org-ref-get-md-bibliography (&optional sort)
@@ -529,17 +536,14 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
       ("M-p" #'my/org-ref-open-pdf-at-point)
       ("M-n" #'org-roam-insert)
       (:leader
+       (:desc "show todos" "z" #'ivy-magit-todos
         (:prefix "i"
           :desc "Cite source" "c" #'org-ref-helm-insert-cite-link
           )
       (:localleader
         (:prefix ("a" . "attachments")
           "c" #'org-download-screenshot
-          "y" #'org-download-yank
-          )
-        )
-      )
-      )
+          "y" #'org-download-yank)))))
 
 (map! :map pdf-view-mode-map
       "C-c i" 'org-noter-insert-note)
