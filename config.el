@@ -480,7 +480,8 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
 
 (after! citeproc-org
   (setq citeproc-org-suppress-affixes-cite-link-types '("citet" "cite*")
-        citeproc-org-suppress-author-cite-link-types '("cite*")))
+        citeproc-org-suppress-author-cite-link-types '("cite*")
+        citeproc-org-ignore-backends '(latex beamer icalendar)))
 
 (after! org-ref
     (defun my/org-ref-get-md-bibliography (&optional sort)
