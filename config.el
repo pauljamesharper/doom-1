@@ -30,7 +30,7 @@
 (toggle-frame-fullscreen)
 
 (after! company-box
-  (setq company-box-max-candidates 5))
+  (setq company-box-max-candidates 10))
 
 (setq ispell-dictionary "en_GB")
 
@@ -124,6 +124,12 @@
           (sequence "[ ](T)" "[-](P)" "[?](M)" "|" "[X](D)")
           (sequence "NEXT(n)" "WAIT(w)" "HOLD(h)" "|" "ABRT(c)")
           (sequence "TOREAD(r)" "|" "READ(R)"))))
+
+(use-package org-sidebar
+  :after org
+  :config
+  (setq org-sidebar-tree-side 'right)
+)
 
 (after! org
   (setq org-capture-templates
@@ -530,17 +536,14 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
       ("M-p" #'my/org-ref-open-pdf-at-point)
       ("M-n" #'org-roam-insert)
       (:leader
+       (:desc "show todos" "z" #'ivy-magit-todos
         (:prefix "i"
           :desc "Cite source" "c" #'org-ref-helm-insert-cite-link
           )
       (:localleader
         (:prefix ("a" . "attachments")
           "c" #'org-download-screenshot
-          "y" #'org-download-yank
-          )
-        )
-      )
-      )
+          "y" #'org-download-yank)))))
 
 (map! :map pdf-view-mode-map
       "C-c i" 'org-noter-insert-note)

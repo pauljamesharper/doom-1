@@ -1,6 +1,7 @@
 ;;; ~/.doom.d/packages.el
 
 (package! org-caldav)
+(package! org-sidebar)
 (package! org-super-agenda)
 (package! mu4e-alert)
 (package! anki-editor)

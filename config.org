@@ -14,6 +14,7 @@
       projectile-project-search-path '("~/Projects" "/home/lino")
       bookmark-default-file "~/.doom.d/bookmarks")
 #+end_src
+* Dired (dired-ashell-user??)
 
 * UI
 ** Fonts
@@ -60,7 +61,7 @@
 ** Completion
 #+begin_src emacs-lisp :tangle yes :results silent
 (after! company-box
-  (setq company-box-max-candidates 5))
+  (setq company-box-max-candidates 10))
 #+end_src
 * Dictionaries & Grammar
 ** Default Dictionary
@@ -198,6 +199,17 @@ Don't set =-T= flag for normal delete operation
           (sequence "NEXT(n)" "WAIT(w)" "HOLD(h)" "|" "ABRT(c)")
           (sequence "TOREAD(r)" "|" "READ(R)"))))
 #+end_src
+** Sidebar
+#+begin_src emacs-lisp :tangle yes
+(use-package org-sidebar
+  :after org
+  :config
+  (setq org-sidebar-tree-side 'right)
+)
+#+end_src
+
+#+RESULTS:
+: t
 
 ** Capture Templates
 #+begin_src emacs-lisp :tangle yes :results silent
@@ -477,7 +489,7 @@ Don't set =-T= flag for normal delete operation
 #+end_src
 
 **** Capture Templates
-***** File Name
+***** Slugs with hyphens
 #+begin_src emacs-lisp :tangle yes :results silent
 (after! org-roam
   (defun org-roam--title-to-slug (title)
@@ -776,17 +788,14 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
       ("M-p" #'my/org-ref-open-pdf-at-point)
       ("M-n" #'org-roam-insert)
       (:leader
+       (:desc "show todos" "z" #'ivy-magit-todos
         (:prefix "i"
           :desc "Cite source" "c" #'org-ref-helm-insert-cite-link
           )
       (:localleader
         (:prefix ("a" . "attachments")
           "c" #'org-download-screenshot
-          "y" #'org-download-yank
-          )
-        )
-      )
-      )
+          "y" #'org-download-yank)))))
 #+end_src
 
 ** PDF
