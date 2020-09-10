@@ -566,7 +566,6 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
             ",")))))))
 
 (map! :leader
-
       (:prefix "m"
        :desc "update mail" "u" #'+notmuch/myupdate)
       (:prefix "s"
