@@ -1,4 +1,4 @@
-;;;; Emacs Bookmark Format Version 1 ;;;; -*- coding: utf-8-emacs -*- 
+;;;; Emacs Bookmark Format Version 1 ;;;; -*- coding: utf-8-emacs -*-
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
@@ -31,8 +31,8 @@
  (rear-context-string . "6K Oct 28 23:10 ")
  (position . 186))
 ("org-capture-last-stored"
- (filename . "~/org/roam/path-dependency.org")
- (front-context-string . "#+TITLE: Path De")
+ (filename . "~/org/exocortex/refs/solaris-1972-film-wikipedia.org")
+ (front-context-string . "#+title: Notes o")
  (rear-context-string)
  (position . 1))
 ("watching.org"
@@ -66,13 +66,13 @@
  (rear-context-string . "_srt_subtitles/\n")
  (position . 194))
 ("org-capture-last-stored-marker"
- (filename . "~/org/actions.org")
- (front-context-string . "*** TODO [#A] pu")
- (rear-context-string . "8d48a4586\n:END:\n")
- (position . 8013))
+ (filename . "~/org/watching.org")
+ (front-context-string . "** Würdest du eh")
+ (rear-context-string . "word Art Online\n")
+ (position . 671))
 ("org-refile-last-stored"
- (filename . "~/org/calendar.org")
- (front-context-string . "**** CS01663 Men")
- (rear-context-string . "mia\n*** Courses\n")
- (position . 87))
+ (filename . "~/org/watching.org")
+ (front-context-string . "** Würdest du eh")
+ (rear-context-string . "word Art Online\n")
+ (position . 671))
 )
