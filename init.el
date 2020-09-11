@@ -28,7 +28,7 @@
        nav-flash
        ophints
        (popup +all +defaults)
-       (pretty-code +iosevka)
+       (ligatures +iosevka)
        treemacs
        vc-gutter
        vi-tilde-fringe
@@ -56,7 +56,9 @@
 
        :checkers
        syntax
-       (spell +hunspell)
+       (spell
+        +flyspell
+        +hunspell)
        grammar
 
        :tools
@@ -101,14 +103,21 @@
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
-       (org +ipython +pomodoro +present +hugo +noter +roam)
+       (org
+        +dragndrop
+        +jupyter
+        +pomodoro
+        +present
+        +hugo
+        +noter
+        +roam)
        ;;perl              ; write code no one else can comprehend
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
        (python             ; beautiful is better than ugly
         +lsp
-        +pyenv)
+        +pyright)
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        ;;rest              ; Emacs as a REST client
@@ -125,6 +134,7 @@
 
        :email
        mu4e
+       notmuch
 
        :app
        ;;calendar

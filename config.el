@@ -116,6 +116,50 @@
 (map! :leader
       (:desc "e-mail" "e" #'mu4e))
 
+(after! notmuch
+  (setq +notmuch-sync-backend 'mbsync
+        notmuch-archive-tags '("-inbox" "-unread" "+archived")
+        message-send-mail-function 'message-smtpmail-send-it
+        smtpmail-debug-info 't
+        smtpmail-smtp-user "linus@sehn.tech"
+        smtpmail-smtp-server "smtp.mailbox.org"
+        smtpmail-default-smtp-server "smtp.mailbox.org"
+        smtpmail-stream-type 'ssl
+        smtpmail-smtp-service 465)
+
+  (setq notmuch-saved-searches
+        '((:name "inbox"      :query "tag:inbox"                        :key "i")
+          (:name "archived"   :query "tag:archived not tag:newsletter"  :key "a")
+          (:name "newsletter" :query "tag:newsletter"                   :key "n")
+          (:name "flagged"    :query "tag:flagged"                      :key "f")
+          (:name "sent"       :query "tag:sent"                         :key "s")
+          (:name "drafts"     :query "tag:draft"                        :key "d"))))
+
+(defun +notmuch/myupdate ()
+  (interactive)
+  ;; create output buffer and jump to beginning
+  (let ((buf (get-buffer-create "*notmuch update*")))
+    (with-current-buffer buf
+      (erase-buffer))
+    (pop-to-buffer buf nil t)
+    (set-process-sentinel
+     (start-process-shell-command
+      "notmuch update" buf
+      (pcase +notmuch-sync-backend
+        (`gmi
+         (concat "cd " +notmuch-mail-folder " && gmi push && gmi pull && notmuch new && afew -a -t"))
+        (`mbsync
+         "afew -a -m && mbsync -a && notmuch new && afew -a -t")
+        (`mbsync-xdg
+         "afew -a -m && mbsync -c \"$XDG_CONFIG_HOME\"/isync/mbsyncrc -a && notmuch new && afew -a -t -m")
+        (`offlineimap
+         "offlineimap && notmuch new && afew -a -t -m")
+        (`custom +notmuch-sync-command)))
+     ;; refresh notmuch buffers if sync was successful
+     (lambda (_process event)
+       (if (string= event "finished\n")
+           (notmuch-refresh-all-buffers))))))
+
 (setq org-directory "~/org")
 
 (after! org
@@ -522,6 +566,8 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
             ",")))))))
 
 (map! :leader
+      (:prefix "m"
+       :desc "update mail" "u" #'+notmuch/myupdate)
       (:prefix "s"
        :desc "Search exocortex" "e" #'org-roam-find-file
        :desc "Search concepts" "c" #'org-roam-bibtex-find-non-ref-file
