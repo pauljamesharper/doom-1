@@ -169,6 +169,8 @@
           (sequence "NEXT(n)" "WAIT(w)" "HOLD(h)" "|" "ABRT(c)")
           (sequence "TOREAD(r)" "|" "READ(R)"))))
 
+;;(org-babel-jupyter-override-src-block "python")
+
 (use-package org-sidebar
   :after org
   :config
@@ -410,11 +412,15 @@ Links ::
 \n#+begin_src toml :front_matter_extra t
 subtitle = \"\"
 summary = \"\"
-tags = [\"concept note\", \"\"]\n#+end_src
+tags = [\"concept\", \"\"]
+share = true
+profile = true
+commentable = true
+editable = false \n#+end_src
 
 
 
-\n* Bibliography
+\n
 bibliography:/home/lino/org/exocortex/biblio/library.bib
 "
                   :unnarrowed t)
@@ -425,7 +431,7 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
 
 Links ::
 
-\n* Bibliography
+\n
 bibliography:/home/lino/org/exocortex/biblio/library.bib"
            :unnarrowed t))))
 
@@ -439,16 +445,20 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib"
 #+hugo_section:refs
 #+roam_key: ${ref}
 
-Source :: ${ref}
+Source :: ${ref}\n
 Links ::
 \n#+begin_src toml :front_matter_extra t
 subtitle = \"\"
 summary = \"\"
-tags = [\"ref note\", \"\"]\n#+end_src
+tags = [\"\"]
+share = true
+profile = true
+commentable = true
+editable = false\n#+end_src
 
 
 
-\n* Bibliography
+\n
 bibliography:/home/lino/org/exocortex/biblio/library.bib"
            :unnarrowed t))))
 
@@ -468,10 +478,15 @@ Links ::
 \n#+begin_src toml :front_matter_extra t
 subtitle = \"\"
 summary = \"\"
-tags = [\"ref note\", \"\"]\n#+end_src
+tags = [\"\", \"\"]
+share = true
+profile = true
+commentable = true
+editable = false \n#+end_src
+
 \n* Main points\n:PROPERTIES:\n:NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n:NOTER_PAGE:\n:END:\n\n
 
-\n* Bibliography
+\n
 bibliography:/home/lino/org/exocortex/biblio/library.bib
 "
              :unnarrowed t))))
@@ -479,6 +494,17 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
 (after! org
   (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")
         org-export-with-smart-quotes t))
+
+(defun publish-dir-org ()
+  "Publish all org files in a directory"
+  (interactive)
+  (save-excursion
+    (mapc
+     (lambda (file)
+       (with-current-buffer
+       (find-file-noselect file)
+       (org-hugo-export-to-md)))
+       (file-expand-wildcards  "*.org"))))
 
 (after! (org org-roam)
     (defun my/org-roam--backlinks-list (file)

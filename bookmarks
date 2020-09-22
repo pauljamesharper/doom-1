@@ -1,0 +1,78 @@
+;;;; Emacs Bookmark Format Version 1 ;;;; -*- coding: utf-8-emacs -*-
+;;; This format is meant to be slightly human-readable;
+;;; nevertheless, you probably don't want to edit it.
+;;; -*- End Of Bookmark File Format Version Stamp -*-
+(("templates-org"
+ (filename . "~/org/roam/templates.org")
+ (front-context-string . "\ncite:snowden201")
+ (rear-context-string . "ite:zuboff2018\n\n")
+ (position . 415))
+("templates-web"
+ (filename . "~/Projects/personal-website/content/roam/templates.md")
+ (front-context-string)
+ (rear-context-string . "defb03dfbcca6b)\n")
+ (position . 3049))
+("ranger-m"
+ (filename . "~/org/")
+ (front-context-string . "public_key.asc\n ")
+ (rear-context-string . ".1k 11-28 11:24 ")
+ (position . 944))
+("Downloads"
+ (filename . "~/Downloads/")
+ (front-context-string . "hugo-academic-ma")
+ (rear-context-string . "0K Mar  8 01:09 ")
+ (position . 119))
+("journal"
+ (filename . "/home/lino/org/journal/2020.org.gpg")
+ (handler . org-bookmark-jump))
+("bibnotes"
+ (filename . "~/org/bibnotes/")
+ (front-context-string . "Clausewitz2005.o")
+ (rear-context-string . "6K Oct 28 23:10 ")
+ (position . 186))
+("org-capture-last-stored"
+ (filename . "~/org/exocortex/refs/solaris-1972-film-wikipedia.org")
+ (front-context-string . "#+title: Notes o")
+ (rear-context-string)
+ (position . 1))
+("watching.org"
+ (filename . "~/org/watching.org")
+ (front-context-string . "ea Bag\n** Yes, M")
+ (rear-context-string . "yal Family\n** Fl")
+ (position . 434))
+("calendar.org"
+ (filename . "~/org/calendar.org")
+ (front-context-string . "ATION: 319 Semin")
+ (rear-context-string . "PROPERTIES:\n:LOC")
+ (position . 5334))
+("reading.org"
+ (filename . "~/org/reading.org")
+ (front-context-string . "te:isaacson2014\n")
+ (rear-context-string . "** TOREAD autoci")
+ (position . 54))
+("actions.org"
+ (filename . "~/org/actions.org")
+ (front-context-string . "** TODO Inbox Ze")
+ (rear-context-string . "9-25 Wed 11:17]\n")
+ (position . 26080))
+("index.org"
+ (filename . "~/org/index.org")
+ (front-context-string . "sudo mkfs.ext3 -")
+ (rear-context-string . "dev/sdb3 my_usb\n")
+ (position . 1131))
+("inbox.org"
+ (filename . "~/org/inbox.org")
+ (front-context-string)
+ (rear-context-string . "_srt_subtitles/\n")
+ (position . 194))
+("org-capture-last-stored-marker"
+ (filename . "~/org/watching.org")
+ (front-context-string . "** Würdest du eh")
+ (rear-context-string . "word Art Online\n")
+ (position . 671))
+("org-refile-last-stored"
+ (filename . "~/org/watching.org")
+ (front-context-string . "** Würdest du eh")
+ (rear-context-string . "word Art Online\n")
+ (position . 671))
+)
