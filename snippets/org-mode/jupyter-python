@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: jupyter-python
+# key: jp
+# --
+
+
+#+begin_src jupyter-python :session py :exports both :wrap :file ./images/py-$1.png
+$2
+#+end_src
