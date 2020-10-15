@@ -1,12 +1,18 @@
-;;;; Emacs Bookmark Format Version 1 ;;;; -*- coding: utf-8-emacs -*-
+;;;; Emacs Bookmark Format Version 1 ;;;; -*- coding: utf-8 -*-
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-((", ,"
- (filename . "~/org/exocortex/autokeras.org")
- (front-context-string . "-python :session")
- (rear-context-string . "egin_src jupyter")
- (position . 802))
+(("cs.org"
+ (filename . "~/org/cs.org")
+ (front-context-string . "#+TITLE: Compute")
+ (rear-context-string)
+ (position . 1))
+("doom-one"
+ (filename . "~/.emacs.d/.local/straight/repos/emacs-doom-themes/themes/doom-one-theme.el")
+ (front-context-string . "se5      '(\"#5B6")
+ (rear-context-string . "lack\"  ))\n   (ba")
+ (position . 1424))
+>>>>>>> 3db1ced801da6426ad485b00ec5892eeee85245f
 ("templates-org"
  (filename . "~/org/roam/templates.org")
  (front-context-string . "\ncite:snowden201")

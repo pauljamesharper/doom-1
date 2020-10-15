@@ -1,5 +1,6 @@
 #+title: Literate Doom Emacs Configuration
 #+hugo_base_dir:~/Projects/personal-website
+#+hugo_draft: true
 #+options: toc:nil
 #+options: h:5
 #+startup: overview
@@ -14,8 +15,6 @@
       projectile-project-search-path '("~/Projects" "/home/lino")
       bookmark-default-file "~/.doom.d/bookmarks")
 #+end_src
-* Dired (dired-ashell-user??)
-
 * UI
 ** Fonts
 #+begin_src emacs-lisp :tangle yes :results silent
@@ -38,8 +37,8 @@
 
 ** Focus Mode
 #+begin_src emacs-lisp :tangle yes :results silent
-(after! writeroom-mode
-  (setq writeroom-fullscreen-effect t))
+;;(after! writeroom-mode
+;;  (setq writeroom-fullscreen-effect t))
 #+end_src
 
 ** Popups
@@ -56,13 +55,15 @@
 
 ** Toggle Fullscreen on Start-up
 #+begin_src emacs-lisp :tangle yes :results silent
-(toggle-frame-fullscreen)
+;;(toggle-frame-fullscreen)
 #+end_src
 ** Completion
 #+begin_src emacs-lisp :tangle yes :results silent
 (after! company-box
   (setq company-box-max-candidates 10))
 #+end_src
+* File Manager
+** TODO Define default applications (dired-shell-user-alist?)
 * Dictionaries & Grammar
 ** Default Dictionary
 #+begin_src emacs-lisp :tangle yes :results silent
@@ -141,6 +142,12 @@ https://languagetool.org/.
 
 #+end_src
 
+#+begin_src emacs-lisp :tangle yes :results silent
+(use-package! mu4e
+  :config
+  (remove-hook 'mu4e-main-mode-hook 'evil-collection-mu4e-update-main-view))
+#+end_src
+
 Don't set =-T= flag for normal delete operation
 #+begin_src emacs-lisp :tangle yes :results silent
 (after! mu4e
@@ -187,7 +194,7 @@ Don't set =-T= flag for normal delete operation
       (:desc "e-mail" "e" #'mu4e))
 #+end_src
 ** notmuch
-#+begin_src emacs-lisp :tangle yes :results silent
+#+begin_src emacs-lisp :tangle no :results silent
 (after! notmuch
   (setq +notmuch-sync-backend 'mbsync
         notmuch-archive-tags '("-inbox" "-unread" "+archived")
@@ -244,10 +251,6 @@ Don't set =-T= flag for normal delete operation
           (sequence "[ ](T)" "[-](P)" "[?](M)" "|" "[X](D)")
           (sequence "NEXT(n)" "WAIT(w)" "HOLD(h)" "|" "ABRT(c)")
           (sequence "TOREAD(r)" "|" "READ(R)"))))
-#+end_src
-** Babel
-#+begin_src emacs-lisp :tangle yes :results silent
-;;(org-babel-jupyter-override-src-block "python")
 #+end_src
 ** Sidebar
 #+begin_src emacs-lisp :tangle yes
@@ -390,7 +393,12 @@ Don't set =-T= flag for normal delete operation
     :config
     (org-super-agenda-mode)))
 #+end_src
-
+** Anki
+#+begin_src emacs-lisp :tangle yes :results silent
+(add-hook! 'org-mode-hook 'anki-editor-mode)
+(after! org
+  (setq anki-editor-ignored-org-tags '("noexport")))
+#+end_src
 ** Exocortex
 *** Search
 #+begin_src emacs-lisp :tangle yes :results silent
@@ -417,54 +425,12 @@ Don't set =-T= flag for normal delete operation
                 org-download-image-dir "./images"
                 org-download-heading-lvl nil))
 #+end_src
-*** Code
+*** Code (Babel)
 #+begin_src emacs-lisp :tangle yes :results silent
-(setq centaur-lsp 'lsp-mode)
-(cl-defmacro lsp-org-babel-enable (lang)
-    "Support LANG in org source code block."
-    (cl-check-type lang stringp)
-    (let* ((edit-pre (intern (format "org-babel-edit-prep:%s" lang)))
-           (intern-pre (intern (format "lsp--%s" (symbol-name edit-pre)))))
-      `(progn
-         (defun ,intern-pre (info)
-           (let ((filename (or (->> info caddr (alist-get :file))
-                               buffer-file-name)))
-             (unless filename
-               (user-error "LSP:: specify `:file' property to enable."))
-
-             (setq buffer-file-name filename)
-             (pcase centaur-lsp
-               ('eglot
-                (and (fboundp 'eglot) (eglot)))
-               ('lsp-mode
-                (and (fboundp 'lsp-deferred)
-                     ;; `lsp-auto-guess-root' MUST be non-nil.
-                     (setq lsp-buffer-uri (lsp--path-to-uri filename))
-                     (lsp-deferred))))))
-         (put ',intern-pre 'function-documentation
-              (format "Enable `%s' in the buffer of org source block (%s)."
-                      centaur-lsp (upcase ,lang)))
-
-         (if (fboundp ',edit-pre)
-             (advice-add ',edit-pre :after ',intern-pre)
-           (progn
-             (defun ,edit-pre (info)
-               (,intern-pre info))
-             (put ',edit-pre 'function-documentation
-                  (format "Prepare local buffer environment for org source block (%s)."
-                          (upcase ,lang))))))))
-
-(defun lsp-org()
-    (interactive)
-    (defvar org-babel-lang-list
-        '("python" "ipython"))
-    (dolist (lang org-babel-lang-list)
-      (eval `(lsp-org-babel-enable ,lang))))
-
-(add-hook! 'org-src-mode-hook 'lsp-org)
-(add-hook! 'org-src-mode-hook 'lsp)
+(after! org
+  (setq org-src-window-setup 'current-window
+        org-babel-python-command "python3"))
 #+end_src
-
 *** Maths
 #+begin_src emacs-lisp :tangle yes :results silent
 (use-package! mathpix
@@ -843,12 +809,14 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
             ",")))))))
 #+end_src
 
+* Programming
+** Python
 * Bindings
-** Global
+** global
 #+begin_src emacs-lisp :tangle yes :results silent
 (map! :leader
-      (:prefix "m"
-       :desc "update mail" "u" #'+notmuch/myupdate)
+      ;; (:prefix "m"
+      ;;  :desc "update mail" "u" #'+notmuch/myupdate)
       (:prefix "s"
        :desc "Search exocortex" "e" #'org-roam-find-file
        :desc "Search concepts" "c" #'org-roam-bibtex-find-non-ref-file
@@ -858,7 +826,7 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
        ))
 #+end_src
 
-** Org-mode
+** org-mode-map
 #+begin_src emacs-lisp :tangle yes :results silent
 (map! :map org-mode-map
       ("M-i" #'org-ref-helm-insert-cite-link)
@@ -866,17 +834,22 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
       ("M-p" #'my/org-ref-open-pdf-at-point)
       ("M-n" #'org-roam-insert)
       (:leader
-       (:desc "show todos" "z" #'ivy-magit-todos
+        (:desc "Show todos" "z" #'ivy-magit-todos)
         (:prefix "i"
-          :desc "Cite source" "c" #'org-ref-helm-insert-cite-link
-          )
+         :desc "Cite source" "c" #'org-ref-helm-insert-cite-link
+         :desc "Insert anki note" "a" #'anki-editor-insert-note
+         )
+        (:prefix ("a" . "anki")
+         :desc "Push notes to anki" "p" #'anki-editor-push-notes
+         :desc "Cloze region" "c" #'anki-editor-cloze-dwim
+         ))
       (:localleader
         (:prefix ("a" . "attachments")
           "c" #'org-download-screenshot
-          "y" #'org-download-yank)))))
+          "y" #'org-download-yank )))
 #+end_src
 
-** PDF
+** pdf-view-mode-map
 #+begin_src emacs-lisp :tangle yes :results silent
 (map! :map pdf-view-mode-map
       "C-c i" 'org-noter-insert-note)

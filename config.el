@@ -18,8 +18,8 @@
 
 (display-time-mode 1)
 
-(after! writeroom-mode
-  (setq writeroom-fullscreen-effect t))
+;;(after! writeroom-mode
+;;  (setq writeroom-fullscreen-effect t))
 
 (set-popup-rules!
  '(("^\*helm"
@@ -27,7 +27,7 @@
 
 (add-hook! 'text-mode-hook auto-fill-mode)
 
-(toggle-frame-fullscreen)
+;;(toggle-frame-fullscreen)
 
 (after! company-box
   (setq company-box-max-candidates 10))
@@ -90,6 +90,10 @@
         smtpmail-stream-type 'ssl
         smtpmail-smtp-service 465))
 
+(use-package! mu4e
+  :config
+  (remove-hook 'mu4e-main-mode-hook 'evil-collection-mu4e-update-main-view))
+
 (after! mu4e
   (setf (alist-get 'trash mu4e-marks)
         (list :char '("d" . "▼")
@@ -116,50 +120,6 @@
 (map! :leader
       (:desc "e-mail" "e" #'mu4e))
 
-(after! notmuch
-  (setq +notmuch-sync-backend 'mbsync
-        notmuch-archive-tags '("-inbox" "-unread" "+archived")
-        message-send-mail-function 'message-smtpmail-send-it
-        smtpmail-debug-info 't
-        smtpmail-smtp-user "linus@sehn.tech"
-        smtpmail-smtp-server "smtp.mailbox.org"
-        smtpmail-default-smtp-server "smtp.mailbox.org"
-        smtpmail-stream-type 'ssl
-        smtpmail-smtp-service 465)
-
-  (setq notmuch-saved-searches
-        '((:name "inbox"      :query "tag:inbox"                        :key "i")
-          (:name "archived"   :query "tag:archived not tag:newsletter"  :key "a")
-          (:name "newsletter" :query "tag:newsletter"                   :key "n")
-          (:name "flagged"    :query "tag:flagged"                      :key "f")
-          (:name "sent"       :query "tag:sent"                         :key "s")
-          (:name "drafts"     :query "tag:draft"                        :key "d"))))
-
-(defun +notmuch/myupdate ()
-  (interactive)
-  ;; create output buffer and jump to beginning
-  (let ((buf (get-buffer-create "*notmuch update*")))
-    (with-current-buffer buf
-      (erase-buffer))
-    (pop-to-buffer buf nil t)
-    (set-process-sentinel
-     (start-process-shell-command
-      "notmuch update" buf
-      (pcase +notmuch-sync-backend
-        (`gmi
-         (concat "cd " +notmuch-mail-folder " && gmi push && gmi pull && notmuch new && afew -a -t"))
-        (`mbsync
-         "afew -a -m && mbsync -a && notmuch new && afew -a -t")
-        (`mbsync-xdg
-         "afew -a -m && mbsync -c \"$XDG_CONFIG_HOME\"/isync/mbsyncrc -a && notmuch new && afew -a -t -m")
-        (`offlineimap
-         "offlineimap && notmuch new && afew -a -t -m")
-        (`custom +notmuch-sync-command)))
-     ;; refresh notmuch buffers if sync was successful
-     (lambda (_process event)
-       (if (string= event "finished\n")
-           (notmuch-refresh-all-buffers))))))
-
 (setq org-directory "~/org")
 
 (after! org
@@ -168,8 +128,6 @@
           (sequence "[ ](T)" "[-](P)" "[?](M)" "|" "[X](D)")
           (sequence "NEXT(n)" "WAIT(w)" "HOLD(h)" "|" "ABRT(c)")
           (sequence "TOREAD(r)" "|" "READ(R)"))))
-
-;;(org-babel-jupyter-override-src-block "python")
 
 (use-package org-sidebar
   :after org
@@ -292,6 +250,10 @@
     :config
     (org-super-agenda-mode)))
 
+(add-hook! 'org-mode-hook 'anki-editor-mode)
+(after! org
+  (setq anki-editor-ignored-org-tags '("noexport")))
+
 (defun my/search-exocortex ()
   "Perform a text search on `org-directory'."
   (interactive)
@@ -313,50 +275,9 @@
                 org-download-image-dir "./images"
                 org-download-heading-lvl nil))
 
-(setq centaur-lsp 'lsp-mode)
-(cl-defmacro lsp-org-babel-enable (lang)
-    "Support LANG in org source code block."
-    (cl-check-type lang stringp)
-    (let* ((edit-pre (intern (format "org-babel-edit-prep:%s" lang)))
-           (intern-pre (intern (format "lsp--%s" (symbol-name edit-pre)))))
-      `(progn
-         (defun ,intern-pre (info)
-           (let ((filename (or (->> info caddr (alist-get :file))
-                               buffer-file-name)))
-             (unless filename
-               (user-error "LSP:: specify `:file' property to enable."))
-
-             (setq buffer-file-name filename)
-             (pcase centaur-lsp
-               ('eglot
-                (and (fboundp 'eglot) (eglot)))
-               ('lsp-mode
-                (and (fboundp 'lsp-deferred)
-                     ;; `lsp-auto-guess-root' MUST be non-nil.
-                     (setq lsp-buffer-uri (lsp--path-to-uri filename))
-                     (lsp-deferred))))))
-         (put ',intern-pre 'function-documentation
-              (format "Enable `%s' in the buffer of org source block (%s)."
-                      centaur-lsp (upcase ,lang)))
-
-         (if (fboundp ',edit-pre)
-             (advice-add ',edit-pre :after ',intern-pre)
-           (progn
-             (defun ,edit-pre (info)
-               (,intern-pre info))
-             (put ',edit-pre 'function-documentation
-                  (format "Prepare local buffer environment for org source block (%s)."
-                          (upcase ,lang))))))))
-
-(defun lsp-org()
-    (interactive)
-    (defvar org-babel-lang-list
-        '("python" "ipython"))
-    (dolist (lang org-babel-lang-list)
-      (eval `(lsp-org-babel-enable ,lang))))
-
-(add-hook! 'org-src-mode-hook 'lsp-org)
-(add-hook! 'org-src-mode-hook 'lsp)
+(after! org
+  (setq org-src-window-setup 'current-window
+        org-babel-python-command "python3"))
 
 (use-package! mathpix
   :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
@@ -592,8 +513,8 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
             ",")))))))
 
 (map! :leader
-      (:prefix "m"
-       :desc "update mail" "u" #'+notmuch/myupdate)
+      ;; (:prefix "m"
+      ;;  :desc "update mail" "u" #'+notmuch/myupdate)
       (:prefix "s"
        :desc "Search exocortex" "e" #'org-roam-find-file
        :desc "Search concepts" "c" #'org-roam-bibtex-find-non-ref-file
@@ -608,14 +529,19 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
       ("M-p" #'my/org-ref-open-pdf-at-point)
       ("M-n" #'org-roam-insert)
       (:leader
-       (:desc "show todos" "z" #'ivy-magit-todos
+        (:desc "Show todos" "z" #'ivy-magit-todos)
         (:prefix "i"
-          :desc "Cite source" "c" #'org-ref-helm-insert-cite-link
-          )
+         :desc "Cite source" "c" #'org-ref-helm-insert-cite-link
+         :desc "Insert anki note" "a" #'anki-editor-insert-note
+         )
+        (:prefix ("a" . "anki")
+         :desc "Push notes to anki" "p" #'anki-editor-push-notes
+         :desc "Cloze region" "c" #'anki-editor-cloze-dwim
+         ))
       (:localleader
         (:prefix ("a" . "attachments")
           "c" #'org-download-screenshot
-          "y" #'org-download-yank)))))
+          "y" #'org-download-yank )))
 
 (map! :map pdf-view-mode-map
       "C-c i" 'org-noter-insert-note)

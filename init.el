@@ -28,7 +28,7 @@
        nav-flash
        ophints
        (popup +all +defaults)
-       (ligatures +iosevka)
+       ;;(ligatures +iosevka)
        treemacs
        vc-gutter
        vi-tilde-fringe
