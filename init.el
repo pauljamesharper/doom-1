@@ -46,6 +46,7 @@
        snippets          
 
        :emacs
+       undo
        (dired +icons)
        electric
        (ibuffer +icons)

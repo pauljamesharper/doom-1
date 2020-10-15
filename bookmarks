@@ -2,7 +2,22 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(("cs.org"
+(("ltm-social-sciences"
+ (filename . "~/org/exocortex/ltm/soc_sci.org")
+ (front-context-string . "#+title: Social ")
+ (rear-context-string)
+ (position . 1))
+("ltm-bsc"
+ (filename . "~/org/exocortex/ltm/bsc.org")
+ (front-context-string . "#+title: BSc Inf")
+ (rear-context-string)
+ (position . 1))
+("ltm-programming"
+ (filename . "~/org/exocortex/ltm/programming.org")
+ (front-context-string . "=\n\n#+BEGIN_SRC p")
+ (rear-context-string . "om a sequence =t")
+ (position . 1175))
+("cs.org"
  (filename . "~/org/cs.org")
  (front-context-string . "#+TITLE: Compute")
  (rear-context-string)
@@ -12,7 +27,6 @@
  (front-context-string . "se5      '(\"#5B6")
  (rear-context-string . "lack\"  ))\n   (ba")
  (position . 1424))
->>>>>>> 3db1ced801da6426ad485b00ec5892eeee85245f
 ("templates-org"
  (filename . "~/org/roam/templates.org")
  (front-context-string . "\ncite:snowden201")
