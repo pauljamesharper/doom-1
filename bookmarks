@@ -2,7 +2,12 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(("templates-org"
+((", ,"
+ (filename . "~/org/exocortex/autokeras.org")
+ (front-context-string . "-python :session")
+ (rear-context-string . "egin_src jupyter")
+ (position . 802))
+("templates-org"
  (filename . "~/org/roam/templates.org")
  (front-context-string . "\ncite:snowden201")
  (rear-context-string . "ite:zuboff2018\n\n")
@@ -31,8 +36,8 @@
  (rear-context-string . "6K Oct 28 23:10 ")
  (position . 186))
 ("org-capture-last-stored"
- (filename . "~/org/exocortex/refs/solaris-1972-film-wikipedia.org")
- (front-context-string . "#+title: Notes o")
+ (filename . "~/org/exocortex/attention-management.org")
+ (front-context-string . "#+title: Attenti")
  (rear-context-string)
  (position . 1))
 ("watching.org"

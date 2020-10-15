@@ -274,10 +274,10 @@
                           "~/org/caldav.org"))
   (setq org-super-agenda-groups '((:name "Today"
                                          :time-grid t)
-                                  (:name "Overdue"
-                                         :deadline past)
                                   (:name "Due today"
                                           :deadline today)
+                                  (:name "Overdue"
+                                         :deadline past)
                                   (:name "Due soon"
                                           :deadline future)
                                   (:name "Habits"
