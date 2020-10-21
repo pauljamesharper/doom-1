@@ -68,7 +68,7 @@
        eval
        ;;gist
        (lookup +docsets +offline +dictionary)
-       lsp
+       (lsp +eglot)
        magit
        pdf
        rgb
@@ -118,6 +118,8 @@
        ;;purescript        ; javascript, but functional
        (python             ; beautiful is better than ugly
         +lsp
+        +pyenv
+        +poetry
         +pyright)
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
@@ -135,7 +137,7 @@
 
        :email
        mu4e
-       notmuch
+       ;;notmuch
 
        :app
        ;;calendar

@@ -5,7 +5,7 @@
       projectile-project-search-path '("~/Projects" "/home/lino")
       bookmark-default-file "~/.doom.d/bookmarks")
 
-(setq doom-font (font-spec :family "Iosevka" :size 16)
+(setq doom-font (font-spec :family "Iosevka" :size 17)
       doom-variable-pitch-font (font-spec :family "Iosevka")
       doom-unicode-font (font-spec :family "all-the-icons")
       doom-big-font (font-spec :family "Iosevka" :size 20))
@@ -25,12 +25,48 @@
  '(("^\*helm"
     :size 0.45 :select t :modeline t :quit t :ttl t)))
 
+(set-popup-rule! "eldoc" :side 'right :size 0.4)
+(set-popup-rule! "helpful" :side 'right :size 0.4)
+
 (add-hook! 'text-mode-hook auto-fill-mode)
 
 ;;(toggle-frame-fullscreen)
 
 (after! company-box
   (setq company-box-max-candidates 10))
+
+(use-package! dired-x
+  :unless (featurep! +ranger)
+  :hook (dired-mode . dired-omit-mode)
+  :config
+  (setq dired-omit-verbose nil
+        dired-omit-files
+        (concat dired-omit-files
+                "\\|^.DS_Store\\'"
+                "\\|^.project\\(?:ile\\)?\\'"
+                "\\|^.\\(svn\\|git\\)\\'"
+                "\\|^.ccls-cache\\'"
+                "\\|\\.\\(?:elc\\|o\\|pyo\\|swp\\|class\\)\\'"))
+  ;; Disable the prompt about whether I want to kill the Dired buffer for a
+  ;; deleted directory. Of course I do!
+  (setq dired-clean-confirm-killing-deleted-buffers nil)
+  ;; Let OS decide how to open certain files
+  (when-let (cmd (cond (IS-MAC "open")
+                       (IS-LINUX "xdg-open")
+                       (IS-WINDOWS "start")))
+    (setq dired-guess-shell-alist-user
+          `(("\\.\\(?:docx\\|pdf\\|djvu\\|eps\\)\\'" ,cmd)
+            ("\\.\\(?:jpe?g\\|png\\|gif\\|xpm\\)\\'" ,cmd)
+            ("\\.\\(?:xcf\\)\\'" ,cmd)
+            ("\\.csv\\'" ,cmd)
+            ("\\.tex\\'" ,cmd)
+            ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|rm\\|rmvb\\|ogv\\)\\(?:\\.part\\)?\\'" ,cmd)
+            ("\\.\\(?:mp3\\|flac\\)\\'" ,cmd)
+            ("\\.html?\\'" ,cmd)
+            ("\\.odt\\'" "libreoffice"))))
+  (map! :map dired-mode-map
+        :localleader
+        "h" #'dired-omit-mode))
 
 (setq ispell-dictionary "en_GB")
 
@@ -302,7 +338,8 @@
 (after! org-roam
   (setq org-roam-directory "~/org/exocortex"
         org-roam-db-location "~/exocortex.db"
-        org-roam-graph-exclude-matcher "private"))
+        org-roam-graph-exclude-matcher "private"
+        +org-roam-open-buffer-on-find-file nil))
 
 (after! org-roam
   (defun org-roam--title-to-slug (title)
@@ -411,6 +448,10 @@ editable = false \n#+end_src
 bibliography:/home/lino/org/exocortex/biblio/library.bib
 "
              :unnarrowed t))))
+
+(after! org-noter
+  (setq org-noter-always-create-frame nil
+        org-noter-kill-frame-at-session-end nil))
 
 (after! org
   (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")

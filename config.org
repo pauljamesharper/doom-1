@@ -18,7 +18,7 @@
 * UI
 ** Fonts
 #+begin_src emacs-lisp :tangle yes :results silent
-(setq doom-font (font-spec :family "Iosevka" :size 16)
+(setq doom-font (font-spec :family "Iosevka" :size 17)
       doom-variable-pitch-font (font-spec :family "Iosevka")
       doom-unicode-font (font-spec :family "all-the-icons")
       doom-big-font (font-spec :family "Iosevka" :size 20))
@@ -46,6 +46,9 @@
 (set-popup-rules!
  '(("^\*helm"
     :size 0.45 :select t :modeline t :quit t :ttl t)))
+
+(set-popup-rule! "eldoc" :side 'right :size 0.4)
+(set-popup-rule! "helpful" :side 'right :size 0.4)
 #+end_src
 
 ** Auto-fill-mode
@@ -63,7 +66,42 @@
   (setq company-box-max-candidates 10))
 #+end_src
 * File Manager
-** TODO Define default applications (dired-shell-user-alist?)
+** Define default applications
+#+begin_src emacs-lisp :tangle yes :results silent
+(use-package! dired-x
+  :unless (featurep! +ranger)
+  :hook (dired-mode . dired-omit-mode)
+  :config
+  (setq dired-omit-verbose nil
+        dired-omit-files
+        (concat dired-omit-files
+                "\\|^.DS_Store\\'"
+                "\\|^.project\\(?:ile\\)?\\'"
+                "\\|^.\\(svn\\|git\\)\\'"
+                "\\|^.ccls-cache\\'"
+                "\\|\\.\\(?:elc\\|o\\|pyo\\|swp\\|class\\)\\'"))
+  ;; Disable the prompt about whether I want to kill the Dired buffer for a
+  ;; deleted directory. Of course I do!
+  (setq dired-clean-confirm-killing-deleted-buffers nil)
+  ;; Let OS decide how to open certain files
+  (when-let (cmd (cond (IS-MAC "open")
+                       (IS-LINUX "xdg-open")
+                       (IS-WINDOWS "start")))
+    (setq dired-guess-shell-alist-user
+          `(("\\.\\(?:docx\\|pdf\\|djvu\\|eps\\)\\'" ,cmd)
+            ("\\.\\(?:jpe?g\\|png\\|gif\\|xpm\\)\\'" ,cmd)
+            ("\\.\\(?:xcf\\)\\'" ,cmd)
+            ("\\.csv\\'" ,cmd)
+            ("\\.tex\\'" ,cmd)
+            ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|rm\\|rmvb\\|ogv\\)\\(?:\\.part\\)?\\'" ,cmd)
+            ("\\.\\(?:mp3\\|flac\\)\\'" ,cmd)
+            ("\\.html?\\'" ,cmd)
+            ("\\.odt\\'" "libreoffice"))))
+  (map! :map dired-mode-map
+        :localleader
+        "h" #'dired-omit-mode))
+#+end_src
+
 * Dictionaries & Grammar
 ** Default Dictionary
 #+begin_src emacs-lisp :tangle yes :results silent
@@ -501,7 +539,8 @@ Don't set =-T= flag for normal delete operation
 (after! org-roam
   (setq org-roam-directory "~/org/exocortex"
         org-roam-db-location "~/exocortex.db"
-        org-roam-graph-exclude-matcher "private"))
+        org-roam-graph-exclude-matcher "private"
+        +org-roam-open-buffer-on-find-file nil))
 #+end_src
 
 **** Capture Templates
@@ -625,7 +664,12 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
 "
              :unnarrowed t))))
 #+end_src
-
+**** Noter
+#+begin_src emacs-lisp :tangle yes :results silent
+(after! org-noter
+  (setq org-noter-always-create-frame nil
+        org-noter-kill-frame-at-session-end nil))
+#+end_src
 *** Export
 **** Export to PDF
 #+begin_src emacs-lisp :tangle yes :results silent

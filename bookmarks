@@ -56,8 +56,8 @@
  (rear-context-string . "6K Oct 28 23:10 ")
  (position . 186))
 ("org-capture-last-stored"
- (filename . "~/org/exocortex/attention-management.org")
- (front-context-string . "#+title: Attenti")
+ (filename . "~/org/exocortex/refs/donovan2016.org")
+ (front-context-string . "#+title: Notes o")
  (rear-context-string)
  (position . 1))
 ("watching.org"
