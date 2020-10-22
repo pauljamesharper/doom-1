@@ -2,6 +2,6 @@
 # name: javascript
 # key: js
 # --
-#+begin_src javascript
+#+begin_src javascript :results output :wrap result
 $0
 #+end_src

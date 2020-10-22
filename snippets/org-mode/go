@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: go
+# key: go                
+# --
+#+begin_src go :tangle "./code/$1/main.go" :comments link :noweb yes :results output :wrap result
+$2
+#+end_src
