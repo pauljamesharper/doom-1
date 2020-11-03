@@ -35,9 +35,17 @@
 (display-time-mode 1)
 #+end_src
 ** Transparency
-#+begin_src emacs-lisp :tangle yes :results silent
-(set-frame-parameter (selected-frame) 'alpha '(100 . 100))
-(add-to-list 'default-frame-alist '(alpha . (100 . 100)))
+#+begin_src emacs-lisp :tangle no :results silent
+(defun toggle-transparency ()
+  (interactive)
+  (let ((alpha (frame-parameter nil 'alpha)))
+    (if (eq
+         (if (numberp alpha)
+             alpha
+           (cdr alpha)) ; may also be nil
+         100)
+        (set-frame-parameter nil 'alpha '(95 . 75))
+      (set-frame-parameter nil 'alpha '(100 . 100)))))
 #+end_src
 
 ** Focus Mode
@@ -906,7 +914,8 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
       ;; (:prefix "m"
       ;;  :desc "     update mail" "u" #'+notmuch/myupdate)
       (:prefix ("t" . "toggle/tangle")
-       :desc "Detangle" "d" #'org-babel-detangle)
+       :desc "Detangle" "d" #'org-babel-detangle
+       :desc "Transparency" "p" #'toggle-transparency)
       (:prefix "s"
        :desc "Search exocortex" "e" #'org-roam-find-file
        :desc "Search concepts" "c" #'org-roam-bibtex-find-non-ref-file

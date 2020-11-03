@@ -18,9 +18,6 @@
 
 (display-time-mode 1)
 
-(set-frame-parameter (selected-frame) 'alpha '(100 . 100))
-(add-to-list 'default-frame-alist '(alpha . (100 . 100)))
-
 ;;(after! writeroom-mode
 ;;  (setq writeroom-fullscreen-effect t))
 
@@ -591,7 +588,8 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
       ;; (:prefix "m"
       ;;  :desc "     update mail" "u" #'+notmuch/myupdate)
       (:prefix ("t" . "toggle/tangle")
-       :desc "Detangle" "d" #'org-babel-detangle)
+       :desc "Detangle" "d" #'org-babel-detangle
+       :desc "Transparency" "p" #'toggle-transparency)
       (:prefix "s"
        :desc "Search exocortex" "e" #'org-roam-find-file
        :desc "Search concepts" "c" #'org-roam-bibtex-find-non-ref-file
