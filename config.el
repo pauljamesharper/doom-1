@@ -18,6 +18,9 @@
 
 (display-time-mode 1)
 
+(set-frame-parameter (selected-frame) 'alpha '(100 . 100))
+(add-to-list 'default-frame-alist '(alpha . (100 . 100)))
+
 ;;(after! writeroom-mode
 ;;  (setq writeroom-fullscreen-effect t))
 
@@ -194,8 +197,9 @@
                                        (0.95 font-lock-type-face)
                                        (0.5 ivy-confirm-face)
                                        (0.0 font-lock-keyword-face))
-  ;; set time-format to h:mm
-        org-duration-format (quote h:mm))
+        ;; set time-format to h:mm
+        org-duration-format (quote h:mm)
+        org-clock-budget-default-sort-column '("BUDGET_WEEK" budget desc))
   ;; make popup-buffer larger
   (set-popup-rule! "^\\*Org clock budget report" :size 0.35 :quit nil))
 
@@ -222,7 +226,7 @@
   )
 
 (map! :map org-mode-map
-     (:localleader
+      (:localleader
        :desc "Show weekly budget"     "w"     #'show-weekly-clock-budget
        ))
 
@@ -568,9 +572,24 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
                 (split-string keyword ","))
             ",")))))))
 
+(after! pdf-view
+  (setq pdf-annot-default-annotation-properties
+        '((t (label . "Linus Sehn"))
+          (text (icon . "Note")
+                (color . "#ff0000"))
+          (highlight (color . "yellow"))
+          (squiggly (color . "orange"))
+          (strike-out (color . "red"))
+          (underline (color . "blue"))))
+  (setq pdf-annot-color-history
+        '("#ffff00" "#ff6e6e" "#8cc8ff" "#6eff6e" "#c882c9")))
+
+(after! geiser-mode
+    (setq geiser-active-implementations '(mit)))
+
 (map! :leader
       ;; (:prefix "m"
-      ;;  :desc "update mail" "u" #'+notmuch/myupdate)
+      ;;  :desc "     update mail" "u" #'+notmuch/myupdate)
       (:prefix ("t" . "toggle/tangle")
        :desc "Detangle" "d" #'org-babel-detangle)
       (:prefix "s"
@@ -601,9 +620,13 @@ bibliography:/home/lino/org/exocortex/biblio/library.bib
          :desc "Cloze region" "c" #'anki-editor-cloze-dwim
          ))
       (:localleader
-        (:prefix ("a" . "attachments")
-          "c" #'org-download-screenshot
-          "y" #'org-download-yank )))
+       (:prefix ("b" . "tables")
+        "w" #'show-weekly-clock-budget
+        "m" #'show-monthly-clock-budget
+        "y" #'show-yearly-clock-budget)
+       (:prefix ("a" . "attachments")
+        "c" #'org-download-screenshot
+        "y" #'org-download-yank )))
 
 (map! :map pdf-view-mode-map
       "C-c i" 'org-noter-insert-note)

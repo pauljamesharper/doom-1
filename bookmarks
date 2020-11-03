@@ -2,7 +2,12 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(("ltm-social-sciences"
+(("nutri.org"
+ (filename . "~/org/nutri.org")
+ (front-context-string . "Nutrition & Shop")
+ (rear-context-string)
+ (position . 10))
+("ltm-social-sciences"
  (filename . "~/org/exocortex/ltm/soc_sci.org")
  (front-context-string . "#+title: Social ")
  (rear-context-string)
@@ -56,10 +61,10 @@
  (rear-context-string . "6K Oct 28 23:10 ")
  (position . 186))
 ("org-capture-last-stored"
- (filename . "~/org/exocortex/refs/donovan2016.org")
- (front-context-string . "#+title: Notes o")
- (rear-context-string)
- (position . 1))
+ (filename . "~/org/actions.org")
+ (front-context-string . "** TODO [#B] Act")
+ (rear-context-string . "r Studierende]]\n")
+ (position . 28835))
 ("watching.org"
  (filename . "~/org/watching.org")
  (front-context-string . "ea Bag\n** Yes, M")
@@ -91,13 +96,13 @@
  (rear-context-string . "_srt_subtitles/\n")
  (position . 194))
 ("org-capture-last-stored-marker"
- (filename . "~/org/watching.org")
- (front-context-string . "** Würdest du eh")
- (rear-context-string . "word Art Online\n")
- (position . 671))
+ (filename . "~/org/calendar.org")
+ (front-context-string . "* Webinar with S")
+ (rear-context-string . "November 2020]]\n")
+ (position . 7147))
 ("org-refile-last-stored"
- (filename . "~/org/watching.org")
- (front-context-string . "** Würdest du eh")
- (rear-context-string . "word Art Online\n")
- (position . 671))
+ (filename . "~/org/calendar.org")
+ (front-context-string . "** Webinar with ")
+ (rear-context-string . "ienen-Kontrolle\n")
+ (position . 6344))
 )

@@ -16,7 +16,7 @@
        ;;japanese
 
        :completion
-       (company +childframe)
+       (company)
        (ivy +fuzzy +prescient +childframe)
 
        :ui
