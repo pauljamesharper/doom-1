@@ -166,6 +166,7 @@
            "STRT(s)"  ; A task that is in progress
            "WAIT(w)"  ; Something external is holding up this task
            "HOLD(h)"  ; This task is paused/on hold because of me
+           "IDEA(i)"  ; This task is paused/on hold because of me
            "|"
            "DONE(d)"  ; Task successfully completed
            "KILL(k)") ; Task was cancelled, aborted or is no longer applicable
@@ -181,6 +182,7 @@
           ("[?]"  . +org-todo-onhold)
           ("WAIT" . +org-todo-onhold)
           ("HOLD" . +org-todo-onhold)
+          ("IDEA" . +org-todo-onhold)
           ("PROJ" . +org-todo-project))))
 
 (use-package org-sidebar
