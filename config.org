@@ -35,7 +35,7 @@
 (display-time-mode 1)
 #+end_src
 ** Transparency
-#+begin_src emacs-lisp :tangle no :results silent
+#+begin_src emacs-lisp :tangle yes :results silent
 (defun toggle-transparency ()
   (interactive)
   (let ((alpha (frame-parameter nil 'alpha)))

@@ -18,6 +18,17 @@
 
 (display-time-mode 1)
 
+(defun toggle-transparency ()
+  (interactive)
+  (let ((alpha (frame-parameter nil 'alpha)))
+    (if (eq
+         (if (numberp alpha)
+             alpha
+           (cdr alpha)) ; may also be nil
+         100)
+        (set-frame-parameter nil 'alpha '(95 . 75))
+      (set-frame-parameter nil 'alpha '(100 . 100)))))
+
 ;;(after! writeroom-mode
 ;;  (setq writeroom-fullscreen-effect t))
 
