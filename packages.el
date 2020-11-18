@@ -1,13 +1,11 @@
 ;;; ~/.doom.d/packages.el
 
+;; General
 (package! org-caldav)
-(package! org-sidebar)
 (package! org-super-agenda)
-(package! mu4e-alert)
 (package! anki-editor)
-(package! org-download)
-(package! company-bibtex)
-(package! citeproc-org)
+
+;; Forked
 (package! org-clock-budget
   :recipe (:host github :repo "linozen/org-clock-budget"))
 (package! mathpix
