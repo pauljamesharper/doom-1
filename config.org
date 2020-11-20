@@ -155,6 +155,8 @@ https://languagetool.org/.
 * E-mail
 ** General
 #+begin_src emacs-lisp :tangle yes :results silent
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
+        
 (after! mu4e
   (setq mu4e-root-maildir "~/.mail/")
   (set-email-account! "sehn.tech"
@@ -218,10 +220,12 @@ Don't set =-T= flag for normal delete operation
 
 * Exocortex
 #+begin_src emacs-lisp :tangle yes :results silent
-(setq org-directory "~/Exocortex"
-      org-roam-directory "~/Exocortex"
-      org-roam-db-location "~/Exocortex/.exocortex.db"
-      org-roam-file-exclude-regexp ".*archive.org")
+(setq org-directory "~/Exocortex")
+
+(after! org-roam
+  (setq org-roam-directory "~/Exocortex"
+        org-roam-db-location "~/Exocortex/.exocortex.db"
+        org-roam-file-exclude-regexp ".*archive.org"))
 #+end_src
 ** Planning & Review
 *** Agenda

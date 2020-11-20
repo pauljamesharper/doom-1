@@ -105,6 +105,8 @@
   (ispell-change-dictionary "en_GB")
   (flyspell-buffer))
 
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
+        
 (after! mu4e
   (setq mu4e-root-maildir "~/.mail/")
   (set-email-account! "sehn.tech"
@@ -156,10 +158,12 @@
   (add-hook! 'message-send-hook
     (setq-local org-mu4e-convert-to-html nil)))
 
-(setq org-directory "~/Exocortex"
-      org-roam-directory "~/Exocortex"
-      org-roam-db-location "~/Exocortex/.exocortex.db"
-      org-roam-file-exclude-regexp ".*archive.org")
+(setq org-directory "~/Exocortex")
+
+(after! org-roam
+  (setq org-roam-directory "~/Exocortex"
+        org-roam-db-location "~/Exocortex/.exocortex.db"
+        org-roam-file-exclude-regexp ".*archive.org"))
 
 (after! org
   (setq org-agenda-files (list org-directory)
