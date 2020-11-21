@@ -11,6 +11,7 @@
        doom-dashboard
        doom-quit
        hl-todo
+       indent-guides
        modeline
        nav-flash
        ophints
