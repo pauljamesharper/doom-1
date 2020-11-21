@@ -54,6 +54,7 @@
        (lookup +docsets +offline +dictionary)
        (lsp +eglot)
        magit
+       pass
        pdf
        rgb
        upload
