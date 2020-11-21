@@ -1,8 +1,5 @@
 ;;; tools/biblio/config.el -*- lexical-binding: t; -*-
 
-(defvar +org-roam-open-buffer-on-find-file nil
-  "If non-nil, open the org-roam buffer when opening an org roam file.")
-
 (use-package! org-roam
   :hook (org-load . org-roam-mode)
   :hook (org-roam-backlinks-mode . turn-on-visual-line-mode)
@@ -34,7 +31,8 @@
          :desc "Find directory"     "." #'org-roam-dailies-find-directory))
   :config
   (setq org-roam-directory "~/Exocortex"
-        org-roam-db-location "~/Exocortex/exocortex.db"
+        org-roam-db-location "~/Exocortex/.exocortex.db"
+        +org-roam-open-buffer-on-find-file nil
         org-roam-verbose nil            ; https://youtu.be/fn4jIlFwuLU
         ;; Make org-roam buffer sticky; i.e. don't replace it when opening a
         ;; file with an *-other-window command.
@@ -45,31 +43,19 @@
               ((featurep! :completion ivy) 'ivy)
               ((featurep! :completion ido) 'ido)
               ('default)))
-        +org-roam-open-buffer-on-find-file nil
-
-  ;; Normally, the org-roam buffer doesn't open until you explicitly call
-  ;; `org-roam'. If `+org-roam-open-buffer-on-find-file' is non-nil, the
-  ;; org-roam buffer will be opened for you when you use `org-roam-find-file'
-  ;; (but not `find-file', to limit the scope of this behavior).
-  (add-hook! 'find-file-hook
-    (defun +org-roam-open-buffer-maybe-h ()
-      (and +org-roam-open-buffer-on-find-file
-           (memq 'org-roam-buffer--update-maybe post-command-hook)
-           (not (window-parameter nil 'window-side)) ; don't proc for popups
-           (not (eq 'visible (org-roam-buffer--visibility)))
-           (with-current-buffer (window-buffer)
-             (org-roam-buffer--get-create)))))
 
   ;; Hide the mode line in the org-roam buffer, since it serves no purpose. This
   ;; makes it easier to distinguish from other org buffers.
   (add-hook 'org-roam-buffer-prepare-hook #'hide-mode-line-mode))
-
 
 ;; Since the org module lazy loads org-protocol (waits until an org URL is
 ;; detected), we can safely chain `org-roam-protocol' to it.
 (use-package! org-roam-protocol
   :after org-protocol)
 
+(use-package! org-roam-bibtex
+  :after org-roam
+  :hook (org-roam-mode . org-roam-bibtex-mode))
 
 ;; Internal function to set the various paths used in the
 ;; reference packages.
@@ -93,7 +79,6 @@
                (setq org-ref-bibliography-notes value)))
            (setq bibtex-completion-notes-path value)))))
 
-
 (defcustom +biblio-pdf-library-dir nil
   "Directory where pdf files are stored. Must end with a slash."
   :type 'string
@@ -112,10 +97,6 @@ In case of directory the path must end with a slash."
   :type 'string
   :set #'+biblio-set-paths-fn)
 
-(use-package! org-roam-bibtex
-  :after org-roam
-  :hook (org-roam-mode . org-roam-bibtex-mode))
-
 (use-package! bibtex-completion
   :defer t
   :preface
@@ -123,6 +104,8 @@ In case of directory the path must end with a slash."
   ;; not set one fall back to the +biblio variants which have a reasonable
   ;; fallback.
   (defvar bibtex-completion-notes-template-multiple-files nil)
+  (when (featurep! :completion ivy)
+    (add-to-list 'ivy-re-builders-alist '(ivy-bibtex . ivy--regex-plus)))
   :config
   (setq bibtex-completion-additional-search-fields '(keywords)
         ;; This tell bibtex-completion to look at the File field of the bibtex
@@ -135,7 +118,7 @@ In case of directory the path must end with a slash."
   :preface
   ;; This need to be set before the package is loaded, because org-ref will
   ;; automatically `require' an associated package during its loading.
-  (setq org-ref-completion-library #'org-ref-helm-bibtex)
+  (setq org-ref-completion-library #'org-ref-ivy-cite)
   :config
   (defun my/org-ref-open-pdf-at-point ()
     "Open the pdf for bibtex key under point if it exists."
@@ -144,11 +127,29 @@ In case of directory the path must end with a slash."
            (key (car results)))
       (funcall bibtex-completion-pdf-open-function (car (bibtex-completion-find-pdf key)))))
   ;; actually use it
-  (setq org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point))
-
-(use-package! company-bibtex
-  :when (featurep! :completion company)
-  :after org
-  :config
-  (setq company-bibtex-bibliography +biblio-default-bibliography-files
-        company-bibtex-org-citation-regex "cite[a-z]+:+"))
+  (setq org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point)
+  ;; I need this interactively
+  (defun my/org-ref-update-pre-post-text ()
+    "Prompt for pre/post text and update link accordingly. A blank string deletes pre/post text."
+  (interactive)
+  (save-excursion
+    (let* ((cite (org-element-context))
+           (type (org-element-property :type cite))
+           (key (org-element-property :path cite))
+           (text (read-from-minibuffer "Pre/post text: ")))
+      ;; First we delete the citation
+      (when (-contains? org-ref-cite-types type)
+        (cl--set-buffer-substring
+         (org-element-property :begin cite)
+         (org-element-property :end cite)
+         ""))
+      ;; Then we reformat the citation
+      (if (string= text "")
+          (progn
+            (insert (format "%s:%s " type key))
+            ;; Avoid space before punctuation
+            (when (looking-at "[[:punct:]]")
+              (delete-char 1)))
+        (insert (format "[[%s:%s][%s]] " type key text))
+        (when (looking-at "[[:punct:]]")
+          (delete-char 1)))))))

@@ -30,8 +30,8 @@
       (set-frame-parameter nil 'alpha '(100 . 100)))))
 
 (set-popup-rules!
- '(("^\*helm"
-    :size 0.45 :select t :modeline t :quit t :ttl t)))
+  '(("^\*helm"
+     :size 0.35 :select t :modeline n :quit t)))
 
 (set-popup-rule! "eldoc" :side 'right :size 85)
 (set-popup-rule! "helpful" :side 'right :size 85)
@@ -40,8 +40,6 @@
 
 (after! company-box
   (setq company-box-max-candidates 10))
-
-(set-company-backend! 'org-mode 'company-bibtex)
 
 (use-package! dired-x
   :unless (featurep! +ranger)
@@ -581,24 +579,26 @@ bibliography:../bib/library.bib
        :desc "Transparency" "p" #'my/toggle-transparency))
 
 (map! :map org-mode-map
-      ("M-i" #'org-ref-helm-insert-cite-link)
-      ("M-e" #'org-ref-update-pre-post-text)
+      ("M-i" #'org-ref-ivy-insert-cite-link)
+      ("M-e" #'my/org-ref-update-pre-post-text)
       ("M-p" #'my/org-ref-open-pdf-at-point)
-      ("M-n" #'org-roam-insert)
+      ("M-n" #'org-ref-open-notes-at-point)
+      ("M-r" #'org-roam-insert)
       (:leader
        (:desc "Show todos" "z" #'ivy-magit-todos)
+       (:prefix ("c" . "code/cite")
+        :desc "Cite source" "i" #'org-ref-ivy-insert-cite-link
+        :desc "Open pdf at point" "p" #'my/org-ref-open-pdf-at-point
+        :desc "Open notes at point" "n" #'org-ref-open-notes-at-point)
        (:prefix ("t" . "toggle/tangle")
         :desc "Tangle src blocks" "t" #'org-babel-tangle
-        :desc "Jump to src block" "j" #'org-babel-tangle-jump
-        )
+        :desc "Jump to src block" "j" #'org-babel-tangle-jump)
        (:prefix "i"
         :desc "Cite source" "c" #'org-ref-helm-insert-cite-link
-        :desc "Insert anki note" "a" #'anki-editor-insert-note
-        )
+        :desc "Insert anki note" "a" #'anki-editor-insert-note)
        (:prefix ("a" . "anki")
         :desc "Push notes to anki" "p" #'anki-editor-push-notes
-        :desc "Cloze region" "c" #'anki-editor-cloze-dwim
-        ))
+        :desc "Cloze region" "c" #'anki-editor-cloze-dwim))
       (:localleader
        (:prefix ("b" . "tables")
         "w" #'show-weekly-clock-budget
