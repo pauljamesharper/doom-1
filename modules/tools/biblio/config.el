@@ -1,6 +1,6 @@
 ;;; tools/biblio/config.el -*- lexical-binding: t; -*-
 
-(defvar +org-roam-open-buffer-on-find-file t
+(defvar +org-roam-open-buffer-on-find-file nil
   "If non-nil, open the org-roam buffer when opening an org roam file.")
 
 (use-package! org-roam
@@ -35,7 +35,7 @@
   :config
   (setq org-roam-directory "~/Exocortex"
         org-roam-db-location "~/Exocortex/exocortex.db"
-        org-roam-verbose nil   ; https://youtu.be/fn4jIlFwuLU
+        org-roam-verbose nil            ; https://youtu.be/fn4jIlFwuLU
         ;; Make org-roam buffer sticky; i.e. don't replace it when opening a
         ;; file with an *-other-window command.
         org-roam-buffer-window-parameters '((no-delete-other-windows . t))
@@ -45,6 +45,7 @@
               ((featurep! :completion ivy) 'ivy)
               ((featurep! :completion ido) 'ido)
               ('default)))
+        +org-roam-open-buffer-on-find-file nil
 
   ;; Normally, the org-roam buffer doesn't open until you explicitly call
   ;; `org-roam'. If `+org-roam-open-buffer-on-find-file' is non-nil, the

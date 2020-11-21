@@ -41,7 +41,7 @@
 (after! company-box
   (setq company-box-max-candidates 10))
 
-(set-company-backend! :derived 'text-mode 'company-bibtex)
+(set-company-backend! 'org-mode 'company-bibtex)
 
 (use-package! dired-x
   :unless (featurep! +ranger)
