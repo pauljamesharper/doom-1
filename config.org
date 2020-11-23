@@ -69,7 +69,6 @@
   (setq company-box-max-candidates 10))
 #+end_src
 
-
 * File Manager
 ** Define default applications
 #+begin_src emacs-lisp :tangle yes :results silent
