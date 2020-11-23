@@ -5,6 +5,9 @@
 (package! org-super-agenda)
 (package! anki-editor)
 
+;; Disabled stuff
+(package! solaire-mode :disable t)
+
 ;; Forked
 (package! org-clock-budget
   :recipe (:host github :repo "linozen/org-clock-budget"))
