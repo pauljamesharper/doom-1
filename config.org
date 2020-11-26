@@ -246,27 +246,27 @@ Don't set =-T= flag for normal delete operation
     (setq org-agenda-skip-deadline-if-done t)
     (setq org-agenda-start-on-weekday nil)
     (setq org-agenda-dim-blocked-tasks nil) ;; makes main tasks visible in agenda-view
-    (setq org-agenda-files '("~/Exocortex/org/actions.org"
-                             "~/Exocortex/org/actions-compsci.org"
-                             "~/Exocortex/org/calendar.org"
-                             "~/Exocortex/org/caldav.org"))
-    (setq org-super-agenda-groups '((:name "Today"
-                                     :time-grid t)
-                                    (:name "Due today"
-                                     :deadline today)
-                                    (:name "Overdue"
-                                     :deadline past)
-                                    (:name "Due soon"
-                                     :deadline future)
-                                    (:name "Habits"
-                                     :habit t)
-                                    (:name "Reschedule or start"
-                                     :scheduled past)
-                                    (:name "Start today"
-                                     :scheduled today)
-                                    (:name "Start soon"
-                                     :scheduled future)
-                                    ))
+    (setq org-agenda-files
+          '("~/Exocortex/org/actions.org"
+            "~/Exocortex/org/actions-compsci.org"
+            "~/Exocortex/org/calendar.org"
+            "~/Exocortex/org/caldav.org"))
+    (setq org-super-agenda-groups
+          '((:name "Due today"
+             :deadline today)
+            (:name "Overdue"
+             :deadline past)
+            (:name "Due soon"
+             :deadline future)
+            (:name "Habits"
+             :habit t)
+            (:name "Start today"
+             :scheduled today)
+            (:name "Start soon"
+             :scheduled future)
+            (:name "Reschedule or review"
+             :scheduled past)
+            ))
     :config
     (org-super-agenda-mode)))
 #+end_src
