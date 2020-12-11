@@ -5,10 +5,10 @@
       projectile-project-search-path '("~/Projects" "/home/lino")
       bookmark-default-file "~/.doom.d/bookmarks")
 
-(setq doom-font (font-spec :family "Iosevka" :size 16)
+(setq doom-font (font-spec :family "JetBrains Mono" :size 16)
       doom-variable-pitch-font (font-spec :family "Rubik")
       doom-unicode-font (font-spec :family "all-the-icons")
-      doom-big-font (font-spec :family "Iosevka" :size 20))
+      doom-big-font (font-spec :family "Iosevka" :size 24))
 
 (setq doom-theme 'doom-one
       doom-themes-enable-bold t

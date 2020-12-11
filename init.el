@@ -3,7 +3,7 @@
 (doom! :input
 
        :completion
-       (company)
+       (company +childframe)
        (ivy +fuzzy +prescient +childframe)
 
        :ui
@@ -50,6 +50,7 @@
        biblio
        ansible
        (docker +lsp)
+       direnv
        eval
        (lookup +docsets +offline +dictionary)
        (lsp +eglot)
@@ -82,8 +83,8 @@
        mu4e
 
        :app
+       irc
        ;;calendar
-       ;;irc
        ;;(rss +org)
        ;;twitter
 
