@@ -292,10 +292,10 @@
 (after! org
   (setq org-capture-templates
         '(("t" "TODO" entry
-           (file+headline "~/org/actions.org" "Other")
+           (file+headline "~/Exocortex/org/actions.org" "Other")
            "* TODO [#A] %?\n%a\n")
           ("a" "APPOINTMENT" entry
-           (file+headline "~/org/calendar.org" "2020_Q4")
+           (file+headline "~/Exocortex/org/calendar.org" "2020_Q4")
            "* %?\n%(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n"))))
 
 (add-hook! 'org-mode-hook 'anki-editor-mode)
