@@ -8,7 +8,7 @@
 (setq doom-font (font-spec :family "JetBrains Mono" :size 16)
       doom-variable-pitch-font (font-spec :family "Rubik")
       doom-unicode-font (font-spec :family "all-the-icons")
-      doom-big-font (font-spec :family "Iosevka" :size 24))
+      doom-big-font (font-spec :family "JetBrains Mono" :size 24))
 
 (setq doom-theme 'doom-one
       doom-themes-enable-bold t
@@ -104,7 +104,7 @@
   (flyspell-buffer))
 
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-        
+
 (after! mu4e
   (setq mu4e-root-maildir "~/.mail/")
   (set-email-account! "sehn.tech"
@@ -112,7 +112,6 @@
                         (mu4e-drafts-folder     . "/mailbox/Drafts")
                         (mu4e-trash-folder      . "/mailbox/Trash")
                         (mu4e-refile-folder     . "/mailbox/Archive/2020")
-                        (mu4e-compose-signature . "---\nLinus Sehn\nGraduate Student | International Relations and Computer Science\nFU Berlin, HU Berlin, Uni Potsdam\nlinus@sehn.tech | https://sehn.tech")
                         (smtpmail-smtp-user     . "linus@sehn.tech")
                         (user-mail-address      . "linus@sehn.tech")
                         (user-full-name         . "Linus Sehn"))
@@ -127,11 +126,9 @@
         smtpmail-smtp-server "smtp.mailbox.org"
         smtpmail-default-smtp-server "smtp.mailbox.org"
         smtpmail-stream-type 'ssl
-        smtpmail-smtp-service 465))
-
-(use-package! mu4e
-  :config
-  (remove-hook 'mu4e-main-mode-hook 'evil-collection-mu4e-update-main-view))
+        smtpmail-smtp-service 465
+        mu4e-view-html-plaintext-ratio-heuristic 10000
+        mml-secure-openpgp-encrypt-to-self 't))
 
 (after! mu4e
   (setf (alist-get 'trash mu4e-marks)
@@ -145,16 +142,23 @@
                         ;; IMAP-deleted:
                         (mu4e~proc-move docid (mu4e~mark-check-target target) "-N")))))
 
-(use-package! org-mu4e
-  :after mu4e
-  :config
-  (setq org-mu4e-convert-to-html t
-        mu4e-compose-mode-hook nil)
+(after! org-msg
+  (setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil author:nil email:nil \\n:t"
+        org-msg-startup "hidestars indent inlineimages"
+        org-msg-greeting-fmt "\nHi %s,\n\n"
+        org-msg-greeting-name-limit 3
+        org-msg-default-alternatives '(text html)
+        org-msg-signature "
 
-  ;; Only render to html once. If the first send fails for whatever reason,
-  ;; org-mu4e would do so each time you try again.
-  (add-hook! 'message-send-hook
-    (setq-local org-mu4e-convert-to-html nil)))
+Warmest regards,
+
+#+begin_signature
+-- \\\\
+Linus Sehn \\\\
+m: linus@sehn.tech \\\\
+i: sehn.tech
+#+end_signature")
+  (org-msg-mode))
 
 (setq org-directory "~/Exocortex")
 
@@ -183,6 +187,7 @@
     (setq org-agenda-files
           '("~/Exocortex/org/actions.org"
             "~/Exocortex/org/actions-compsci.org"
+            "~/Exocortex/org/actions-fsfe.org"
             "~/Exocortex/org/calendar.org"
             "~/Exocortex/org/caldav.org"))
     (setq org-super-agenda-groups
