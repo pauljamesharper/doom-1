@@ -566,7 +566,7 @@ bibliography:../bib/library.bib
     (setq geiser-active-implementations '(mit)))
 
 (map!
- ("M-w" #'+workspace/delete)
+ ("M-q" #'+workspace/delete)
  :leader
  (:prefix-map ("e" . "exocortex")
   :desc "Search for name" "e" #'org-roam-find-file
@@ -591,7 +591,6 @@ bibliography:../bib/library.bib
       ("M-n" #'org-ref-open-notes-at-point)
       ("M-r" #'org-roam-insert)
       (:leader
-       (:desc "Show todos" "z" #'ivy-magit-todos)
        (:prefix ("c" . "code/cite")
         :desc "Cite source" "i" #'org-ref-ivy-insert-cite-link
         :desc "Open pdf at point" "p" #'my/org-ref-open-pdf-at-point
