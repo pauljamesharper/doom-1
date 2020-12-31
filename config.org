@@ -18,10 +18,10 @@
 * UI
 ** Fonts
 #+begin_src emacs-lisp :tangle yes :results silent
-(setq doom-font (font-spec :family "JetBrains Mono" :size 16)
+(setq doom-font (font-spec :family "JetBrains Mono" :size 14)
       doom-variable-pitch-font (font-spec :family "Rubik")
       doom-unicode-font (font-spec :family "all-the-icons")
-      doom-big-font (font-spec :family "JetBrains Mono" :size 24))
+      doom-big-font (font-spec :family "JetBrains Mono" :size 22))
 #+end_src
 
 ** Theme & Modeline
@@ -219,7 +219,6 @@ i: sehn.tech
 #+end_signature")
   (org-msg-mode))
 #+end_src
-
 
 * Exocortex
 #+begin_src emacs-lisp :tangle yes :results silent
@@ -769,22 +768,24 @@ a helper function for jumping to source
 * Bindings
 ** Global
 #+begin_src emacs-lisp :tangle yes :results silent
-(map! :leader
-      (:prefix-map ("e" . "exocortex")
-       :desc "Search for name" "e" #'org-roam-find-file
-       :desc "Search for symbol" "x" #'my/search-exocortex
-       :desc "Search public for symbol" "w" #'my/search-public
-       :desc "Search zettel" "c" #'org-roam-bibtex-find-non-ref-file
-       :desc "Search refs" "r" #'org-roam-find-ref)
-      (:prefix-map ("d" . "dict")
-       :desc "Add to dictionary" "a" #'my/save-to-dict
-       :desc "Change to german" "g" #'my/switch-to-de-dict
-       :desc "Change to english" "e" #'my/switch-to-en-dict)
-      (:prefix-map ("i" . "insert")
-       :desc "Insert math from screen" "m" #'mathpix-screenshot)
-      (:prefix ("t" . "toggle/tangle")
-       :desc "Detangle" "d" #'org-babel-detangle
-       :desc "Transparency" "p" #'my/toggle-transparency))
+(map!
+ ("M-q" #'+workspace/delete)
+ :leader
+ (:prefix-map ("e" . "exocortex")
+  :desc "Search for name" "e" #'org-roam-find-file
+  :desc "Search for symbol" "x" #'my/search-exocortex
+  :desc "Search public for symbol" "w" #'my/search-public
+  :desc "Search zettel" "c" #'org-roam-bibtex-find-non-ref-file
+  :desc "Search refs" "r" #'org-roam-find-ref)
+ (:prefix-map ("d" . "dict")
+  :desc "Add to dictionary" "a" #'my/save-to-dict
+  :desc "Change to german" "g" #'my/switch-to-de-dict
+  :desc "Change to english" "e" #'my/switch-to-en-dict)
+ (:prefix-map ("i" . "insert")
+  :desc "Insert math from screen" "m" #'mathpix-screenshot)
+ (:prefix ("t" . "toggle/tangle")
+  :desc "Detangle" "d" #'org-babel-detangle
+  :desc "Transparency" "p" #'my/toggle-transparency))
 #+end_src
 
 ** =org-mode-map=
@@ -801,7 +802,6 @@ a helper function for jumping to source
       ("M-n" #'org-ref-open-notes-at-point)
       ("M-r" #'org-roam-insert)
       (:leader
-       (:desc "Show todos" "z" #'ivy-magit-todos)
        (:prefix ("c" . "code/cite")
         :desc "Cite source" "i" #'org-ref-ivy-insert-cite-link
         :desc "Open pdf at point" "p" #'my/org-ref-open-pdf-at-point

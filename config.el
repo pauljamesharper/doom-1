@@ -5,10 +5,10 @@
       projectile-project-search-path '("~/Projects" "/home/lino")
       bookmark-default-file "~/.doom.d/bookmarks")
 
-(setq doom-font (font-spec :family "JetBrains Mono" :size 16)
+(setq doom-font (font-spec :family "JetBrains Mono" :size 14)
       doom-variable-pitch-font (font-spec :family "Rubik")
       doom-unicode-font (font-spec :family "all-the-icons")
-      doom-big-font (font-spec :family "JetBrains Mono" :size 24))
+      doom-big-font (font-spec :family "JetBrains Mono" :size 22))
 
 (setq doom-theme 'doom-one
       doom-themes-enable-bold t
@@ -565,22 +565,24 @@ bibliography:../bib/library.bib
 (after! geiser-mode
     (setq geiser-active-implementations '(mit)))
 
-(map! :leader
-      (:prefix-map ("e" . "exocortex")
-       :desc "Search for name" "e" #'org-roam-find-file
-       :desc "Search for symbol" "x" #'my/search-exocortex
-       :desc "Search public for symbol" "w" #'my/search-public
-       :desc "Search zettel" "c" #'org-roam-bibtex-find-non-ref-file
-       :desc "Search refs" "r" #'org-roam-find-ref)
-      (:prefix-map ("d" . "dict")
-       :desc "Add to dictionary" "a" #'my/save-to-dict
-       :desc "Change to german" "g" #'my/switch-to-de-dict
-       :desc "Change to english" "e" #'my/switch-to-en-dict)
-      (:prefix-map ("i" . "insert")
-       :desc "Insert math from screen" "m" #'mathpix-screenshot)
-      (:prefix ("t" . "toggle/tangle")
-       :desc "Detangle" "d" #'org-babel-detangle
-       :desc "Transparency" "p" #'my/toggle-transparency))
+(map!
+ ("M-w" #'+workspace/delete)
+ :leader
+ (:prefix-map ("e" . "exocortex")
+  :desc "Search for name" "e" #'org-roam-find-file
+  :desc "Search for symbol" "x" #'my/search-exocortex
+  :desc "Search public for symbol" "w" #'my/search-public
+  :desc "Search zettel" "c" #'org-roam-bibtex-find-non-ref-file
+  :desc "Search refs" "r" #'org-roam-find-ref)
+ (:prefix-map ("d" . "dict")
+  :desc "Add to dictionary" "a" #'my/save-to-dict
+  :desc "Change to german" "g" #'my/switch-to-de-dict
+  :desc "Change to english" "e" #'my/switch-to-en-dict)
+ (:prefix-map ("i" . "insert")
+  :desc "Insert math from screen" "m" #'mathpix-screenshot)
+ (:prefix ("t" . "toggle/tangle")
+  :desc "Detangle" "d" #'org-babel-detangle
+  :desc "Transparency" "p" #'my/toggle-transparency))
 
 (map! :map org-mode-map
       ("M-i" #'org-ref-ivy-insert-cite-link)

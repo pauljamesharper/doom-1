@@ -73,7 +73,7 @@
        (latex +latexmk +cdlatex)
        (markdown +grip)
        (org +dragndrop +jupyter +present +hugo +noter)
-       (python +lsp +pyright +pyenv +cython)
+       (python +lsp +pyright +cython)
        rest
        scheme
        (sh +lsp +fish)
