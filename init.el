@@ -72,7 +72,7 @@
        (json +lsp)
        (latex +latexmk +cdlatex)
        (markdown +grip)
-       (org +dragndrop +jupyter +present +hugo +noter)
+       (org +dragndrop +hugo +journal +jupyter +noter +present )
        (python +lsp +pyright +cython)
        rest
        scheme

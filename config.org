@@ -157,29 +157,40 @@ https://languagetool.org/.
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
 
 (after! mu4e
-  (setq mu4e-root-maildir "~/.mail/")
-  (set-email-account! "sehn.tech"
-                      '((mu4e-sent-folder       . "/mailbox/Sent")
-                        (mu4e-drafts-folder     . "/mailbox/Drafts")
-                        (mu4e-trash-folder      . "/mailbox/Trash")
-                        (mu4e-refile-folder     . "/mailbox/Archive/2020")
-                        (smtpmail-smtp-user     . "linus@sehn.tech")
-                        (user-mail-address      . "linus@sehn.tech")
-                        (user-full-name         . "Linus Sehn"))
-                      t)
-
   (setq mu4e-compose-complete-addresses 't
         mu4e-use-fancy-chars 'nil
         mu4e-sent-messages-behavior 'sent
         mu4e-update-interval 300
-        smtpmail-debug-info 't
-        smtpmail-smtp-user "linus@sehn.tech"
-        smtpmail-smtp-server "smtp.mailbox.org"
-        smtpmail-default-smtp-server "smtp.mailbox.org"
-        smtpmail-stream-type 'ssl
-        smtpmail-smtp-service 465
+        mu4e-attachment-dir "~/Downloads/"
         mu4e-view-html-plaintext-ratio-heuristic 10000
-        mml-secure-openpgp-encrypt-to-self 't))
+        smtpmail-debug-info 't
+        mml-secure-openpgp-encrypt-to-self 't)
+
+  (set-email-account! "sehn.tech"
+                      '((user-mail-address              . "linus@sehn.tech")
+                        (user-full-name                 . "Linus Sehn")
+                        (mu4e-sent-folder               . "/mailbox/Sent")
+                        (mu4e-drafts-folder             . "/mailbox/Drafts")
+                        (mu4e-trash-folder              . "/mailbox/Trash")
+                        (mu4e-refile-folder             . "/mailbox/Archive/2021")
+                        (smtpmail-smtp-user             . "linus@sehn.tech")
+                        (smtpmail-smtp-server           . "smtp.mailbox.org")
+                        (smtpmail-stream-type           . ssl)
+                        (smtpmail-smtp-service          . 465))
+                      t)
+
+  (set-email-account! "fsfe.org"
+                      '((user-mail-address              . "linus@fsfe.org")
+                        (user-full-name                 . "Linus Sehn")
+                        (mu4e-sent-folder               . "/mailbox/Sent")
+                        (mu4e-drafts-folder             . "/mailbox/Drafts")
+                        (mu4e-trash-folder              . "/mailbox/Trash")
+                        (mu4e-refile-folder             . "/mailbox/Archive/2021")
+                        (smtpmail-smtp-user             . "linus")
+                        (smtpmail-smtp-server           . "mail.fsfe.org")
+                        (smtpmail-stream-type           . starttls)
+                        (smtpmail-smtp-service          . 587))
+                      t))
 #+end_src
 
 Don't set =-T= flag for normal delete operation. Basically, this makes the trash
@@ -379,8 +390,16 @@ i: sehn.tech
            (file+headline "~/Exocortex/org/actions.org" "Other")
            "* TODO [#A] %?\n%a\n")
           ("a" "APPOINTMENT" entry
-           (file+headline "~/Exocortex/org/calendar.org" "2020_Q4")
+           (file+headline "~/Exocortex/org/calendar.org" "2021_Q1")
            "* %?\n%(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n"))))
+#+end_src
+*** Journal
+#+begin_src emacs-lisp :tangle yes :results silent
+(after! org
+  (setq org-journal-dir "~/Exocortex/org/journal"
+        org-journal-file-format "%Y.org"
+        org-journal-encrypt-journal 't
+        org-journal-file-type 'yearly))
 #+end_src
 ** Long-Term Memory
 #+begin_src emacs-lisp :tangle yes :results silent
@@ -495,7 +514,6 @@ bibliography:../bib/library.bib
 "
            :unnarrowed t))))
 #+end_src
-**** TODO Journal
 **** Use hyphens rather than underscore
 #+begin_src emacs-lisp :tangle yes :results silent
 (after! org-roam
@@ -575,7 +593,7 @@ a helper function for jumping to source
   :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
            (mathpix-app-key "f965173bcdbfec889c20")))
 #+end_src
-*** TODO Publicise
+*** TODO Publish
 **** Export to PDF
 #+begin_src emacs-lisp :tangle yes :results silent
 (after! org
