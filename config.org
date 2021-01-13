@@ -12,7 +12,11 @@
 #+begin_src emacs-lisp :tangle yes :results silent
 (setq user-full-name "Linus Sehn"
       user-mail-address "linus@sehn.tech"
-      projectile-project-search-path '("~/Projects" "/home/lino")
+      projectile-project-search-path '("/home/lino"
+                                       "~/Projects"
+                                       "~/Projects/fsfe"
+                                       "~/Projects/fsfe/forks"
+                                       )
       bookmark-default-file "~/.doom.d/bookmarks")
 #+end_src
 * UI
@@ -46,6 +50,11 @@
          100)
         (set-frame-parameter nil 'alpha '(90 . 75))
       (set-frame-parameter nil 'alpha '(100 . 100)))))
+#+end_src
+** Workspaces
+#+begin_src emacs-lisp :tangle yes :results silent
+(after! persp-mode
+  (setq persp-emacsclient-init-frame-behaviour-override "main"))
 #+end_src
 
 ** Popup Rules
@@ -243,9 +252,10 @@ i: sehn.tech
 (setq org-directory "~/Exocortex")
 
 (after! org-roam
-  (setq org-roam-directory "~/Exocortex"
+  (setq org-roam-directory "~/Exocortex/"
         org-roam-db-location "~/Exocortex/.exocortex.db"
-        org-roam-file-exclude-regexp ".*archive.org"))
+        ;; don't match my private org stuff
+        org-roam-file-exclude-regexp "/org"))
 #+end_src
 ** Planning & Review
 *** Agenda
@@ -329,10 +339,10 @@ i: sehn.tech
   :init
   (setq org-caldav-url "https://dav.mailbox.org/caldav"
         org-caldav-calendar-id "Y2FsOi8vMC80NQ"
-        org-caldav-inbox "~/org/caldav.org"
-        org-caldav-files '("~/org/calendar.org"
-                           "~/org/actions.org"
-                           "~/org/someday.org"))
+        org-caldav-inbox "~/Exocortex/org/caldav.org"
+        org-caldav-files '("~/Exocortex/org/calendar.org"
+                           "~/Exocortex/org/actions.org"
+                           "~/Exocortex/org/someday.org"))
   :config
   (setq org-icalendar-timezone "Europe/Berlin"
         org-icalendar-alarm-time 15
@@ -568,6 +578,7 @@ bibliography:../bib/library.bib
   :after org
   :config
   (setq-default org-download-method 'directory
+                org-download-screenshot-method "grimshot save area %s"
                 org-download-image-dir "../img"
                 org-download-heading-lvl nil))
 #+end_src
@@ -797,7 +808,9 @@ a helper function for jumping to source
 ** Global
 #+begin_src emacs-lisp :tangle yes :results silent
 (map!
- ("M-q" #'+workspace/delete)
+ ("M-q" #'evil-quit)
+ ("M-a" #'evil-window-left)
+ ("M-d" #'evil-window-right)
  :leader
  (:prefix-map ("e" . "exocortex")
   :desc "Search for name" "e" #'org-roam-find-file
