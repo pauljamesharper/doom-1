@@ -183,7 +183,8 @@ i: sehn.tech
 (after! org-roam
   (setq org-roam-directory "~/Exocortex/"
         org-roam-db-location "~/Exocortex/.exocortex.db"
-        org-roam-file-exclude-regexp ".*archive.org"))
+        ;; don't match my private org stuff
+        org-roam-file-exclude-regexp "/org"))
 
 (after! org
   (use-package! org-super-agenda
