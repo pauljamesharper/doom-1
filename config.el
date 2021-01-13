@@ -2,7 +2,11 @@
 
 (setq user-full-name "Linus Sehn"
       user-mail-address "linus@sehn.tech"
-      projectile-project-search-path '("~/Projects" "/home/lino")
+      projectile-project-search-path '("/home/lino"
+                                       "~/Projects"
+                                       "~/Projects/fsfe"
+                                       "~/Projects/fsfe/forks"
+                                       )
       bookmark-default-file "~/.doom.d/bookmarks")
 
 (setq doom-font (font-spec :family "JetBrains Mono" :size 14)
@@ -28,6 +32,9 @@
          100)
         (set-frame-parameter nil 'alpha '(90 . 75))
       (set-frame-parameter nil 'alpha '(100 . 100)))))
+
+(after! persp-mode
+  (setq persp-emacsclient-init-frame-behaviour-override "main"))
 
 (set-popup-rules!
   '(("^\*helm"
@@ -174,7 +181,7 @@ i: sehn.tech
 (setq org-directory "~/Exocortex")
 
 (after! org-roam
-  (setq org-roam-directory "~/Exocortex"
+  (setq org-roam-directory "~/Exocortex/"
         org-roam-db-location "~/Exocortex/.exocortex.db"
         org-roam-file-exclude-regexp ".*archive.org"))
 
@@ -252,10 +259,10 @@ i: sehn.tech
   :init
   (setq org-caldav-url "https://dav.mailbox.org/caldav"
         org-caldav-calendar-id "Y2FsOi8vMC80NQ"
-        org-caldav-inbox "~/org/caldav.org"
-        org-caldav-files '("~/org/calendar.org"
-                           "~/org/actions.org"
-                           "~/org/someday.org"))
+        org-caldav-inbox "~/Exocortex/org/caldav.org"
+        org-caldav-files '("~/Exocortex/org/calendar.org"
+                           "~/Exocortex/org/actions.org"
+                           "~/Exocortex/org/someday.org"))
   :config
   (setq org-icalendar-timezone "Europe/Berlin"
         org-icalendar-alarm-time 15
@@ -453,6 +460,7 @@ bibliography:../bib/library.bib
   :after org
   :config
   (setq-default org-download-method 'directory
+                org-download-screenshot-method "grimshot save area %s"
                 org-download-image-dir "../img"
                 org-download-heading-lvl nil))
 
@@ -583,7 +591,9 @@ bibliography:../bib/library.bib
     (setq geiser-active-implementations '(mit)))
 
 (map!
- ("M-q" #'+workspace/delete)
+ ("M-q" #'evil-quit)
+ ("M-a" #'evil-window-left)
+ ("M-d" #'evil-window-right)
  :leader
  (:prefix-map ("e" . "exocortex")
   :desc "Search for name" "e" #'org-roam-find-file
