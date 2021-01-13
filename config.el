@@ -153,13 +153,20 @@
                         ;; IMAP-deleted:
                         (mu4e~proc-move docid (mu4e~mark-check-target target) "-N")))))
 
+(add-hook 'mu4e-compose-mode-hook
+          (defun my-do-compose-stuff ()
+            "My settings for message composition."
+            (set-fill-column 72)
+            (flyspell-mode)))
+
 (after! org-msg
-  (setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil author:nil email:nil \\n:t"
-        org-msg-startup "hidestars indent inlineimages"
-        org-msg-greeting-fmt "\nHi %s,\n\n"
-        org-msg-greeting-name-limit 3
-        org-msg-default-alternatives '(text html)
-        org-msg-signature "
+  (setq
+   ;; org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil author:nil email:nil \\n:t"
+   org-msg-startup "hidestars indent inlineimages"
+   org-msg-greeting-fmt "\nHi %s,\n\n"
+   org-msg-greeting-name-limit 3
+   org-msg-default-alternatives '(text html)
+   org-msg-signature "
 
 Warmest regards,
 
@@ -477,7 +484,8 @@ bibliography:../bib/library.bib
 
 (use-package! mathpix
   :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
-           (mathpix-app-key "f965173bcdbfec889c20")))
+           (mathpix-app-key "f965173bcdbfec889c20")
+           (mathpix-screenshot-method "grimshot save area %s")))
 
 (after! org
   (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")

@@ -212,22 +212,29 @@ next sync operation.
 
 ** Composer
 #+begin_src emacs-lisp :tangle yes :results silent
+(add-hook 'mu4e-compose-mode-hook
+          (defun my-do-compose-stuff ()
+            "My settings for message composition."
+            (set-fill-column 72)
+            (flyspell-mode)))
+
 (after! org-msg
-  (setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil author:nil email:nil \\n:t"
-        org-msg-startup "hidestars indent inlineimages"
-        org-msg-greeting-fmt "\nHi %s,\n\n"
-        org-msg-greeting-name-limit 3
-        org-msg-default-alternatives '(text html)
-        org-msg-signature "
+  (setq
+   ;; org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil author:nil email:nil \\n:t"
+   org-msg-startup "hidestars indent inlineimages"
+   org-msg-greeting-fmt "\nHi %s,\n\n"
+   org-msg-greeting-name-limit 3
+   org-msg-default-alternatives '(text html)
+   org-msg-signature "
 
 Warmest regards,
 
-#+begin_signature
+,#+begin_signature
 -- \\\\
 Linus Sehn \\\\
 m: linus@sehn.tech \\\\
 i: sehn.tech
-#+end_signature")
+,#+end_signature")
   (org-msg-mode))
 #+end_src
 
@@ -407,6 +414,8 @@ i: sehn.tech
 (after! org
   (setq anki-editor-ignored-org-tags '("noexport")))
 #+end_src
+*** TODO Add Capture template
+
 ** Zettelkasten
 *** Search
 #+begin_src emacs-lisp :tangle yes :results silent
@@ -591,7 +600,8 @@ a helper function for jumping to source
 #+begin_src emacs-lisp :tangle yes :results silent
 (use-package! mathpix
   :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
-           (mathpix-app-key "f965173bcdbfec889c20")))
+           (mathpix-app-key "f965173bcdbfec889c20")
+           (mathpix-screenshot-method "grimshot save area %s")))
 #+end_src
 *** TODO Publish
 **** Export to PDF
