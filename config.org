@@ -22,7 +22,7 @@
 * UI
 ** Fonts
 #+begin_src emacs-lisp :tangle yes :results silent
-(setq doom-font (font-spec :family "JetBrains Mono" :size 14)
+(setq doom-font (font-spec :family "JetBrains Mono" :size 15)
       doom-variable-pitch-font (font-spec :family "Rubik")
       doom-unicode-font (font-spec :family "all-the-icons")
       doom-big-font (font-spec :family "JetBrains Mono" :size 22))
@@ -48,13 +48,27 @@
              alpha
            (cdr alpha)) ; may also be nil
          100)
-        (set-frame-parameter nil 'alpha '(90 . 75))
+        (set-frame-parameter nil 'alpha '(93 . 93))
       (set-frame-parameter nil 'alpha '(100 . 100)))))
 #+end_src
 ** Workspaces
 #+begin_src emacs-lisp :tangle yes :results silent
 (after! persp-mode
   (setq persp-emacsclient-init-frame-behaviour-override "main"))
+#+end_src
+** Windows
+#+begin_src emacs-lisp :tangle yes :results silent
+(setq evil-vsplit-window-right t
+      evil-split-window-below t)
+
+(defadvice! prompt-for-buffer (&rest _)
+  :after '(evil-window-split evil-window-vsplit)
+  (+ivy/switch-buffer))
+
+(setq +ivy-buffer-preview t)
+
+(map! :map evil-window-map
+      "SPC" #'evil-window-rotate-downwards)
 #+end_src
 
 ** Popup Rules
@@ -185,7 +199,11 @@ https://languagetool.org/.
                         (smtpmail-smtp-user             . "linus@sehn.tech")
                         (smtpmail-smtp-server           . "smtp.mailbox.org")
                         (smtpmail-stream-type           . ssl)
-                        (smtpmail-smtp-service          . 465))
+                        (smtpmail-smtp-service          . 465)
+                        (mu4e-compose-signature         . (concat
+                                                           "#+begin_signature\n"
+                                                           "Linus Sehn \\\\\nm: linus@sehn.tech \\\\\ni: https://sehn.tech\n"
+                                                           "#+end_signature")))
                       t)
 
   (set-email-account! "fsfe.org"
@@ -198,7 +216,11 @@ https://languagetool.org/.
                         (smtpmail-smtp-user             . "linus")
                         (smtpmail-smtp-server           . "mail.fsfe.org")
                         (smtpmail-stream-type           . starttls)
-                        (smtpmail-smtp-service          . 587))
+                        (smtpmail-smtp-service          . 587)
+                        (mu4e-compose-signature         . (concat
+                                                           "#+begin_signature\n"
+                                                           "Linus Sehn \\\\\nSystem Hackers \\\\\nm: linus@fsfe.org \\\\\ni: https://sehn.tech\n"
+                                                           "#+end_signature")))
                       t))
 #+end_src
 
@@ -233,7 +255,7 @@ next sync operation.
    org-msg-startup "hidestars indent inlineimages"
    org-msg-greeting-fmt "\nHi %s,\n\n"
    org-msg-greeting-name-limit 3
-   org-msg-default-alternatives '(text html)
+   org-msg-default-alternatives '(text)
    org-msg-signature "
 
 Warmest regards,
@@ -556,8 +578,8 @@ bibliography:../bib/library.bib
 *** PDF Annotation
 #+begin_src emacs-lisp :tangle yes :results silent
 (after! org-noter
-  (setq org-noter-always-create-frame nil
-        org-noter-kill-frame-at-session-end nil))
+  (setq org-noter-always-create-frame t
+        org-noter-kill-frame-at-session-end t))
 
 (after! pdf-view
   (setq pdf-annot-default-annotation-properties

@@ -9,7 +9,7 @@
                                        )
       bookmark-default-file "~/.doom.d/bookmarks")
 
-(setq doom-font (font-spec :family "JetBrains Mono" :size 14)
+(setq doom-font (font-spec :family "JetBrains Mono" :size 15)
       doom-variable-pitch-font (font-spec :family "Rubik")
       doom-unicode-font (font-spec :family "all-the-icons")
       doom-big-font (font-spec :family "JetBrains Mono" :size 22))
@@ -30,11 +30,23 @@
              alpha
            (cdr alpha)) ; may also be nil
          100)
-        (set-frame-parameter nil 'alpha '(90 . 75))
+        (set-frame-parameter nil 'alpha '(93 . 93))
       (set-frame-parameter nil 'alpha '(100 . 100)))))
 
 (after! persp-mode
   (setq persp-emacsclient-init-frame-behaviour-override "main"))
+
+(setq evil-vsplit-window-right t
+      evil-split-window-below t)
+
+(defadvice! prompt-for-buffer (&rest _)
+  :after '(evil-window-split evil-window-vsplit)
+  (+ivy/switch-buffer))
+
+(setq +ivy-buffer-preview t)
+
+(map! :map evil-window-map
+      "SPC" #'evil-window-rotate-downwards)
 
 (set-popup-rules!
   '(("^\*helm"
@@ -132,7 +144,11 @@
                         (smtpmail-smtp-user             . "linus@sehn.tech")
                         (smtpmail-smtp-server           . "smtp.mailbox.org")
                         (smtpmail-stream-type           . ssl)
-                        (smtpmail-smtp-service          . 465))
+                        (smtpmail-smtp-service          . 465)
+                        (mu4e-compose-signature         . (concat
+                                                           "#+begin_signature\n"
+                                                           "Linus Sehn \\\\\nm: linus@sehn.tech \\\\\ni: https://sehn.tech\n"
+                                                           "#+end_signature")))
                       t)
 
   (set-email-account! "fsfe.org"
@@ -145,7 +161,11 @@
                         (smtpmail-smtp-user             . "linus")
                         (smtpmail-smtp-server           . "mail.fsfe.org")
                         (smtpmail-stream-type           . starttls)
-                        (smtpmail-smtp-service          . 587))
+                        (smtpmail-smtp-service          . 587)
+                        (mu4e-compose-signature         . (concat
+                                                           "#+begin_signature\n"
+                                                           "Linus Sehn \\\\\nSystem Hackers \\\\\nm: linus@fsfe.org \\\\\ni: https://sehn.tech\n"
+                                                           "#+end_signature")))
                       t))
 
 (after! mu4e
@@ -172,7 +192,7 @@
    org-msg-startup "hidestars indent inlineimages"
    org-msg-greeting-fmt "\nHi %s,\n\n"
    org-msg-greeting-name-limit 3
-   org-msg-default-alternatives '(text html)
+   org-msg-default-alternatives '(text)
    org-msg-signature "
 
 Warmest regards,
@@ -449,8 +469,8 @@ bibliography:../bib/library.bib
         (s-downcase slug)))))
 
 (after! org-noter
-  (setq org-noter-always-create-frame nil
-        org-noter-kill-frame-at-session-end nil))
+  (setq org-noter-always-create-frame t
+        org-noter-kill-frame-at-session-end t))
 
 (after! pdf-view
   (setq pdf-annot-default-annotation-properties
