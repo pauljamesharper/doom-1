@@ -16,7 +16,8 @@
        nav-flash
        ophints
        (popup +all +defaults)
-       treemacs
+       ;; treemacs
+       neotree
        vc-gutter
        vi-tilde-fringe
        window-select
