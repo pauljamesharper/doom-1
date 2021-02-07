@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: fsfe-sig-org-msg
+# key: sigfsfe
+# condition: t
+# --
+
+Warm regards,
+
+#+begin_signature
+-- \\\\
+Linus \\\\
+System Hacker \\\\
+m: linus@fsfe.org \\\\
+#+end_signature

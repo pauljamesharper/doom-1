@@ -5,8 +5,8 @@
 (package! org-super-agenda)
 (package! anki-editor)
 
-;; Disabled stuff
-(package! solaire-mode :disable t)
+;; Disabled stuff for terminal usage
+;; (package! solaire-mode :disable f)
 
 ;; Forked
 (package! org-clock-budget

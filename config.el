@@ -14,7 +14,7 @@
       doom-unicode-font (font-spec :family "all-the-icons")
       doom-big-font (font-spec :family "JetBrains Mono" :size 22))
 
-(setq doom-theme 'doom-one
+(setq doom-theme 'doom-homage-black
       doom-themes-enable-bold t
       dired-dwim-target t
       display-time-24hr-format t
@@ -128,6 +128,7 @@
   (setq mu4e-compose-complete-addresses 't
         mu4e-use-fancy-chars 'nil
         mu4e-sent-messages-behavior 'sent
+        mu4e-compose-format-flowed 't
         mu4e-update-interval 300
         mu4e-attachment-dir "~/Downloads/"
         mu4e-view-html-plaintext-ratio-heuristic 10000
@@ -144,11 +145,7 @@
                         (smtpmail-smtp-user             . "linus@sehn.tech")
                         (smtpmail-smtp-server           . "smtp.mailbox.org")
                         (smtpmail-stream-type           . ssl)
-                        (smtpmail-smtp-service          . 465)
-                        (mu4e-compose-signature         . (concat
-                                                           "#+begin_signature\n"
-                                                           "Linus Sehn \\\\\nm: linus@sehn.tech \\\\\ni: https://sehn.tech\n"
-                                                           "#+end_signature")))
+                        (smtpmail-smtp-service          . 465))
                       t)
 
   (set-email-account! "fsfe.org"
@@ -161,12 +158,10 @@
                         (smtpmail-smtp-user             . "linus")
                         (smtpmail-smtp-server           . "mail.fsfe.org")
                         (smtpmail-stream-type           . starttls)
-                        (smtpmail-smtp-service          . 587)
-                        (mu4e-compose-signature         . (concat
-                                                           "#+begin_signature\n"
-                                                           "Linus Sehn \\\\\nSystem Hackers \\\\\nm: linus@fsfe.org \\\\\ni: https://sehn.tech\n"
-                                                           "#+end_signature")))
+                        (smtpmail-smtp-service          . 587))
                       t))
+
+(add-hook 'mu4e-compose-mode-hook (lambda () (use-hard-newlines -1)))
 
 (after! mu4e
   (setf (alist-get 'trash mu4e-marks)
@@ -180,29 +175,18 @@
                         ;; IMAP-deleted:
                         (mu4e~proc-move docid (mu4e~mark-check-target target) "-N")))))
 
-(add-hook 'mu4e-compose-mode-hook
-          (defun my-do-compose-stuff ()
-            "My settings for message composition."
-            (set-fill-column 72)
-            (flyspell-mode)))
+;; (add-hook 'mu4e-compose-mode-hook
+;;           (defun my-do-compose-stuff ()
+;;             "My settings for message composition."
+;;             (set-fill-column 72)
+;;             (flyspell-mode)))
 
 (after! org-msg
   (setq
    ;; org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil author:nil email:nil \\n:t"
-   org-msg-startup "hidestars indent inlineimages"
-   org-msg-greeting-fmt "\nHi %s,\n\n"
+   org-msg-startup "hidestars indent inlineimages" org-msg-greeting-fmt "\nHi %s,\n\n"
    org-msg-greeting-name-limit 3
-   org-msg-default-alternatives '(text)
-   org-msg-signature "
-
-Warmest regards,
-
-#+begin_signature
--- \\\\
-Linus Sehn \\\\
-m: linus@sehn.tech \\\\
-i: sehn.tech
-#+end_signature")
+   org-msg-default-alternatives '(text))
   (org-msg-mode))
 
 (setq org-directory "~/Exocortex")

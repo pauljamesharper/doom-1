@@ -53,7 +53,7 @@
        direnv
        eval
        (lookup +docsets +offline +dictionary)
-       (lsp +eglot)
+       (lsp +peek)
        magit
        pass
        pdf
@@ -73,10 +73,10 @@
        (latex +latexmk +cdlatex)
        (markdown +grip)
        (org +dragndrop +hugo +journal +jupyter +noter +present )
-       (python +lsp +cython)
+       (python +lsp)
        rest
        scheme
-       (sh +lsp +fish)
+       (sh +lsp)
        web
 
        :email
