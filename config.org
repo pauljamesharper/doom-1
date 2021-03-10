@@ -286,11 +286,7 @@ next sync operation.
     (setq org-agenda-start-on-weekday nil)
     (setq org-agenda-dim-blocked-tasks nil) ;; makes main tasks visible in agenda-view
     (setq org-agenda-files
-          '("~/Exocortex/org/actions.org"
-            "~/Exocortex/org/actions-compsci.org"
-            "~/Exocortex/org/actions-fsfe.org"
-            "~/Exocortex/org/calendar.org"
-            "~/Exocortex/org/caldav.org"))
+          '("~/Exocortex/org"))
     (setq org-super-agenda-groups
           '((:name "Due today"
              :deadline today)
