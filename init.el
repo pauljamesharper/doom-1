@@ -85,7 +85,7 @@
        mu4e
 
        :app
-       irc
+       ;; irc
        ;;calendar
        ;;(rss +org)
        ;;twitter
