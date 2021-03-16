@@ -20,6 +20,7 @@
        neotree
        vc-gutter
        vi-tilde-fringe
+       tabs
        window-select
        workspaces
        zen
@@ -54,8 +55,8 @@
        direnv
        eval
        (lookup +docsets +offline +dictionary)
-       (lsp +peek)
-       magit
+       lsp
+       (magit +forge)
        pass
        pdf
        rgb
@@ -74,12 +75,12 @@
        (latex +latexmk +cdlatex)
        (markdown +grip)
        (org +dragndrop +hugo +journal +jupyter +noter +present )
+       (php +lsp)
        (python +lsp)
+       (racket +xp)
        rest
-       scheme
-       (sh +lsp)
-       web
-
+       ;; scheme
+       (sh +lsp) web
        :email
        mu4e
 

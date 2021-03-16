@@ -22,6 +22,8 @@
 
 (display-time-mode 1)
 
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
 (defun my/toggle-transparency ()
   (interactive)
   (let ((alpha (frame-parameter nil 'alpha)))
@@ -43,7 +45,7 @@
   :after '(evil-window-split evil-window-vsplit)
   (+ivy/switch-buffer))
 
-(setq +ivy-buffer-preview t)
+;; (setq +ivy-buffer-preview t)
 
 (map! :map evil-window-map
       "SPC" #'evil-window-rotate-downwards)
@@ -59,6 +61,13 @@
 
 (after! company-box
   (setq company-box-max-candidates 10))
+
+(after! centaur-tabs
+  (setq centaur-tabs-set-bar 'over
+        ;; centaur-tabs-set-close-button nil
+        centaur-tabs-height 40)
+  (centaur-tabs-change-fonts "Rubik" 116)
+  (centaur-tabs-group-by-projectile-project))
 
 (use-package! dired-x
   :unless (featurep! +ranger)
@@ -178,8 +187,10 @@
 ;; (add-hook 'mu4e-compose-mode-hook
 ;;           (defun my-do-compose-stuff ()
 ;;             "My settings for message composition."
-;;             (set-fill-column 72)
-;;             (flyspell-mode)))
+;;             (mml-secure-message-sign-encrypt)
+;;             ))
+
+(add-hook 'message-send-hook 'mml-secure-message-sign-encrypt)
 
 (after! org-msg
   (setq
@@ -472,7 +483,7 @@ bibliography:../bib/library.bib
   :after org
   :config
   (setq-default org-download-method 'directory
-                org-download-screenshot-method "grimshot save area %s"
+                ;; org-download-screenshot-method "grimshot save area %s"
                 org-download-image-dir "../img"
                 org-download-heading-lvl nil))
 
@@ -498,7 +509,8 @@ bibliography:../bib/library.bib
 (use-package! mathpix
   :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
            (mathpix-app-key "f965173bcdbfec889c20")
-           (mathpix-screenshot-method "grimshot save area %s")))
+           ;; (mathpix-screenshot-method "grimshot save area %s")
+           ))
 
 (after! org
   (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")
@@ -600,14 +612,22 @@ bibliography:../bib/library.bib
                 (split-string keyword ","))
             ",")))))))
 
+(add-hook! 'yaml-mode-hook '(lambda () (ansible 1)))
+
+(setq ansible-vault-password-file "~/.vault_pass.sh")
+
 (after! geiser-mode
     (setq geiser-active-implementations '(mit)))
 
 (map!
- ("M-q" #'evil-quit)
- ("M-a" #'evil-window-left)
- ("M-d" #'evil-window-right)
+ ("M-q" #'centaur-tabs-backward)
+ ("M-e" #'centaur-tabs-forward)
+ ("M-w" #'kill-current-buffer)
+ ("M-Q" #'evil-quit)
  :leader
+ (:prefix-map ("a" . "ansible")
+  :desc "Decrypt buffer" "d" #'ansible-decrypt-buffer
+  :desc "Encrypt buffer" "e" #'ansible-encrypt-buffer)
  (:prefix-map ("e" . "exocortex")
   :desc "Search for name" "e" #'org-roam-find-file
   :desc "Search for symbol" "x" #'my/search-exocortex
@@ -622,11 +642,13 @@ bibliography:../bib/library.bib
   :desc "Insert math from screen" "m" #'mathpix-screenshot)
  (:prefix ("t" . "toggle/tangle")
   :desc "Detangle" "d" #'org-babel-detangle
-  :desc "Transparency" "p" #'my/toggle-transparency))
+  :desc "Transparency" "p" #'my/toggle-transparency)
+ (:prefix ("f" . "file")
+  :desc "Open neotree" "t" #'+neotree/open))
 
 (map! :map org-mode-map
       ("M-i" #'org-ref-ivy-insert-cite-link)
-      ("M-e" #'my/org-ref-update-pre-post-text)
+      ("M-u" #'my/org-ref-update-pre-post-text)
       ("M-p" #'my/org-ref-open-pdf-at-point)
       ("M-n" #'org-ref-open-notes-at-point)
       ("M-r" #'org-roam-insert)
@@ -641,7 +663,7 @@ bibliography:../bib/library.bib
        (:prefix "i"
         :desc "Cite source" "c" #'org-ref-helm-insert-cite-link
         :desc "Insert anki note" "a" #'anki-editor-insert-note)
-       (:prefix ("a" . "anki")
+       (:prefix ("a" . "anki/ansible")
         :desc "Push notes to anki" "p" #'anki-editor-push-notes
         :desc "Cloze region" "c" #'anki-editor-cloze-dwim))
       (:localleader
