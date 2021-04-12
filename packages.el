@@ -13,3 +13,7 @@
   :recipe (:host github :repo "linozen/org-clock-budget"))
 (package! mathpix
   :recipe (:host github :repo "linozen/mathpix.el" :branch "master"))
+
+;; (package! bibtex-actions
+;;   :recipe (:host github :repo "bdarcus/bibtex-actions")
+;;   :pin "b088175b04958460c82d06254321c53839400948")

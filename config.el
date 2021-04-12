@@ -190,7 +190,7 @@
 ;;             (mml-secure-message-sign-encrypt)
 ;;             ))
 
-(add-hook 'message-send-hook 'mml-secure-message-sign-encrypt)
+;; (add-hook 'message-send-hook 'mml-secure-message-sign-encrypt)
 
 (after! org-msg
   (setq
@@ -224,24 +224,27 @@
     (setq org-agenda-skip-scheduled-if-done t)
     (setq org-agenda-skip-deadline-if-done t)
     (setq org-agenda-start-on-weekday nil)
-    (setq org-agenda-dim-blocked-tasks nil) ;; makes main tasks visible in agenda-view
+    ;; (setq org-agenda-dim-blocked-tasks nil) ;; makes main tasks visible in agenda-view
     (setq org-agenda-files
-          '("~/Exocortex/org"))
+          '("~/Exocortex/org/projects-active.org"))
     (setq org-super-agenda-groups
-          '((:name "Due today"
-             :deadline today)
-            (:name "Overdue"
-             :deadline past)
-            (:name "Due soon"
-             :deadline future)
-            (:name "Habits"
-             :habit t)
-            (:name "Start today"
-             :scheduled today)
-            (:name "Start soon"
-             :scheduled future)
-            (:name "Reschedule or review"
-             :scheduled past)
+          '(
+            (:name "Open deep tasks this quarter"
+             :tag ("@deep"))
+            (:name "Open shallow tasks this quarter"
+             :tag ("@shallow"))
+            ;; (:name "Overdue"
+            ;;  :deadline past)
+            ;; (:name "Due soon"
+            ;;  :deadline future)
+            ;; (:name "Habits"
+            ;;  :habit t)
+            ;; (:name "Start today"
+            ;;  :scheduled today)
+            ;; (:name "Start soon"
+            ;;  :scheduled future)
+            ;; (:name "Reschedule or review"
+            ;;  :scheduled past)
             ))
     :config
     (org-super-agenda-mode)))
@@ -335,7 +338,7 @@
   (setq org-capture-templates
         '(("t" "TODO" entry
            (file+headline "~/Exocortex/org/actions.org" "Other")
-           "* TODO [#A] %?\n%a\n")
+           "* TODO %?\n%a\n")
           ("a" "APPOINTMENT" entry
            (file+headline "~/Exocortex/org/calendar.org" "2021_Q1")
            "* %?\n%(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n"))))
@@ -509,6 +512,9 @@ bibliography:../bib/library.bib
            ))
 
 (after! org
+  (add-to-list 'org-file-apps '("\\.pdf\\'" . "evince %s")))
+
+(after! org
   (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")
         org-export-with-smart-quotes t))
 
@@ -544,7 +550,7 @@ bibliography:../bib/library.bib
     (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor))
 
 (after! ox-hugo
-  (setq org-hugo-default-section-directory "zettel"))
+  (setq org-hugo-default-section-directory "post"))
 
 (after! (org org-roam)
     (defun my/org-roam--backlinks-list (file)
@@ -574,39 +580,9 @@ bibliography:../bib/library.bib
 (after! citeproc-org
   (setq citeproc-org-suppress-affixes-cite-link-types '("citet" "cite*")
         citeproc-org-suppress-author-cite-link-types '("cite*")
+        citeproc-org-org-bib-header "** Bibliography\n"
+        citeproc-org-html-bib-header "<h3 class='citeproc-org-bib-h3'>Bibliography</h3>\n"
         citeproc-org-ignore-backends '(latex beamer icalendar)))
-
-(after! org-ref
-    (defun my/org-ref-get-md-bibliography (&optional sort)
-    "Create an md bibliography when there are keys.
-     if SORT is non-nil the bibliography is sorted alphabetically by key."
-    (let ((keys (org-ref-get-bibtex-keys sort)))
-        (when keys
-        (concat
-        "\n"
-        (mapconcat (lambda (x) (org-ref-get-bibtex-entry-md x)) keys "\n\n")
-        "\n"))))
-
-    (defun org-ref-bibliography-format (keyword desc format)
-    "Formatting function for bibliography links."
-    "Redefined Formatting function for bibliography links
-     using my custom md bibliogrpyh function."
-    (cond
-    ((eq format 'org) (org-ref-get-org-bibliography))
-    ((eq format 'ascii) (org-ref-get-ascii-bibliography))
-    ((eq format 'md) (my/org-ref-get-md-bibliography))
-    ((eq format 'odt) (org-ref-get-odt-bibliography))
-    ((eq format 'html) (org-ref-get-html-bibliography))
-    ((eq format 'latex)
-        ;; write out the latex bibliography command
-        (format "\\bibliography{%s}"
-            (replace-regexp-in-string
-            "\\.bib" ""
-            (mapconcat
-            'identity
-            (mapcar 'file-relative-name
-                (split-string keyword ","))
-            ",")))))))
 
 (add-hook! 'yaml-mode-hook '(lambda () (ansible 1)))
 

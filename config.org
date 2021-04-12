@@ -258,7 +258,7 @@ next sync operation.
 ;;             (mml-secure-message-sign-encrypt)
 ;;             ))
 
-(add-hook 'message-send-hook 'mml-secure-message-sign-encrypt)
+;; (add-hook 'message-send-hook 'mml-secure-message-sign-encrypt)
 
 (after! org-msg
   (setq
@@ -298,24 +298,27 @@ next sync operation.
     (setq org-agenda-skip-scheduled-if-done t)
     (setq org-agenda-skip-deadline-if-done t)
     (setq org-agenda-start-on-weekday nil)
-    (setq org-agenda-dim-blocked-tasks nil) ;; makes main tasks visible in agenda-view
+    ;; (setq org-agenda-dim-blocked-tasks nil) ;; makes main tasks visible in agenda-view
     (setq org-agenda-files
-          '("~/Exocortex/org"))
+          '("~/Exocortex/org/projects-active.org"))
     (setq org-super-agenda-groups
-          '((:name "Due today"
-             :deadline today)
-            (:name "Overdue"
-             :deadline past)
-            (:name "Due soon"
-             :deadline future)
-            (:name "Habits"
-             :habit t)
-            (:name "Start today"
-             :scheduled today)
-            (:name "Start soon"
-             :scheduled future)
-            (:name "Reschedule or review"
-             :scheduled past)
+          '(
+            (:name "Open deep tasks this quarter"
+             :tag ("@deep"))
+            (:name "Open shallow tasks this quarter"
+             :tag ("@shallow"))
+            ;; (:name "Overdue"
+            ;;  :deadline past)
+            ;; (:name "Due soon"
+            ;;  :deadline future)
+            ;; (:name "Habits"
+            ;;  :habit t)
+            ;; (:name "Start today"
+            ;;  :scheduled today)
+            ;; (:name "Start soon"
+            ;;  :scheduled future)
+            ;; (:name "Reschedule or review"
+            ;;  :scheduled past)
             ))
     :config
     (org-super-agenda-mode)))
@@ -423,7 +426,7 @@ next sync operation.
   (setq org-capture-templates
         '(("t" "TODO" entry
            (file+headline "~/Exocortex/org/actions.org" "Other")
-           "* TODO [#A] %?\n%a\n")
+           "* TODO %?\n%a\n")
           ("a" "APPOINTMENT" entry
            (file+headline "~/Exocortex/org/calendar.org" "2021_Q1")
            "* %?\n%(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n"))))
@@ -637,6 +640,11 @@ a helper function for jumping to source
 **** Export to PDF
 #+begin_src emacs-lisp :tangle yes :results silent
 (after! org
+  (add-to-list 'org-file-apps '("\\.pdf\\'" . "evince %s")))
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes :results silent
+(after! org
   (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")
         org-export-with-smart-quotes t))
 #+end_src
@@ -712,7 +720,7 @@ a helper function for jumping to source
 ***** Default Section
 #+begin_src emacs-lisp :tangle yes :results silent
 (after! ox-hugo
-  (setq org-hugo-default-section-directory "zettel"))
+  (setq org-hugo-default-section-directory "post"))
 #+end_src
 
 ***** Export Backlinks
@@ -779,10 +787,12 @@ a helper function for jumping to source
 (after! citeproc-org
   (setq citeproc-org-suppress-affixes-cite-link-types '("citet" "cite*")
         citeproc-org-suppress-author-cite-link-types '("cite*")
+        citeproc-org-org-bib-header "** Bibliography\n"
+        citeproc-org-html-bib-header "<h3 class='citeproc-org-bib-h3'>Bibliography</h3>\n"
         citeproc-org-ignore-backends '(latex beamer icalendar)))
 #+end_src
 
-#+begin_src emacs-lisp :tangle yes :results silent
+#+begin_src emacs-lisp :tangle no :results silent
 (after! org-ref
     (defun my/org-ref-get-md-bibliography (&optional sort)
     "Create an md bibliography when there are keys.
@@ -917,4 +927,3 @@ a helper function for jumping to source
 (map! :map pdf-view-mode-map
       "C-c i" 'org-noter-insert-note)
 #+end_src
-

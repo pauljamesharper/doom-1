@@ -9,3 +9,7 @@
 (package! bibtex-completion :pin "12f8809aac3a13dd11a1c664a13f789005f7a199")
 (package! helm-bibtex :pin "12f8809aac3a13dd11a1c664a13f789005f7a199")
 (package! citeproc-org :pin "22a759c4f0ec80075014dcc594baa4d1b470d995")
+
+
+(package! org-roam-server
+  :recipe (:host github :repo "org-roam/org-roam-server"))
