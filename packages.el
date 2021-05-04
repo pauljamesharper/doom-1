@@ -4,6 +4,7 @@
 (package! org-caldav)
 (package! org-super-agenda)
 (package! anki-editor)
+(package! org-analyzer)
 
 ;; Disabled stuff for terminal
 (package! solaire-mode :disable t)
