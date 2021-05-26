@@ -9,7 +9,7 @@
                                        )
       bookmark-default-file "~/.doom.d/bookmarks")
 
-(setq doom-font (font-spec :family "JetBrains Mono" :size 15)
+(setq doom-font (font-spec :family "JetBrains Mono" :size 14)
       doom-variable-pitch-font (font-spec :family "Rubik")
       doom-unicode-font (font-spec :family "all-the-icons")
       doom-big-font (font-spec :family "JetBrains Mono" :size 22))
@@ -19,7 +19,6 @@
       dired-dwim-target t
       display-time-24hr-format t
       display-time-default-load-average nil)
-
 (display-time-mode 1)
 
 (defun my/toggle-transparency ()
@@ -201,6 +200,7 @@
   (use-package! org-super-agenda
     :after org-agenda
     :init
+    (setq org-agenda-skip-scheduled-if-done 't)
     (setq org-habit-show-done-always-green 't
           org-agenda-prefix-format
           '((agenda . " %?-12t% s")
