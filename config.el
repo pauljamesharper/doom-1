@@ -21,6 +21,8 @@
       display-time-default-load-average nil)
 (display-time-mode 1)
 
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
 (defun my/toggle-transparency ()
   (interactive)
   (let ((alpha (frame-parameter nil 'alpha)))
@@ -42,7 +44,7 @@
   :after '(evil-window-split evil-window-vsplit)
   (+ivy/switch-buffer))
 
-(setq +ivy-buffer-preview t)
+;; (setq +ivy-buffer-preview t)
 
 (map! :map evil-window-map
       "SPC" #'evil-window-rotate-downwards)
@@ -58,6 +60,13 @@
 
 (after! company-box
   (setq company-box-max-candidates 10))
+
+(after! centaur-tabs
+  (setq centaur-tabs-set-bar 'over
+        ;; centaur-tabs-set-close-button nil
+        centaur-tabs-height 40)
+  (centaur-tabs-change-fonts "Rubik" 116)
+  (centaur-tabs-group-by-projectile-project))
 
 (use-package! dired-x
   :unless (featurep! +ranger)
@@ -177,8 +186,10 @@
 ;; (add-hook 'mu4e-compose-mode-hook
 ;;           (defun my-do-compose-stuff ()
 ;;             "My settings for message composition."
-;;             (set-fill-column 72)
-;;             (flyspell-mode)))
+;;             (mml-secure-message-sign-encrypt)
+;;             ))
+
+;; (add-hook 'message-send-hook 'mml-secure-message-sign-encrypt)
 
 (after! org-msg
   (setq
@@ -213,24 +224,27 @@
     (setq org-agenda-skip-scheduled-if-done t)
     (setq org-agenda-skip-deadline-if-done t)
     (setq org-agenda-start-on-weekday nil)
-    (setq org-agenda-dim-blocked-tasks nil) ;; makes main tasks visible in agenda-view
+    ;; (setq org-agenda-dim-blocked-tasks nil) ;; makes main tasks visible in agenda-view
     (setq org-agenda-files
-          '("~/Exocortex/org"))
+          '("~/Exocortex/org/projects-active.org"))
     (setq org-super-agenda-groups
-          '((:name "Due today"
-             :deadline today)
-            (:name "Overdue"
-             :deadline past)
-            (:name "Due soon"
-             :deadline future)
-            (:name "Habits"
-             :habit t)
-            (:name "Start today"
-             :scheduled today)
-            (:name "Start soon"
-             :scheduled future)
-            (:name "Reschedule or review"
-             :scheduled past)
+          '(
+            (:name "Open deep tasks this quarter"
+             :tag ("@deep"))
+            (:name "Open shallow tasks this quarter"
+             :tag ("@shallow"))
+            ;; (:name "Overdue"
+            ;;  :deadline past)
+            ;; (:name "Due soon"
+            ;;  :deadline future)
+            ;; (:name "Habits"
+            ;;  :habit t)
+            ;; (:name "Start today"
+            ;;  :scheduled today)
+            ;; (:name "Start soon"
+            ;;  :scheduled future)
+            ;; (:name "Reschedule or review"
+            ;;  :scheduled past)
             ))
     :config
     (org-super-agenda-mode)))
@@ -282,6 +296,33 @@
 
 (setq org-clock-mode-line-total 'today)
 
+(add-hook
+ 'org-mode-hook
+ (lambda ()
+
+   ;; Org clock string to Gnome top bar. Needs :
+   ;; https://extensions.gnome.org/extension/974/short-memo/
+   (defun current-task-to-status ()
+     (interactive)
+     (if (fboundp 'org-clocking-p)
+         (if (org-clocking-p)
+             (call-process "dconf" nil nil nil "write"
+                           "/org/gnome/shell/extensions/short-memo/message"
+                           (concat "'" (org-clock-get-clock-string) "'"))
+           (call-process "dconf" nil nil nil "write"
+                         "/org/gnome/shell/extensions/short-memo/message"
+                         "'No active clock'"))))
+   ;; update clock message every minute
+   (run-with-timer 0 60 'current-task-to-status)
+
+   ;; update clock immediately on clock-in / clock-out
+   (defun my-org-clock-message (old-function &rest arguments)
+     (apply old-function arguments)
+     (current-task-to-status))
+   (advice-add #'org-clock-in :around #'my-org-clock-message)
+   (advice-add #'org-clock-out :around #'my-org-clock-message)
+   ))
+
 (use-package! org-clock-budget
   :after org
   :config
@@ -324,7 +365,7 @@
   (setq org-capture-templates
         '(("t" "TODO" entry
            (file+headline "~/Exocortex/org/actions.org" "Other")
-           "* TODO [#A] %?\n%a\n")
+           "* TODO %?\n%a\n")
           ("a" "APPOINTMENT" entry
            (file+headline "~/Exocortex/org/calendar.org" "2021_Q1")
            "* %?\n%(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n"))))
@@ -468,7 +509,7 @@ bibliography:../bib/library.bib
   :after org
   :config
   (setq-default org-download-method 'directory
-                org-download-screenshot-method "grimshot save area %s"
+                ;; org-download-screenshot-method "grimshot save area %s"
                 org-download-image-dir "../img"
                 org-download-heading-lvl nil))
 
@@ -494,7 +535,11 @@ bibliography:../bib/library.bib
 (use-package! mathpix
   :custom ((mathpix-app-id "mathpix_sehn_tech_b5ad38")
            (mathpix-app-key "f965173bcdbfec889c20")
-           (mathpix-screenshot-method "grimshot save area %s")))
+           ;; (mathpix-screenshot-method "grimshot save area %s")
+           ))
+
+(after! org
+  (add-to-list 'org-file-apps '("\\.pdf\\'" . "evince %s")))
 
 (after! org
   (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")
@@ -532,7 +577,7 @@ bibliography:../bib/library.bib
     (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor))
 
 (after! ox-hugo
-  (setq org-hugo-default-section-directory "zettel"))
+  (setq org-hugo-default-section-directory "post"))
 
 (after! (org org-roam)
     (defun my/org-roam--backlinks-list (file)
@@ -562,48 +607,26 @@ bibliography:../bib/library.bib
 (after! citeproc-org
   (setq citeproc-org-suppress-affixes-cite-link-types '("citet" "cite*")
         citeproc-org-suppress-author-cite-link-types '("cite*")
+        citeproc-org-org-bib-header "** Bibliography\n"
+        citeproc-org-html-bib-header "<h3 class='citeproc-org-bib-h3'>Bibliography</h3>\n"
         citeproc-org-ignore-backends '(latex beamer icalendar)))
 
-(after! org-ref
-    (defun my/org-ref-get-md-bibliography (&optional sort)
-    "Create an md bibliography when there are keys.
-     if SORT is non-nil the bibliography is sorted alphabetically by key."
-    (let ((keys (org-ref-get-bibtex-keys sort)))
-        (when keys
-        (concat
-        "\n"
-        (mapconcat (lambda (x) (org-ref-get-bibtex-entry-md x)) keys "\n\n")
-        "\n"))))
+(add-hook! 'yaml-mode-hook '(lambda () (ansible 1)))
 
-    (defun org-ref-bibliography-format (keyword desc format)
-    "Formatting function for bibliography links."
-    "Redefined Formatting function for bibliography links
-     using my custom md bibliogrpyh function."
-    (cond
-    ((eq format 'org) (org-ref-get-org-bibliography))
-    ((eq format 'ascii) (org-ref-get-ascii-bibliography))
-    ((eq format 'md) (my/org-ref-get-md-bibliography))
-    ((eq format 'odt) (org-ref-get-odt-bibliography))
-    ((eq format 'html) (org-ref-get-html-bibliography))
-    ((eq format 'latex)
-        ;; write out the latex bibliography command
-        (format "\\bibliography{%s}"
-            (replace-regexp-in-string
-            "\\.bib" ""
-            (mapconcat
-            'identity
-            (mapcar 'file-relative-name
-                (split-string keyword ","))
-            ",")))))))
+(setq ansible-vault-password-file "~/.vault_pass.sh")
 
 (after! geiser-mode
     (setq geiser-active-implementations '(mit)))
 
 (map!
- ("M-q" #'evil-quit)
- ("M-a" #'evil-window-left)
- ("M-d" #'evil-window-right)
+ ("M-q" #'centaur-tabs-backward)
+ ("M-e" #'centaur-tabs-forward)
+ ("M-w" #'kill-current-buffer)
+ ("M-Q" #'evil-quit)
  :leader
+ (:prefix-map ("a" . "ansible")
+  :desc "Decrypt buffer" "d" #'ansible-decrypt-buffer
+  :desc "Encrypt buffer" "e" #'ansible-encrypt-buffer)
  (:prefix-map ("e" . "exocortex")
   :desc "Search for name" "e" #'org-roam-find-file
   :desc "Search for symbol" "x" #'my/search-exocortex
@@ -618,11 +641,13 @@ bibliography:../bib/library.bib
   :desc "Insert math from screen" "m" #'mathpix-screenshot)
  (:prefix ("t" . "toggle/tangle")
   :desc "Detangle" "d" #'org-babel-detangle
-  :desc "Transparency" "p" #'my/toggle-transparency))
+  :desc "Transparency" "p" #'my/toggle-transparency)
+ (:prefix ("f" . "file")
+  :desc "Open neotree" "t" #'+neotree/open))
 
 (map! :map org-mode-map
       ("M-i" #'org-ref-ivy-insert-cite-link)
-      ("M-e" #'my/org-ref-update-pre-post-text)
+      ("M-u" #'my/org-ref-update-pre-post-text)
       ("M-p" #'my/org-ref-open-pdf-at-point)
       ("M-n" #'org-ref-open-notes-at-point)
       ("M-r" #'org-roam-insert)
@@ -637,7 +662,7 @@ bibliography:../bib/library.bib
        (:prefix "i"
         :desc "Cite source" "c" #'org-ref-helm-insert-cite-link
         :desc "Insert anki note" "a" #'anki-editor-insert-note)
-       (:prefix ("a" . "anki")
+       (:prefix ("a" . "anki/ansible")
         :desc "Push notes to anki" "p" #'anki-editor-push-notes
         :desc "Cloze region" "c" #'anki-editor-cloze-dwim))
       (:localleader

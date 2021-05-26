@@ -5,6 +5,7 @@
        :completion
        (company +childframe)
        (ivy +fuzzy +prescient +childframe)
+       ;; selectrum ;; https://github.com/hlissner/doom-emacs/pull/4664
 
        :ui
        doom
@@ -20,6 +21,7 @@
        neotree
        vc-gutter
        vi-tilde-fringe
+       tabs
        window-select
        workspaces
        zen
@@ -48,15 +50,14 @@
        grammar
 
        :tools
+       lsp
        biblio
        ansible
        (docker +lsp)
        direnv
        eval
        (lookup +docsets +offline +dictionary)
-       (lsp +peek)
-       magit
-       pass
+       (magit +forge)
        pdf
        rgb
        upload
@@ -69,25 +70,22 @@
        data
        emacs-lisp
        (go +lsp)
+       (java +lsp)
        (javascript +lsp)
        (json +lsp)
        (latex +latexmk +cdlatex)
        (markdown +grip)
        (org +dragndrop +hugo +journal +jupyter +noter +present )
+       (php +lsp)
        (python +lsp)
+       (racket +xp)
        rest
-       scheme
-       (sh +lsp)
-       web
-
+       (sh +lsp) web
        :email
        mu4e
 
        :app
-       ;; irc
-       ;;calendar
-       ;;(rss +org)
-       ;;twitter
+       everywhere
 
        :config
        literate
