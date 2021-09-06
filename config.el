@@ -2,10 +2,9 @@
 
 (setq user-full-name "Linus Sehn"
       user-mail-address "linus@sehn.tech"
-      projectile-project-search-path '("/home/lino"
-                                       "~/Projects"
+      projectile-project-search-path '("~/Projects"
                                        "~/Projects/fsfe"
-                                       "~/Projects/fsfe/forks"
+                                       "~/Projects/snv"
                                        )
       bookmark-default-file "~/.doom.d/bookmarks")
 
@@ -43,9 +42,9 @@
 
 (defadvice! prompt-for-buffer (&rest _)
   :after '(evil-window-split evil-window-vsplit)
-  (+ivy/switch-buffer))
+  (+ivy/projectile-find-file))
 
-;; (setq +ivy-buffer-preview t)
+(setq +ivy-buffer-preview t)
 
 (map! :map evil-window-map
       "SPC" #'evil-window-rotate-downwards)
@@ -295,6 +294,33 @@
         org-caldav-exclude-tags '("weekly" "daily" "monthly")))
 
 (setq org-clock-mode-line-total 'today)
+
+(add-hook
+ 'org-mode-hook
+ (lambda ()
+
+   ;; Org clock string to Gnome top bar. Needs :
+   ;; https://extensions.gnome.org/extension/974/short-memo/
+   (defun current-task-to-status ()
+     (interactive)
+     (if (fboundp 'org-clocking-p)
+         (if (org-clocking-p)
+             (call-process "dconf" nil nil nil "write"
+                           "/org/gnome/shell/extensions/short-memo/message"
+                           (concat "'" (org-clock-get-clock-string) "'"))
+           (call-process "dconf" nil nil nil "write"
+                         "/org/gnome/shell/extensions/short-memo/message"
+                         "'No active clock'"))))
+   ;; update clock message every minute
+   (run-with-timer 0 60 'current-task-to-status)
+
+   ;; update clock immediately on clock-in / clock-out
+   (defun my-org-clock-message (old-function &rest arguments)
+     (apply old-function arguments)
+     (current-task-to-status))
+   (advice-add #'org-clock-in :around #'my-org-clock-message)
+   (advice-add #'org-clock-out :around #'my-org-clock-message)
+   ))
 
 (use-package! org-clock-budget
   :after org
@@ -578,15 +604,28 @@ bibliography:../bib/library.bib
   (citeproc-org-setup))
 
 (after! citeproc-org
-  (setq citeproc-org-suppress-affixes-cite-link-types '("citet" "cite*")
-        citeproc-org-suppress-author-cite-link-types '("cite*")
-        citeproc-org-org-bib-header "** Bibliography\n"
+  (setq
+        citeproc-org-suppress-affixes-cite-link-types '("citealt")
+        citeproc-org-suppress-author-cite-link-types '("citeyear")
+        citeproc-org-org-bib-header "* Bibliography\n"
         citeproc-org-html-bib-header "<h3 class='citeproc-org-bib-h3'>Bibliography</h3>\n"
         citeproc-org-ignore-backends '(latex beamer icalendar)))
 
-(add-hook! 'yaml-mode-hook '(lambda () (ansible 1)))
+(after! forge
+  (add-to-list 'forge-alist '("ssh://gitea@git.sehn.dev:64300"
+                              "git.sehn.dev/api/v1"
+                              "ssh://gitea@git.sehn.dev:64300"
+                              forge-gitea-repository)))
+
+;; (add-hook! 'yaml-mode-hook '(lambda () (ansible 1)))
 
 (setq ansible-vault-password-file "~/.vault_pass.sh")
+
+;; (use-package! lsp-tailwindcss
+;;   :init
+;;   (setq! lsp-tailwindcss-add-on-mode t))
+(add-hook 'js2-mode-hook #'format-all-mode)
+(setq +format-with-lsp nil)
 
 (after! geiser-mode
     (setq geiser-active-implementations '(mit)))

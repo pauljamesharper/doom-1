@@ -12,10 +12,9 @@
 #+begin_src emacs-lisp :tangle yes :results silent
 (setq user-full-name "Linus Sehn"
       user-mail-address "linus@sehn.tech"
-      projectile-project-search-path '("/home/lino"
-                                       "~/Projects"
+      projectile-project-search-path '("~/Projects"
                                        "~/Projects/fsfe"
-                                       "~/Projects/fsfe/forks"
+                                       "~/Projects/snv"
                                        )
       bookmark-default-file "~/.doom.d/bookmarks")
 #+end_src
@@ -68,9 +67,9 @@
 
 (defadvice! prompt-for-buffer (&rest _)
   :after '(evil-window-split evil-window-vsplit)
-  (+ivy/switch-buffer))
+  (+ivy/projectile-find-file))
 
-;; (setq +ivy-buffer-preview t)
+(setq +ivy-buffer-preview t)
 
 (map! :map evil-window-map
       "SPC" #'evil-window-rotate-downwards)
@@ -817,9 +816,10 @@ a helper function for jumping to source
   (citeproc-org-setup))
 
 (after! citeproc-org
-  (setq citeproc-org-suppress-affixes-cite-link-types '("citet" "cite*")
-        citeproc-org-suppress-author-cite-link-types '("cite*")
-        citeproc-org-org-bib-header "** Bibliography\n"
+  (setq
+        citeproc-org-suppress-affixes-cite-link-types '("citealt")
+        citeproc-org-suppress-author-cite-link-types '("citeyear")
+        citeproc-org-org-bib-header "* Bibliography\n"
         citeproc-org-html-bib-header "<h3 class='citeproc-org-bib-h3'>Bibliography</h3>\n"
         citeproc-org-ignore-backends '(latex beamer icalendar)))
 #+end_src
@@ -858,9 +858,17 @@ a helper function for jumping to source
             ",")))))))
 #+end_src
 * Programming
+** Git
+#+begin_src emacs-lisp :tangle yes :results silent
+(after! forge
+  (add-to-list 'forge-alist '("ssh://gitea@git.sehn.dev:64300"
+                              "git.sehn.dev/api/v1"
+                              "ssh://gitea@git.sehn.dev:64300"
+                              forge-gitea-repository)))
+#+end_src
 ** Ansible
 #+begin_src emacs-lisp :tangle yes :results silent
-(add-hook! 'yaml-mode-hook '(lambda () (ansible 1)))
+;; (add-hook! 'yaml-mode-hook '(lambda () (ansible 1)))
 
 (setq ansible-vault-password-file "~/.vault_pass.sh")
 #+end_src
@@ -879,6 +887,14 @@ a helper function for jumping to source
 (add-hook 'eglot-server-initialized-hook #'(lambda (_server) (setenv "VIRTUAL_ENV")))
 
 (add-to-list 'eglot-server-programs '(python-mode . mad/eglot-pyls))
+#+end_src
+** JavaScript
+#+begin_src emacs-lisp :tangle yes :results silent
+;; (use-package! lsp-tailwindcss
+;;   :init
+;;   (setq! lsp-tailwindcss-add-on-mode t))
+(add-hook 'js2-mode-hook #'format-all-mode)
+(setq +format-with-lsp nil)
 #+end_src
 ** Scheme
 #+begin_src emacs-lisp :tangle yes :results silent

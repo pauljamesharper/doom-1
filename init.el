@@ -12,16 +12,16 @@
        doom-dashboard
        doom-quit
        hl-todo
-       indent-guides
-       modeline
+       ;; indent-guides
+       (modeline +light)
        nav-flash
        ophints
        (popup +all +defaults)
-       ;; treemacs
-       neotree
+       treemacs
+       ;; neotree
        vc-gutter
        vi-tilde-fringe
-       tabs
+       ;; tabs
        window-select
        workspaces
        zen
@@ -80,7 +80,8 @@
        (python +lsp)
        (racket +xp)
        rest
-       (sh +lsp) web
+       (sh +lsp)
+       (web +lsp)
        :email
        mu4e
 
