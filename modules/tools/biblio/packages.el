@@ -11,5 +11,5 @@
 (package! citeproc-org :pin "22a759c4f0ec80075014dcc594baa4d1b470d995")
 
 
-(package! org-roam-server
-  :recipe (:host github :repo "org-roam/org-roam-server"))
+;;(package! org-roam-server
+;;  :recipe (:host github :repo "org-roam/org-roam-server"))
