@@ -62,9 +62,9 @@
 
 (after! centaur-tabs
   (setq centaur-tabs-set-bar 'over
-        ;; centaur-tabs-set-close-button nil
-        centaur-tabs-height 40)
-  (centaur-tabs-change-fonts "Rubik" 116)
+        centaur-tabs-set-close-button nil
+        centaur-tabs-height 32)
+  (centaur-tabs-change-fonts "Rubik" 110)
   (centaur-tabs-group-by-projectile-project))
 
 (use-package! dired-x
@@ -294,33 +294,6 @@
         org-caldav-exclude-tags '("weekly" "daily" "monthly")))
 
 (setq org-clock-mode-line-total 'today)
-
-(add-hook
- 'org-mode-hook
- (lambda ()
-
-   ;; Org clock string to Gnome top bar. Needs :
-   ;; https://extensions.gnome.org/extension/974/short-memo/
-   (defun current-task-to-status ()
-     (interactive)
-     (if (fboundp 'org-clocking-p)
-         (if (org-clocking-p)
-             (call-process "dconf" nil nil nil "write"
-                           "/org/gnome/shell/extensions/short-memo/message"
-                           (concat "'" (org-clock-get-clock-string) "'"))
-           (call-process "dconf" nil nil nil "write"
-                         "/org/gnome/shell/extensions/short-memo/message"
-                         "'No active clock'"))))
-   ;; update clock message every minute
-   (run-with-timer 0 60 'current-task-to-status)
-
-   ;; update clock immediately on clock-in / clock-out
-   (defun my-org-clock-message (old-function &rest arguments)
-     (apply old-function arguments)
-     (current-task-to-status))
-   (advice-add #'org-clock-in :around #'my-org-clock-message)
-   (advice-add #'org-clock-out :around #'my-org-clock-message)
-   ))
 
 (use-package! org-clock-budget
   :after org
@@ -630,10 +603,16 @@ bibliography:../bib/library.bib
 (after! geiser-mode
     (setq geiser-active-implementations '(mit)))
 
+(after! csv-mode
+  (setq csv-separators '("," ";" "\t")
+        csv-separator-chars '(44 59 9)
+        csv-separator-regexp "[,;\t]")
+  )
+
 (map!
- ("M-q" #'centaur-tabs-backward)
- ("M-e" #'centaur-tabs-forward)
- ("M-w" #'kill-current-buffer)
+ ("M-h" #'centaur-tabs-backward)
+ ("M-l" #'centaur-tabs-forward)
+ ("M-q" #'kill-current-buffer)
  ("M-Q" #'evil-quit)
  :leader
  (:prefix-map ("a" . "ansible")

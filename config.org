@@ -41,7 +41,6 @@
 #+begin_src emacs-lisp :tangle yes :results silent
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 #+end_src
-
 ** Transparency
 #+begin_src emacs-lisp :tangle yes :results silent
 (defun my/toggle-transparency ()
@@ -99,9 +98,9 @@
 #+begin_src emacs-lisp :tangle yes :results silent
 (after! centaur-tabs
   (setq centaur-tabs-set-bar 'over
-        ;; centaur-tabs-set-close-button nil
-        centaur-tabs-height 40)
-  (centaur-tabs-change-fonts "Rubik" 116)
+        centaur-tabs-set-close-button nil
+        centaur-tabs-height 32)
+  (centaur-tabs-change-fonts "Rubik" 110)
   (centaur-tabs-group-by-projectile-project))
 #+end_src
 
@@ -381,23 +380,21 @@ next sync operation.
 
 this adds my currently tracked task to the topbar
 
-#+begin_src emacs-lisp :tangle yes :results silent
+#+begin_src emacs-lisp :tangle no :results silent
 (add-hook
  'org-mode-hook
  (lambda ()
 
-   ;; Org clock string to Gnome top bar. Needs :
-   ;; https://extensions.gnome.org/extension/974/short-memo/
+   (defun write-string-to-file (string file)
+     (with-temp-file file
+       (insert string)))
+
    (defun current-task-to-status ()
      (interactive)
      (if (fboundp 'org-clocking-p)
          (if (org-clocking-p)
-             (call-process "dconf" nil nil nil "write"
-                           "/org/gnome/shell/extensions/short-memo/message"
-                           (concat "'" (org-clock-get-clock-string) "'"))
-           (call-process "dconf" nil nil nil "write"
-                         "/org/gnome/shell/extensions/short-memo/message"
-                         "'No active clock'"))))
+             (write-string-to-file ((concat "'" (org-clock-get-clock-string) "'") "~/.clock"))
+           (write-string-to-file ("not clocked in" "~/.clock")))))
    ;; update clock message every minute
    (run-with-timer 0 60 'current-task-to-status)
 
@@ -902,14 +899,22 @@ a helper function for jumping to source
 (after! geiser-mode
     (setq geiser-active-implementations '(mit)))
 #+end_src
+** CSV
+#+begin_src emacs-lisp :tangle yes :results silent
+(after! csv-mode
+  (setq csv-separators '("," ";" "\t")
+        csv-separator-chars '(44 59 9)
+        csv-separator-regexp "[,;\t]")
+  )
+#+end_src
 
 * Bindings
 ** Global
 #+begin_src emacs-lisp :tangle yes :results silent
 (map!
- ("M-q" #'centaur-tabs-backward)
- ("M-e" #'centaur-tabs-forward)
- ("M-w" #'kill-current-buffer)
+ ("M-h" #'centaur-tabs-backward)
+ ("M-l" #'centaur-tabs-forward)
+ ("M-q" #'kill-current-buffer)
  ("M-Q" #'evil-quit)
  :leader
  (:prefix-map ("a" . "ansible")
