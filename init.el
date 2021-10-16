@@ -77,7 +77,7 @@
        (markdown +grip)
        (org +dragndrop +hugo +journal +jupyter +noter +present )
        (php +lsp)
-       (python +lsp)
+       (python +lsp +poetry +pyright)
        (racket +xp)
        rest
        (sh +lsp)
