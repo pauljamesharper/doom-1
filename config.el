@@ -4,8 +4,7 @@
       user-mail-address "linus@sehn.tech"
       projectile-project-search-path '("~/Projects"
                                        "~/Projects/fsfe"
-                                       "~/Projects/snv"
-                                       )
+                                       "~/Projects/snv")
       bookmark-default-file "~/.doom.d/bookmarks")
 
 (setq doom-font (font-spec :family "Fira Code" :size 15)
