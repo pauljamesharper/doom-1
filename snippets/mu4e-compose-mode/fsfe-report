@@ -1,0 +1,17 @@
+# -*- mode: snippet -*-
+# name: fsfe-report
+# key: fsfe-report
+# --
+<#secure method=pgpmime mode=signencrypt>
+Hi there,
+
+Below you find my weekly report for week $1 of 2021.
+
+Overtime counter: $2
+
+$3
+
+--
+Linus
+System Hacker
+m: linus@fsfe.org

@@ -8,12 +8,11 @@
                                        )
       bookmark-default-file "~/.doom.d/bookmarks")
 
-(setq doom-font (font-spec :family "JetBrains Mono" :size 14)
-      doom-variable-pitch-font (font-spec :family "Rubik")
-      doom-unicode-font (font-spec :family "all-the-icons")
-      doom-big-font (font-spec :family "JetBrains Mono" :size 22))
+(setq doom-font (font-spec :family "Fira Code" :size 15)
+      doom-big-font (font-spec :family "Fira Code" :size 22))
+      doom-variable-pitch-font (font-spec :family "Fira Sans")
 
-(setq doom-theme 'doom-homage-black
+(setq doom-theme 'doom-monokai-pro
       doom-themes-enable-bold t
       dired-dwim-target t
       display-time-24hr-format t
@@ -55,7 +54,7 @@
 (set-popup-rule! "eldoc" :side 'right :size 85)
 (set-popup-rule! "helpful" :side 'right :size 85)
 
-(add-hook! 'text-mode-hook auto-fill-mode)
+;; (add-hook! 'text-mode-hook auto-fill-mode)
 
 (after! company-box
   (setq company-box-max-candidates 10))
