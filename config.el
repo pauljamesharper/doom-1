@@ -1,26 +1,91 @@
 ;; -*- lexical-binding: t -*-
 
-(setq user-full-name "Linus Sehn"
-      user-mail-address "linus@sehn.tech"
-      projectile-project-search-path '("~/Projects"
-                                       "~/Projects/fsfe"
-                                       "~/Projects/snv")
-      bookmark-default-file "~/.doom.d/bookmarks")
+(map!
+ ("M-h" #'centaur-tabs-backward)
+ ("M-l" #'centaur-tabs-forward)
+ ("M-q" #'kill-current-buffer)
+ ("M-Q" #'evil-quit)
+ :leader
+ (:prefix-map ("a" . "ansible")
+  :desc "Decrypt buffer" "d" #'ansible-decrypt-buffer
+  :desc "Encrypt buffer" "e" #'ansible-encrypt-buffer)
+ (:prefix-map ("e" . "exocortex")
+  :desc "Search for name" "e" #'org-roam-find-file
+  :desc "Search for symbol" "x" #'my/search-exocortex
+  :desc "Search public for symbol" "w" #'my/search-public
+  :desc "Search zettel" "c" #'org-roam-bibtex-find-non-ref-file
+  :desc "Search refs" "r" #'org-roam-find-ref)
+ (:prefix-map ("d" . "dict")
+  :desc "Add to dictionary" "a" #'my/save-to-dict
+  :desc "Change to german" "g" #'my/switch-to-de-dict
+  :desc "Change to english" "e" #'my/switch-to-en-dict)
+ (:prefix-map ("i" . "insert")
+  :desc "Insert math from screen" "m" #'mathpix-screenshot)
+ (:prefix ("t" . "toggle/tangle")
+  :desc "Detangle" "d" #'org-babel-detangle
+  :desc "Transparency" "p" #'my/toggle-transparency)
+ (:prefix ("f" . "file")
+  :desc "Open neotree" "t" #'+neotree/open))
 
-(setq doom-font (font-spec :family "Fira Code" :size 15)
-      doom-big-font (font-spec :family "Fira Code" :size 22))
-      doom-variable-pitch-font (font-spec :family "Fira Sans")
+(map! :map org-mode-map
+      ("M-i" #'org-ref-ivy-insert-cite-link)
+      ("M-u" #'my/org-ref-update-pre-post-text)
+      ("M-p" #'my/org-ref-open-pdf-at-point)
+      ("M-n" #'org-ref-open-notes-at-point)
+      ("M-r" #'org-roam-insert)
+      (:leader
+       (:prefix ("c" . "code/cite")
+        :desc "Cite source" "i" #'org-ref-ivy-insert-cite-link
+        :desc "Open pdf at point" "p" #'my/org-ref-open-pdf-at-point
+        :desc "Open notes at point" "n" #'org-ref-open-notes-at-point)
+       (:prefix ("t" . "toggle/tangle")
+        :desc "Tangle src blocks" "t" #'org-babel-tangle
+        :desc "Jump to src block" "j" #'org-babel-tangle-jump)
+       (:prefix "i"
+        :desc "Cite source" "c" #'org-ref-helm-insert-cite-link
+        :desc "Insert anki note" "a" #'anki-editor-insert-note)
+       (:prefix ("a" . "anki/ansible")
+        :desc "Push notes to anki" "p" #'anki-editor-push-notes
+        :desc "Cloze region" "c" #'anki-editor-cloze-dwim))
+      (:localleader
+       (:prefix ("b" . "tables")
+        "w" #'show-weekly-clock-budget
+        "m" #'show-monthly-clock-budget
+        "y" #'show-yearly-clock-budget)
+       (:prefix ("a" . "attachments")
+        "c" #'org-download-screenshot
+        "y" #'org-download-yank )))
+
+(map! :map pdf-view-mode-map
+      "C-c i" 'org-noter-insert-note)
+
+(setq user-full-name "Linus Sehn"
+      user-mail-address "linus@sehn.tech")
+
+(setq bookmark-default-file "~/.doom.d/bookmarks")
+
+;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
+
+;; Location of project repositories
+(setq projectile-project-search-path
+      '(
+        "~/Projects"
+        "~/Projects/fsfe"
+        "~/Projects/snv"
+        ))
+
+(setq doom-font (font-spec :family "Input Mono Narrow" :size 15 :weight 'semi-light)
+      doom-variable-pitch-font (font-spec :family "Fira Sans") ; inherits `doom-font''s :size
+      doom-unicode-font (font-spec :family "Input Mono Narrow" :size 12)
+      doom-big-font (font-spec :family "Fira Code" :size 24))
 
 (setq doom-theme 'doom-monokai-pro
       doom-themes-enable-bold t
-      dired-dwim-target t
       display-time-24hr-format t
       display-time-default-load-average nil)
 (display-time-mode 1)
 
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
-
-(defun my/toggle-transparency ()
+(defun my-ui/toggle-transparency ()
   (interactive)
   (let ((alpha (frame-parameter nil 'alpha)))
     (if (eq
@@ -634,62 +699,3 @@ bibliography:../bib/library.bib
         csv-separator-chars '(44 59 9)
         csv-separator-regexp "[,;\t]")
   )
-
-(map!
- ("M-h" #'centaur-tabs-backward)
- ("M-l" #'centaur-tabs-forward)
- ("M-q" #'kill-current-buffer)
- ("M-Q" #'evil-quit)
- :leader
- (:prefix-map ("a" . "ansible")
-  :desc "Decrypt buffer" "d" #'ansible-decrypt-buffer
-  :desc "Encrypt buffer" "e" #'ansible-encrypt-buffer)
- (:prefix-map ("e" . "exocortex")
-  :desc "Search for name" "e" #'org-roam-find-file
-  :desc "Search for symbol" "x" #'my/search-exocortex
-  :desc "Search public for symbol" "w" #'my/search-public
-  :desc "Search zettel" "c" #'org-roam-bibtex-find-non-ref-file
-  :desc "Search refs" "r" #'org-roam-find-ref)
- (:prefix-map ("d" . "dict")
-  :desc "Add to dictionary" "a" #'my/save-to-dict
-  :desc "Change to german" "g" #'my/switch-to-de-dict
-  :desc "Change to english" "e" #'my/switch-to-en-dict)
- (:prefix-map ("i" . "insert")
-  :desc "Insert math from screen" "m" #'mathpix-screenshot)
- (:prefix ("t" . "toggle/tangle")
-  :desc "Detangle" "d" #'org-babel-detangle
-  :desc "Transparency" "p" #'my/toggle-transparency)
- (:prefix ("f" . "file")
-  :desc "Open neotree" "t" #'+neotree/open))
-
-(map! :map org-mode-map
-      ("M-i" #'org-ref-ivy-insert-cite-link)
-      ("M-u" #'my/org-ref-update-pre-post-text)
-      ("M-p" #'my/org-ref-open-pdf-at-point)
-      ("M-n" #'org-ref-open-notes-at-point)
-      ("M-r" #'org-roam-insert)
-      (:leader
-       (:prefix ("c" . "code/cite")
-        :desc "Cite source" "i" #'org-ref-ivy-insert-cite-link
-        :desc "Open pdf at point" "p" #'my/org-ref-open-pdf-at-point
-        :desc "Open notes at point" "n" #'org-ref-open-notes-at-point)
-       (:prefix ("t" . "toggle/tangle")
-        :desc "Tangle src blocks" "t" #'org-babel-tangle
-        :desc "Jump to src block" "j" #'org-babel-tangle-jump)
-       (:prefix "i"
-        :desc "Cite source" "c" #'org-ref-helm-insert-cite-link
-        :desc "Insert anki note" "a" #'anki-editor-insert-note)
-       (:prefix ("a" . "anki/ansible")
-        :desc "Push notes to anki" "p" #'anki-editor-push-notes
-        :desc "Cloze region" "c" #'anki-editor-cloze-dwim))
-      (:localleader
-       (:prefix ("b" . "tables")
-        "w" #'show-weekly-clock-budget
-        "m" #'show-monthly-clock-budget
-        "y" #'show-yearly-clock-budget)
-       (:prefix ("a" . "attachments")
-        "c" #'org-download-screenshot
-        "y" #'org-download-yank )))
-
-(map! :map pdf-view-mode-map
-      "C-c i" 'org-noter-insert-note)
