@@ -293,6 +293,34 @@
 
 (setq org-clock-mode-line-total 'today)
 
+(add-hook
+ 'org-mode-hook
+ (lambda ()
+
+   ;; Org clock string to Gnome top bar. Needs :
+   ;; https://extensions.gnome.org/extension/974/short-memo/
+   (defun current-task-to-status ()
+     (interactive)
+     (if (fboundp 'org-clocking-p)
+         (if (org-clocking-p)
+             (f-write-text
+              (s-replace-all '(("(" . "") (")" . ""))
+                (org-clock-get-clock-string))
+                'utf-8 "/home/lino/.clock")
+           (f-write-text "No active clock! What are you doing?"
+              'utf-8 "/home/lino/.clock")
+           )))
+   ;; update clock message every minute
+   (run-with-timer 0 15 'current-task-to-status)
+
+   ;; update clock immediately on clock-in / clock-out
+   (defun my-org-clock-message (old-function &rest arguments)
+     (apply old-function arguments)
+     (current-task-to-status))
+   (advice-add #'org-clock-in :around #'my-org-clock-message)
+   (advice-add #'org-clock-out :around #'my-org-clock-message)
+   ))
+
 (use-package! org-clock-budget
   :after org
   :config

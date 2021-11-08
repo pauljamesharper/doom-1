@@ -5,11 +5,11 @@
 (package! org-super-agenda)
 (package! anki-editor)
 (package! org-analyzer)
+(package! org-clock-csv)
 
 ;; Disabled stuff for terminal
 (package! solaire-mode :disable t)
 
-;; Forked
 (package! org-clock-budget
   :recipe (:host github :repo "Fuco1/org-clock-budget"))
 (package! mathpix

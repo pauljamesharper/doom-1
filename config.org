@@ -378,23 +378,26 @@ next sync operation.
 
 this adds my currently tracked task to the topbar
 
-#+begin_src emacs-lisp :tangle no :results silent
+#+begin_src emacs-lisp :tangle yes :results silent
 (add-hook
  'org-mode-hook
  (lambda ()
 
-   (defun write-string-to-file (string file)
-     (with-temp-file file
-       (insert string)))
-
+   ;; Org clock string to Gnome top bar. Needs :
+   ;; https://extensions.gnome.org/extension/974/short-memo/
    (defun current-task-to-status ()
      (interactive)
      (if (fboundp 'org-clocking-p)
          (if (org-clocking-p)
-             (write-string-to-file ((concat "'" (org-clock-get-clock-string) "'") "~/.clock"))
-           (write-string-to-file ("not clocked in" "~/.clock")))))
+             (f-write-text
+              (s-replace-all '(("(" . "") (")" . ""))
+                (org-clock-get-clock-string))
+                'utf-8 "/home/lino/.clock")
+           (f-write-text "No active clock! What are you doing?"
+              'utf-8 "/home/lino/.clock")
+           )))
    ;; update clock message every minute
-   (run-with-timer 0 60 'current-task-to-status)
+   (run-with-timer 0 15 'current-task-to-status)
 
    ;; update clock immediately on clock-in / clock-out
    (defun my-org-clock-message (old-function &rest arguments)
