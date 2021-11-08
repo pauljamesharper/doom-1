@@ -4,24 +4,21 @@
 
        :completion
        (company +childframe)
-       (ivy +fuzzy +prescient +childframe)
-       ;; selectrum ;; https://github.com/hlissner/doom-emacs/pull/4664
+       (vertico)
 
        :ui
        doom
        doom-dashboard
        doom-quit
        hl-todo
-       ;; indent-guides
+       indent-guides
        (modeline +light)
        nav-flash
        ophints
        (popup +all +defaults)
        treemacs
-       ;; neotree
        vc-gutter
        vi-tilde-fringe
-       ;; tabs
        window-select
        workspaces
        zen
@@ -31,7 +28,6 @@
        file-templates
        fold
        (format +onsave)
-       lispy
        snippets
 
        :emacs
@@ -82,6 +78,7 @@
        rest
        (sh +lsp)
        (web +lsp)
+
        :email
        mu4e
 
