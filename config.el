@@ -1,8 +1,10 @@
 ;; -*- lexical-binding: t -*-
 
 (map!
- ("M-h" #'centaur-tabs-backward)
- ("M-l" #'centaur-tabs-forward)
+ ("M-a" #'centaur-tabs-backward)
+ ("M-d" #'centaur-tabs-forward)
+ ("M-A" #'centaur-tabs-move-current-tab-to-left)
+ ("M-D" #'centaur-tabs-move-current-tab-to-right)
  ("M-q" #'kill-current-buffer)
  ("M-Q" #'evil-quit)
  :leader
@@ -68,11 +70,14 @@
 
 ;; Location of project repositories
 (setq projectile-project-search-path
-      '(
-        "~/Projects"
+      '("~/Projects"
         "~/Projects/fsfe"
-        "~/Projects/snv"
-        ))
+        "~/Projects/snv"))
+
+;; Don't use mixed-pitch-mode for any buffer type
+(setq +zen-mixed-pitch-modes '())
+;; Make text only slightly bigger
+(setq +zen-text-scale 1.1)
 
 (setq doom-font (font-spec :family "Input Mono Narrow" :size 15 :weight 'semi-light)
       doom-variable-pitch-font (font-spec :family "Fira Sans") ; inherits `doom-font''s :size
@@ -85,7 +90,7 @@
       display-time-default-load-average nil)
 (display-time-mode 1)
 
-(defun my-ui/toggle-transparency ()
+(defun my/toggle-transparency ()
   (interactive)
   (let ((alpha (frame-parameter nil 'alpha)))
     (if (eq
@@ -99,70 +104,28 @@
 (after! persp-mode
   (setq persp-emacsclient-init-frame-behaviour-override "main"))
 
-(setq evil-vsplit-window-right t
-      evil-split-window-below t)
-
-(defadvice! prompt-for-buffer (&rest _)
-  :after '(evil-window-split evil-window-vsplit)
-  (+ivy/projectile-find-file))
-
-(setq +ivy-buffer-preview t)
-
-(map! :map evil-window-map
-      "SPC" #'evil-window-rotate-downwards)
-
-(set-popup-rules!
-  '(("^\*helm"
-     :size 0.35 :select t :modeline n :quit t)))
-
-(set-popup-rule! "eldoc" :side 'right :size 85)
-(set-popup-rule! "helpful" :side 'right :size 85)
-
-;; (add-hook! 'text-mode-hook auto-fill-mode)
-
-(after! company-box
-  (setq company-box-max-candidates 10))
-
 (after! centaur-tabs
-  (setq centaur-tabs-set-bar 'over
+  (setq centaur-tabs-set-bar nil
         centaur-tabs-set-close-button nil
-        centaur-tabs-height 32)
-  (centaur-tabs-change-fonts "Rubik" 110)
-  (centaur-tabs-group-by-projectile-project))
+        centaur-tabs-style "rounded"
+        centaur-tabs-plain-icons t
+        centaur-tabs-height 40)
+        ;; group tabs by project/workspace
+  (centaur-tabs-group-by-projectile-project)
+  (centaur-tabs-headline-match))
 
-(use-package! dired-x
-  :unless (featurep! +ranger)
-  :hook (dired-mode . dired-omit-mode)
-  :config
-  (setq dired-omit-verbose nil
-        dired-omit-files
-        (concat dired-omit-files
-                "\\|^.DS_Store\\'"
-                "\\|^.project\\(?:ile\\)?\\'"
-                "\\|^.\\(svn\\|git\\)\\'"
-                "\\|^.ccls-cache\\'"
-                "\\|\\.\\(?:elc\\|o\\|pyo\\|swp\\|class\\)\\'"
-                ))
-  ;; Disable the prompt about whether I want to kill the Dired buffer for a
-  ;; deleted directory. Of course I do!
-  (setq dired-clean-confirm-killing-deleted-buffers nil)
-  ;; Let OS decide how to open certain files
-  (when-let (cmd (cond (IS-MAC "open")
-                       (IS-LINUX "xdg-open")
-                       (IS-WINDOWS "start")))
-    (setq dired-guess-shell-alist-user
-          `(("\\.\\(?:docx\\|pdf\\|djvu\\|eps\\)\\'" ,cmd)
-            ("\\.\\(?:jpe?g\\|png\\|gif\\|xpm\\)\\'" ,cmd)
-            ("\\.\\(?:xcf\\)\\'" ,cmd)
-            ("\\.csv\\'" ,cmd)
-            ("\\.tex\\'" ,cmd)
-            ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|rm\\|rmvb\\|ogv\\)\\(?:\\.part\\)?\\'" ,cmd)
-            ("\\.\\(?:mp3\\|flac\\)\\'" ,cmd)
-            ("\\.html?\\'" ,cmd)
-            ("\\.odt\\'" "libreoffice"))))
-  (map! :map dired-mode-map
-        :localleader
-        "h" #'dired-omit-mode))
+(add-hook! dired-mode #'turn-off-solaire-mode)
+
+(setq +treemacs-git-mode 'deferred)
+
+(after! company
+  (setq company-idle-delay 0.5
+        company-minimum-prefix-length 2)
+  (setq company-show-quick-access t
+        company-quick-access-modifier 'super))
+
+(setq-default history-length 1000)
+(setq-default prescient-history-length 1000)
 
 (setq ispell-dictionary "en_GB")
 
@@ -263,12 +226,6 @@
 
 (setq org-directory "~/Exocortex")
 
-(after! org-roam
-  (setq org-roam-directory "~/Exocortex/"
-        org-roam-db-location "~/Exocortex/.exocortex.db"
-        ;; don't match my private org stuff
-        org-roam-file-exclude-regexp "/org"))
-
 (after! org
   (use-package! org-super-agenda
     :after org-agenda
@@ -320,6 +277,7 @@
            "WAIT(w)"  ; Something external is holding up this task
            "HOLD(h)"  ; This task is paused/on hold because of me
            "IDEA(i)"  ; This task is paused/on hold because of me
+           "FIX(f)"   ; Something that needs fixing
            "|"
            "DONE(d)"  ; Task successfully completed
            "KILL(k)") ; Task was cancelled, aborted or is no longer applicable
@@ -386,44 +344,6 @@
    (advice-add #'org-clock-out :around #'my-org-clock-message)
    ))
 
-(use-package! org-clock-budget
-  :after org
-  :config
-  ;; set colors for different budget exhaustion states
-  (setq org-clock-budget-ratio-faces '((1.0 hydra-face-red)
-                                       (0.95 font-lock-type-face)
-                                       (0.5 ivy-confirm-face)
-                                       (0.0 font-lock-keyword-face))
-        ;; set time-format to h:mm
-        org-duration-format (quote h:mm)
-        org-clock-budget-default-sort-column '("BUDGET_WEEK" budget desc))
-  ;; make popup-buffer larger
-  (set-popup-rule! "^\\*Org clock budget report" :size 0.2 :quit nil))
-
-;; some custom functions for displaying
-(defun show-yearly-clock-budget ()
-  "Show yearly org-clock budget"
-  (interactive)
-  (setq org-clock-budget-intervals '(("BUDGET_YEAR" org-clock-budget-interval-this-year)))
-  (org-clock-budget-report))
-
-(defun show-monthly-clock-budget ()
-  "Show monthly org-clock budget"
-  (interactive)
-  (setq org-clock-budget-intervals '(("BUDGET_MONTH" org-clock-budget-interval-this-month)))
-  (org-clock-budget-report))
-
-(defun show-weekly-clock-budget ()
-  "Show yearly org-clock budget"
-  (interactive)
-  (setq org-clock-budget-intervals '(("BUDGET_WEEK" org-clock-budget-interval-this-week)))
-  (org-clock-budget-report))
-
-(map! :map org-mode-map
-      (:localleader
-       :desc "Show weekly budget"     "w"     #'show-weekly-clock-budget
-       ))
-
 (after! org
   (setq org-capture-templates
         '(("t" "TODO" entry
@@ -439,9 +359,11 @@
         org-journal-encrypt-journal 't
         org-journal-file-type 'yearly))
 
-(add-hook! 'org-mode-hook 'anki-editor-mode)
-(after! org
-  (setq anki-editor-ignored-org-tags '("noexport")))
+(after! org-roam
+  (setq org-roam-directory "~/Exocortex/"
+        org-roam-db-location "~/Exocortex/roam.sqlite"
+        ;; don't match my private org stuff
+        org-roam-file-exclude-regexp "/org"))
 
 (defun my/search-exocortex ()
   "Perform a text search on ~/Exocortex."
@@ -456,9 +378,42 @@
   (let ((default-directory "~/Projects/exocortex-public"))
     (+default/search-cwd "")))
 
-(setq! +biblio-pdf-library-dir "~/Exocortex/pdfs/"
-       +biblio-default-bibliography-files "~/Exocortex/bib/library.bib"
-       +biblio-notes-path "~/Exocortex/refs/")
+(after! citar
+  (setq citar-bibliography '("~/Exocortex/bib/library.bib")
+        citar-library-paths '("~/Exocortex/pdfs")
+        citar-notes-path '("~/Exocortex/refs")
+        citar-file-open-note-function 'orb-citar-edit-note
+        citar-file-note-org-include '(org-id org-roam-ref)
+        citar-at-point-function 'embark-act
+        bibtex-completion-bibliography '("~/Exocortex/bib/library.bib")
+        bibtex-completion-notes-path '("~/Exocortex/refs"))
+  ;; set icons
+  (setq citar-symbols
+   `((file . (,(all-the-icons-icon-for-file "foo.pdf" :face 'all-the-icons-dred) .
+              ,(all-the-icons-icon-for-file "foo.pdf" :face 'citar-icon-dim)))
+     (note . (,(all-the-icons-icon-for-file "foo.txt") .
+              ,(all-the-icons-icon-for-file "foo.txt" :face 'citar-icon-dim)))
+     (link .
+         (,(all-the-icons-faicon "external-link-square" :v-adjust 0.02 :face 'all-the-icons-dpurple) .
+          ,(all-the-icons-faicon "external-link-square" :v-adjust 0.02 :face 'citar-icon-dim)))))
+  ;; Here we define a face to dim non 'active' icons, but preserve alignment
+  (defface citar-icon-dim
+      '((((background dark)) :foreground "#282c34")
+        (((background light)) :foreground "#fafafa"))
+       "Face for obscuring/dimming icons"
+       :group 'all-the-icons-faces))
+
+(use-package! org-roam-ui
+    :after org
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+
+(add-hook! 'org-mode-hook 'anki-editor-mode)
+(after! org
+  (setq anki-editor-ignored-org-tags '("noexport")))
 
 (after! org-roam
   (setq org-roam-capture-templates
@@ -675,11 +630,25 @@ bibliography:../bib/library.bib
         citeproc-org-html-bib-header "<h3 class='citeproc-org-bib-h3'>Bibliography</h3>\n"
         citeproc-org-ignore-backends '(latex beamer icalendar)))
 
-(after! forge
-  (add-to-list 'forge-alist '("ssh://gitea@git.sehn.dev:64300"
-                              "git.sehn.dev/api/v1"
-                              "ssh://gitea@git.sehn.dev:64300"
-                              forge-gitea-repository)))
+(use-package! string-inflection
+  :commands (string-inflection-all-cycle
+             string-inflection-toggle
+             string-inflection-camelcase
+             string-inflection-lower-camelcase
+             string-inflection-kebab-case
+             string-inflection-underscore
+             string-inflection-capital-underscore
+             string-inflection-upcase)
+  :init
+  (map! :leader :prefix ("rr" . "rename symbol according to convention")
+        :desc "cycle" "r" #'string-inflection-all-cycle
+        :desc "toggle" "t" #'string-inflection-toggle
+        :desc "CamelCase" "c" #'string-inflection-camelcase
+        :desc "downCase" "d" #'string-inflection-lower-camelcase
+        :desc "kebab-case" "k" #'string-inflection-kebab-case
+        :desc "under_score" "_" #'string-inflection-underscore
+        :desc "Upper_Score" "u" #'string-inflection-capital-underscore
+        :desc "UP_CASE" "U" #'string-inflection-upcase))
 
 ;; (add-hook! 'yaml-mode-hook '(lambda () (ansible 1)))
 
@@ -690,12 +659,3 @@ bibliography:../bib/library.bib
 ;;   (setq! lsp-tailwindcss-add-on-mode t))
 (add-hook 'js2-mode-hook #'format-all-mode)
 (setq +format-with-lsp nil)
-
-(after! geiser-mode
-    (setq geiser-active-implementations '(mit)))
-
-(after! csv-mode
-  (setq csv-separators '("," ";" "\t")
-        csv-separator-chars '(44 59 9)
-        csv-separator-regexp "[,;\t]")
-  )

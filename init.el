@@ -13,21 +13,24 @@
        hl-todo
        indent-guides
        (modeline +light)
+       ;;ligatures
+       minimap
        nav-flash
        ophints
        (popup +all +defaults)
+       tabs
        treemacs
        vc-gutter
        vi-tilde-fringe
-       window-select
        workspaces
        zen
 
        :editor
        (evil +everywhere)
+       (format +onsave)
        file-templates
        fold
-       (format +onsave)
+       parinfer
        snippets
 
        :emacs
@@ -41,37 +44,39 @@
        vterm
 
        :checkers
-       syntax
        (spell +flyspell +hunspell)
        grammar
+       syntax
 
        :tools
-       lsp
-       biblio
-       ansible
        (docker +lsp)
+       (lookup +offline +dictionary)
+       (magit +forge)
+       ansible
+       biblio
        direnv
        eval
-       (lookup +docsets +offline +dictionary)
-       (magit +forge)
+       lsp
+       make
        pdf
        rgb
+       terraform
        upload
 
        :os
        tty
 
        :lang
-       (cc +lsp)
        data
        emacs-lisp
+       (scheme +mit)
        (go +lsp)
        (java +lsp)
        (javascript +lsp)
        (json +lsp)
-       (latex +latexmk +cdlatex)
-       (markdown +grip)
-       (org +dragndrop +hugo +journal +jupyter +noter +present )
+       (latex +latexmk)
+       markdown
+       (org +dragndrop +hugo +journal +jupyter +noter +present +roam2)
        (php +lsp)
        (python +lsp +pyright)
        (racket +xp)

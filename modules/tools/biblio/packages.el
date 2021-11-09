@@ -2,14 +2,12 @@
 ;;; tools/biblio/packages.el
 ;;;
 
-;; I want everything pinned, so my Ecocortex runs new code when I want it to
-(package! org-roam :pin "d913447939baa0925eb4aeb719c31e6a84916e0f")
-(package! org-roam-bibtex :pin "7c08a8928967a683666dbc1850e41537ab1fa01a")
-(package! org-ref :pin "2a91b6f67dc3116b0b688c1242ce67d90d833326")
-(package! bibtex-completion :pin "12f8809aac3a13dd11a1c664a13f789005f7a199")
-(package! helm-bibtex :pin "12f8809aac3a13dd11a1c664a13f789005f7a199")
-(package! citeproc-org :pin "22a759c4f0ec80075014dcc594baa4d1b470d995")
+(when (featurep! :completion vertico)
+  (package! citar :pin "fd33f5c4f7981036a969b5ca8aaf42380848ab32"))
 
+(package! citeproc :pin "c8ff95862823cdff067e8cc9bb7f5ef537e8f1d9")
 
-;;(package! org-roam-server
-;;  :recipe (:host github :repo "org-roam/org-roam-server"))
+;; for legacy docuements
+(package! citeproc-org :pin "0fb4c96f48b3055a59a397af24d3f1a82cf77b66")
+;; for org-roam connection
+(package! org-roam-bibtex :pin "d65b70e9d19efc5001e01a61c36cc3e57e198131")
