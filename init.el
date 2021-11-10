@@ -76,7 +76,7 @@
        (json +lsp)
        (latex +latexmk)
        markdown
-       (org +dragndrop +hugo +journal +jupyter +noter +present +roam2)
+       (org +dragndrop +hugo +journal +jupyter +noter +pomodoro +present +roam2)
        (php +lsp)
        (python +lsp +pyright)
        (racket +xp)
