@@ -480,9 +480,9 @@
         citar-file-open-note-function 'orb-citar-edit-note
         citar-file-note-org-include '(org-id org-roam-ref)
         citar-at-point-function 'embark-act
-        bibtex-completion-bibliography '("~/Exocortex/bib/library.bib")
-        bibtex-completion-notes-path '("~/Exocortex/refs"))
-  ;; set icons
+        bibtex-completion-bibliography '("~/Exocortex/bib/library.bib"))
+        ;; bibtex-completion-notes-path '("~/Exocortex/refs"))
+  ;; set icon   s
   (setq citar-symbols
    `((file . (,(all-the-icons-icon-for-file "foo.pdf" :face 'all-the-icons-dred) .
               ,(all-the-icons-icon-for-file "foo.pdf" :face 'citar-icon-dim)))
@@ -691,26 +691,6 @@ bibliography:../bib/library.bib
 
 (after! ox-hugo
   (setq org-hugo-default-section-directory "post"))
-
-(after! (org org-roam)
-    (defun my/org-roam--backlinks-list (file)
-      (if (org-roam--org-roam-file-p file)
-          (--reduce-from
-           (concat acc (format "- *[[file:%s][%s]]*\n"
-                               (file-relative-name (car it) org-roam-directory)
-                               (org-roam--get-title-or-slug (car it))))
-           "" (org-roam-db-query [:select [from]
-                                  :from links
-                                  :where (= to $s1)
-                                  :and from :not :like $s2] file "%private%"))
-        ""))
-    (defun my/org-export-preprocessor (_backend)
-      (let ((links (my/org-roam--backlinks-list (buffer-file-name))))
-        (unless (string= links "")
-          (save-excursion
-            (goto-char (point-max))
-            (insert (concat "\n* Backlinks\n" links))))))
-    (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor))
 
 (use-package! citeproc-org
   :after org

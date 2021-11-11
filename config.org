@@ -622,9 +622,9 @@ This adds my currently tracked task to the Gnome topbar.
         citar-file-open-note-function 'orb-citar-edit-note
         citar-file-note-org-include '(org-id org-roam-ref)
         citar-at-point-function 'embark-act
-        bibtex-completion-bibliography '("~/Exocortex/bib/library.bib")
-        bibtex-completion-notes-path '("~/Exocortex/refs"))
-  ;; set icons
+        bibtex-completion-bibliography '("~/Exocortex/bib/library.bib"))
+        ;; bibtex-completion-notes-path '("~/Exocortex/refs"))
+  ;; set icon   s
   (setq citar-symbols
    `((file . (,(all-the-icons-icon-for-file "foo.pdf" :face 'all-the-icons-dred) .
               ,(all-the-icons-icon-for-file "foo.pdf" :face 'citar-icon-dim)))
@@ -913,7 +913,7 @@ a helper function for jumping to source
 #+end_src
 
 ***** Export Backlinks
-#+begin_src emacs-lisp :tangle yes :results silent
+#+begin_src emacs-lisp :tangle no :results silent
 (after! (org org-roam)
     (defun my/org-roam--backlinks-list (file)
       (if (org-roam--org-roam-file-p file)
