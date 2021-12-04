@@ -32,5 +32,14 @@
            :repo "merrickluo/lsp-tailwindcss"
            :branch "master"))
 
+(package! company-tabnine
+  :pin "98e9e8b38b6ca289fbe265b0a7b62c7fe38ed0e2"
+  :recipe (:host github
+           :repo "TommyX12/company-tabnine"
+           :branch "master"))
+
+;; needed for theming
+(package! theme-magic :pin "844c4311bd26ebafd4b6a1d72ddcc65d87f074e3")
+
 ;; I don't like solaire-mode
-(package! solaire-mode :disable t)
+;; (package! solaire-mode :disable t)

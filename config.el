@@ -1,10 +1,11 @@
 ;; -*- lexical-binding: t -*-
 
 (map!
- ("M-a" #'centaur-tabs-backward)
- ("M-d" #'centaur-tabs-forward)
- ("M-A" #'centaur-tabs-move-current-tab-to-left)
- ("M-D" #'centaur-tabs-move-current-tab-to-right)
+ ;; Currently not using tabs
+ ;; ("M-a" #'centaur-tabs-backward)
+ ;; ("M-d" #'centaur-tabs-forward)
+ ;; ("M-A" #'centaur-tabs-move-current-tab-to-left)
+ ;; ("M-D" #'centaur-tabs-move-current-tab-to-right)
  ("M-q" #'kill-current-buffer)
  ("M-Q" #'evil-quit)
  :leader
@@ -79,15 +80,39 @@
 ;; Make text only slightly bigger
 (setq +zen-text-scale 1.1)
 
-(setq doom-font (font-spec :family "Input Mono Narrow" :size 15 :weight 'semi-light)
-      doom-variable-pitch-font (font-spec :family "Fira Sans") ; inherits `doom-font''s :size
-      doom-unicode-font (font-spec :family "Input Mono Narrow" :size 12)
-      doom-big-font (font-spec :family "Fira Code" :size 24))
+(setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 15)
+      doom-variable-pitch-font (font-spec :family "Rubik") ; inherits `doom-font''s :size
+      doom-unicode-font (font-spec :family "JetBrains Mono NF Regular" :size 12))
 
-(setq doom-theme 'doom-monokai-pro
+(setq doom-theme 'doom-dracula
       display-time-24hr-format t
       display-time-default-load-average nil)
 (display-time-mode 1)
+
+(use-package! theme-magic
+  :commands theme-magic-from-emacs
+  :config
+  (defadvice! theme-magic--auto-extract-16-doom-colors ()
+    :override #'theme-magic--auto-extract-16-colors
+    (list
+     (face-attribute 'default :background)
+     (doom-color 'error)
+     (doom-color 'success)
+     (doom-color 'type)
+     (doom-color 'keywords)
+     (doom-color 'constants)
+     (doom-color 'functions)
+     (face-attribute 'default :foreground)
+     (face-attribute 'shadow :foreground)
+     (doom-blend 'base8 'error 0.1)
+     (doom-blend 'base8 'success 0.1)
+     (doom-blend 'base8 'type 0.1)
+     (doom-blend 'base8 'keywords 0.1)
+     (doom-blend 'base8 'constants 0.1)
+     (doom-blend 'base8 'functions 0.1)
+     (face-attribute 'default :foreground))))
+
+(run-with-idle-timer 0.1 nil (lambda () (add-hook 'doom-load-theme-hook 'theme-magic-from-emacs)))
 
 (defun my/toggle-transparency ()
   (interactive)
@@ -103,18 +128,97 @@
 (after! persp-mode
   (setq persp-emacsclient-init-frame-behaviour-override "main"))
 
-(after! centaur-tabs
-  (setq centaur-tabs-set-bar nil
-        centaur-tabs-set-close-button nil
-        centaur-tabs-style "rounded"
-        centaur-tabs-plain-icons t
-        centaur-tabs-height 40)
-        ;; group tabs by project/workspace
-  (centaur-tabs-group-by-projectile-project)
-  (centaur-tabs-headline-match))
+(defvar fancy-splash-image-template
+  (expand-file-name "splash/img/emacs-e-template.svg" doom-private-dir)
+  "Default template svg used for the splash image, with substitutions from ")
 
-(setq +doom-dashboard-banner-file
-      (expand-file-name "splash/img/emacs-e.svg" doom-private-dir))
+(defvar fancy-splash-sizes
+  `((:height 300 :min-height 50 :padding (0 . 2))
+    (:height 250 :min-height 42 :padding (2 . 4))
+    (:height 200 :min-height 35 :padding (3 . 3))
+    (:height 150 :min-height 28 :padding (3 . 3))
+    (:height 100 :min-height 20 :padding (2 . 2))
+    (:height 75  :min-height 15 :padding (2 . 1))
+    (:height 50  :min-height 10 :padding (1 . 0))
+    (:height 1   :min-height 0  :padding (0 . 0)))
+  "list of plists with the following properties
+  :height the height of the image
+  :min-height minimum `frame-height' for image
+  :padding `+doom-dashboard-banner-padding' (top . bottom) to apply
+  :template non-default template file
+  :file file to use instead of template")
+
+(defvar fancy-splash-template-colours
+  '(("$colour1" . keywords) ("$colour2" . type) ("$colour3" . base5) ("$colour4" . base8))
+  "list of colour-replacement alists of the form (\"$placeholder\" . 'theme-colour) which applied the template")
+
+(unless (file-exists-p (expand-file-name "theme-splashes" doom-cache-dir))
+  (make-directory (expand-file-name "theme-splashes" doom-cache-dir) t))
+
+(defun fancy-splash-filename (theme-name height)
+  (expand-file-name (concat (file-name-as-directory "theme-splashes")
+                            theme-name
+                            "-" (number-to-string height) ".svg")
+                    doom-cache-dir))
+
+(defun fancy-splash-clear-cache ()
+  "Delete all cached fancy splash images"
+  (interactive)
+  (delete-directory (expand-file-name "theme-splashes" doom-cache-dir) t)
+  (message "Cache cleared!"))
+
+(defun fancy-splash-generate-image (template height)
+  "Read TEMPLATE and create an image if HEIGHT with colour substitutions as
+   described by `fancy-splash-template-colours' for the current theme"
+  (with-temp-buffer
+    (insert-file-contents template)
+    (re-search-forward "$height" nil t)
+    (replace-match (number-to-string height) nil nil)
+    (dolist (substitution fancy-splash-template-colours)
+      (goto-char (point-min))
+      (while (re-search-forward (car substitution) nil t)
+        (replace-match (doom-color (cdr substitution)) nil nil)))
+    (write-region nil nil
+                  (fancy-splash-filename (symbol-name doom-theme) height) nil nil)))
+
+(defun fancy-splash-generate-images ()
+  "Perform `fancy-splash-generate-image' in bulk"
+  (dolist (size fancy-splash-sizes)
+    (unless (plist-get size :file)
+      (fancy-splash-generate-image (or (plist-get size :template)
+                                       fancy-splash-image-template)
+                                   (plist-get size :height)))))
+
+(defun ensure-theme-splash-images-exist (&optional height)
+  (unless (file-exists-p (fancy-splash-filename
+                          (symbol-name doom-theme)
+                          (or height
+                              (plist-get (car fancy-splash-sizes) :height))))
+    (fancy-splash-generate-images)))
+
+(defun get-appropriate-splash ()
+  (let ((height (frame-height)))
+    (cl-some (lambda (size) (when (>= height (plist-get size :min-height)) size))
+             fancy-splash-sizes)))
+
+(setq fancy-splash-last-size nil)
+(setq fancy-splash-last-theme nil)
+(defun set-appropriate-splash (&rest _)
+  (let ((appropriate-image (get-appropriate-splash)))
+    (unless (and (equal appropriate-image fancy-splash-last-size)
+                 (equal doom-theme fancy-splash-last-theme)))
+    (unless (plist-get appropriate-image :file)
+      (ensure-theme-splash-images-exist (plist-get appropriate-image :height)))
+    (setq fancy-splash-image
+          (or (plist-get appropriate-image :file)
+              (fancy-splash-filename (symbol-name doom-theme) (plist-get appropriate-image :height))))
+    (setq +doom-dashboard-banner-padding (plist-get appropriate-image :padding))
+    (setq fancy-splash-last-size appropriate-image)
+    (setq fancy-splash-last-theme doom-theme)
+    (+doom-dashboard-reload)))
+
+(add-hook 'window-size-change-functions #'set-appropriate-splash)
+(add-hook 'doom-load-theme-hook #'set-appropriate-splash)
 
 (defvar splash-phrase-source-folder
   (expand-file-name "splash/phrases" doom-private-dir)
@@ -214,9 +318,11 @@
 (setq +treemacs-git-mode 'deferred)
 
 (after! company
-  (setq company-idle-delay 0.5
-        company-minimum-prefix-length 2)
-  (setq company-show-quick-access t
+  (setq +lsp-company-backends '(company-tabnine :separate company-capf company-yasnippet))
+  (setq company-show-numbers t
+        company-idle-delay 0
+        company-minimum-prefix-length 2
+        company-show-quick-access t
         company-quick-access-modifier 'super))
 
 (setq-default history-length 1000)
@@ -249,75 +355,6 @@
   (interactive)
   (ispell-change-dictionary "en_GB")
   (flyspell-buffer))
-
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-
-(after! mu4e
-  (setq mu4e-compose-complete-addresses 't
-        mu4e-use-fancy-chars 'nil
-        mu4e-sent-messages-behavior 'sent
-        mu4e-compose-format-flowed 't
-        mu4e-update-interval 300
-        mu4e-attachment-dir "~/Downloads/"
-        mu4e-view-html-plaintext-ratio-heuristic 10000
-        smtpmail-debug-info 't
-        mml-secure-openpgp-encrypt-to-self 't)
-
-  (set-email-account! "sehn.tech"
-                      '((user-mail-address              . "linus@sehn.tech")
-                        (user-full-name                 . "Linus Sehn")
-                        (mu4e-sent-folder               . "/mailbox/Sent")
-                        (mu4e-drafts-folder             . "/mailbox/Drafts")
-                        (mu4e-trash-folder              . "/mailbox/Trash")
-                        (mu4e-refile-folder             . "/mailbox/Archive/2021")
-                        (smtpmail-smtp-user             . "linus@sehn.tech")
-                        (smtpmail-smtp-server           . "smtp.mailbox.org")
-                        (smtpmail-stream-type           . ssl)
-                        (smtpmail-smtp-service          . 465))
-                      t)
-
-  (set-email-account! "fsfe.org"
-                      '((user-mail-address              . "linus@fsfe.org")
-                        (user-full-name                 . "Linus Sehn")
-                        (mu4e-sent-folder               . "/mailbox/Sent")
-                        (mu4e-drafts-folder             . "/mailbox/Drafts")
-                        (mu4e-trash-folder              . "/mailbox/Trash")
-                        (mu4e-refile-folder             . "/mailbox/Archive/2021")
-                        (smtpmail-smtp-user             . "linus")
-                        (smtpmail-smtp-server           . "mail.fsfe.org")
-                        (smtpmail-stream-type           . starttls)
-                        (smtpmail-smtp-service          . 587))
-                      t))
-
-(add-hook 'mu4e-compose-mode-hook (lambda () (use-hard-newlines -1)))
-
-(after! mu4e
-  (setf (alist-get 'trash mu4e-marks)
-        (list :char '("d" . "▼")
-              :prompt "dtrash"
-              :dyn-target (lambda (target msg)
-                          (mu4e-get-trash-folder msg))
-              :action (lambda (docid msg target)
-                        ;; Here's the main difference to the regular trash mark,
-                        ;; no +T before -N so the message is not marked as
-                        ;; IMAP-deleted:
-                        (mu4e~proc-move docid (mu4e~mark-check-target target) "-N")))))
-
-;; (add-hook 'mu4e-compose-mode-hook
-;;           (defun my-do-compose-stuff ()
-;;             "My settings for message composition."
-;;             (mml-secure-message-sign-encrypt)
-;;             ))
-
-;; (add-hook 'message-send-hook 'mml-secure-message-sign-encrypt)
-
-(after! org-msg
-  (setq
-   ;; org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil author:nil email:nil \\n:t"
-   org-msg-startup "hidestars indent inlineimages" org-msg-greeting-fmt "\nHi %s,\n\n"
-   org-msg-greeting-name-limit 3
-   org-msg-default-alternatives '(text))
-  (org-msg-mode))
 
 (setq org-directory "~/Exocortex")
 
@@ -669,41 +706,8 @@ bibliography:../bib/library.bib
        (org-hugo-export-to-md)))
        (file-expand-wildcards  "*.org"))))
 
-(after! (org org-roam)
-    (defun my/org-roam--backlinks-list (file)
-      (if (org-roam--org-roam-file-p file)
-          (--reduce-from
-           (concat acc (format "- *[[file:%s][%s]]*\n"
-                               (file-relative-name (car it) org-roam-directory)
-                               (org-roam--get-title-or-slug (car it))))
-           "" (org-roam-db-query [:select [from]
-                                  :from links
-                                  :where (= to $s1)
-                                  :and from :not :like $s2] file "%private%"))
-        ""))
-    (defun my/org-export-preprocessor (_backend)
-      (let ((links (my/org-roam--backlinks-list (buffer-file-name))))
-        (unless (string= links "")
-          (save-excursion
-            (goto-char (point-max))
-            (insert (concat "\n* Backlinks\n" links))))))
-    (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor))
-
 (after! ox-hugo
   (setq org-hugo-default-section-directory "post"))
-
-(use-package! citeproc-org
-  :after org
-  :config
-  (citeproc-org-setup))
-
-(after! citeproc-org
-  (setq
-        citeproc-org-suppress-affixes-cite-link-types '("citealt")
-        citeproc-org-suppress-author-cite-link-types '("citeyear")
-        citeproc-org-org-bib-header "* Bibliography\n"
-        citeproc-org-html-bib-header "<h3 class='citeproc-org-bib-h3'>Bibliography</h3>\n"
-        citeproc-org-ignore-backends '(latex beamer icalendar)))
 
 (use-package! string-inflection
   :commands (string-inflection-all-cycle

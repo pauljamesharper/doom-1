@@ -15,10 +15,11 @@
 ** Global
 #+begin_src emacs-lisp :tangle yes :results silent
 (map!
- ("M-a" #'centaur-tabs-backward)
- ("M-d" #'centaur-tabs-forward)
- ("M-A" #'centaur-tabs-move-current-tab-to-left)
- ("M-D" #'centaur-tabs-move-current-tab-to-right)
+ ;; Currently not using tabs
+ ;; ("M-a" #'centaur-tabs-backward)
+ ;; ("M-d" #'centaur-tabs-forward)
+ ;; ("M-A" #'centaur-tabs-move-current-tab-to-left)
+ ;; ("M-D" #'centaur-tabs-move-current-tab-to-right)
  ("M-q" #'kill-current-buffer)
  ("M-Q" #'evil-quit)
  :leader
@@ -124,17 +125,46 @@
 ** Fonts
 
 #+begin_src emacs-lisp :tangle yes :results silent
-(setq doom-font (font-spec :family "Input Mono Narrow" :size 15 :weight 'semi-light)
-      doom-variable-pitch-font (font-spec :family "Fira Sans") ; inherits `doom-font''s :size
-      doom-unicode-font (font-spec :family "Input Mono Narrow" :size 12)
-      doom-big-font (font-spec :family "Fira Code" :size 24))
+(setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 15)
+      doom-variable-pitch-font (font-spec :family "Rubik") ; inherits `doom-font''s :size
+      doom-unicode-font (font-spec :family "JetBrains Mono NF Regular" :size 12))
 #+end_src
+
 ** Theme & Modeline
 #+begin_src emacs-lisp :tangle yes :results silent
-(setq doom-theme 'doom-monokai-pro
+(setq doom-theme 'doom-dracula
       display-time-24hr-format t
       display-time-default-load-average nil)
 (display-time-mode 1)
+#+end_src
+
+apply to the rest of the desktop using =pywal=
+
+#+begin_src emacs-lisp :tangle yes :results silent
+(use-package! theme-magic
+  :commands theme-magic-from-emacs
+  :config
+  (defadvice! theme-magic--auto-extract-16-doom-colors ()
+    :override #'theme-magic--auto-extract-16-colors
+    (list
+     (face-attribute 'default :background)
+     (doom-color 'error)
+     (doom-color 'success)
+     (doom-color 'type)
+     (doom-color 'keywords)
+     (doom-color 'constants)
+     (doom-color 'functions)
+     (face-attribute 'default :foreground)
+     (face-attribute 'shadow :foreground)
+     (doom-blend 'base8 'error 0.1)
+     (doom-blend 'base8 'success 0.1)
+     (doom-blend 'base8 'type 0.1)
+     (doom-blend 'base8 'keywords 0.1)
+     (doom-blend 'base8 'constants 0.1)
+     (doom-blend 'base8 'functions 0.1)
+     (face-attribute 'default :foreground))))
+
+(run-with-idle-timer 0.1 nil (lambda () (add-hook 'doom-load-theme-hook 'theme-magic-from-emacs)))
 #+end_src
 
 ** Transparency
@@ -161,22 +191,116 @@ Add a function to toggle transparency
 #+end_src
 
 ** Tabs
-#+begin_src emacs-lisp :tangle yes :results silent
+
+I'm currently not using tabs
+
+#+begin_src emacs-lisp :tangle no :results silent
 (after! centaur-tabs
-  (setq centaur-tabs-set-bar nil
+  (setq centaur-tabs-set-bar 'left
         centaur-tabs-set-close-button nil
-        centaur-tabs-style "rounded"
+        ;; centaur-tabs-style "rounded"
         centaur-tabs-plain-icons t
-        centaur-tabs-height 40)
+        centaur-tabs-height 36)
         ;; group tabs by project/workspace
   (centaur-tabs-group-by-projectile-project)
   (centaur-tabs-headline-match))
 
 #+end_src
+
+
 ** Splashscreen
 #+begin_src emacs-lisp :tangle yes :results silent
-(setq +doom-dashboard-banner-file
-      (expand-file-name "splash/img/emacs-e.svg" doom-private-dir))
+(defvar fancy-splash-image-template
+  (expand-file-name "splash/img/emacs-e-template.svg" doom-private-dir)
+  "Default template svg used for the splash image, with substitutions from ")
+
+(defvar fancy-splash-sizes
+  `((:height 300 :min-height 50 :padding (0 . 2))
+    (:height 250 :min-height 42 :padding (2 . 4))
+    (:height 200 :min-height 35 :padding (3 . 3))
+    (:height 150 :min-height 28 :padding (3 . 3))
+    (:height 100 :min-height 20 :padding (2 . 2))
+    (:height 75  :min-height 15 :padding (2 . 1))
+    (:height 50  :min-height 10 :padding (1 . 0))
+    (:height 1   :min-height 0  :padding (0 . 0)))
+  "list of plists with the following properties
+  :height the height of the image
+  :min-height minimum `frame-height' for image
+  :padding `+doom-dashboard-banner-padding' (top . bottom) to apply
+  :template non-default template file
+  :file file to use instead of template")
+
+(defvar fancy-splash-template-colours
+  '(("$colour1" . keywords) ("$colour2" . type) ("$colour3" . base5) ("$colour4" . base8))
+  "list of colour-replacement alists of the form (\"$placeholder\" . 'theme-colour) which applied the template")
+
+(unless (file-exists-p (expand-file-name "theme-splashes" doom-cache-dir))
+  (make-directory (expand-file-name "theme-splashes" doom-cache-dir) t))
+
+(defun fancy-splash-filename (theme-name height)
+  (expand-file-name (concat (file-name-as-directory "theme-splashes")
+                            theme-name
+                            "-" (number-to-string height) ".svg")
+                    doom-cache-dir))
+
+(defun fancy-splash-clear-cache ()
+  "Delete all cached fancy splash images"
+  (interactive)
+  (delete-directory (expand-file-name "theme-splashes" doom-cache-dir) t)
+  (message "Cache cleared!"))
+
+(defun fancy-splash-generate-image (template height)
+  "Read TEMPLATE and create an image if HEIGHT with colour substitutions as
+   described by `fancy-splash-template-colours' for the current theme"
+  (with-temp-buffer
+    (insert-file-contents template)
+    (re-search-forward "$height" nil t)
+    (replace-match (number-to-string height) nil nil)
+    (dolist (substitution fancy-splash-template-colours)
+      (goto-char (point-min))
+      (while (re-search-forward (car substitution) nil t)
+        (replace-match (doom-color (cdr substitution)) nil nil)))
+    (write-region nil nil
+                  (fancy-splash-filename (symbol-name doom-theme) height) nil nil)))
+
+(defun fancy-splash-generate-images ()
+  "Perform `fancy-splash-generate-image' in bulk"
+  (dolist (size fancy-splash-sizes)
+    (unless (plist-get size :file)
+      (fancy-splash-generate-image (or (plist-get size :template)
+                                       fancy-splash-image-template)
+                                   (plist-get size :height)))))
+
+(defun ensure-theme-splash-images-exist (&optional height)
+  (unless (file-exists-p (fancy-splash-filename
+                          (symbol-name doom-theme)
+                          (or height
+                              (plist-get (car fancy-splash-sizes) :height))))
+    (fancy-splash-generate-images)))
+
+(defun get-appropriate-splash ()
+  (let ((height (frame-height)))
+    (cl-some (lambda (size) (when (>= height (plist-get size :min-height)) size))
+             fancy-splash-sizes)))
+
+(setq fancy-splash-last-size nil)
+(setq fancy-splash-last-theme nil)
+(defun set-appropriate-splash (&rest _)
+  (let ((appropriate-image (get-appropriate-splash)))
+    (unless (and (equal appropriate-image fancy-splash-last-size)
+                 (equal doom-theme fancy-splash-last-theme)))
+    (unless (plist-get appropriate-image :file)
+      (ensure-theme-splash-images-exist (plist-get appropriate-image :height)))
+    (setq fancy-splash-image
+          (or (plist-get appropriate-image :file)
+              (fancy-splash-filename (symbol-name doom-theme) (plist-get appropriate-image :height))))
+    (setq +doom-dashboard-banner-padding (plist-get appropriate-image :padding))
+    (setq fancy-splash-last-size appropriate-image)
+    (setq fancy-splash-last-theme doom-theme)
+    (+doom-dashboard-reload)))
+
+(add-hook 'window-size-change-functions #'set-appropriate-splash)
+(add-hook 'doom-load-theme-hook #'set-appropriate-splash)
 #+end_src
 
 Now, add some fancy phrases to splashscreen.
@@ -287,9 +411,11 @@ Now, add some fancy phrases to splashscreen.
 * Completion
 #+begin_src emacs-lisp :tangle yes :results silent
 (after! company
-  (setq company-idle-delay 0.5
-        company-minimum-prefix-length 2)
-  (setq company-show-quick-access t
+  (setq +lsp-company-backends '(company-tabnine :separate company-capf company-yasnippet))
+  (setq company-show-numbers t
+        company-idle-delay 0
+        company-minimum-prefix-length 2
+        company-show-quick-access t
         company-quick-access-modifier 'super))
 #+end_src
 
@@ -347,7 +473,10 @@ https://languagetool.org/.
 
 * E-mail
 ** General
-#+begin_src emacs-lisp :tangle yes :results silent
+
+For now, I am a happy Thunderbird user. I might return to this configuration later.
+
+#+begin_src emacs-lisp :tangle no :results silent
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
 
 (after! mu4e
@@ -393,7 +522,8 @@ https://languagetool.org/.
 Don't set =-T= flag for normal delete operation. Basically, this makes the trash
 can work and mails are moved to the trash instead of being purged forever on the
 next sync operation.
-#+begin_src emacs-lisp :tangle yes :results silent
+
+#+begin_src emacs-lisp :tangle no :results silent
 (after! mu4e
   (setf (alist-get 'trash mu4e-marks)
         (list :char '("d" . "▼")
@@ -408,7 +538,7 @@ next sync operation.
 #+end_src
 
 ** Composer
-#+begin_src emacs-lisp :tangle yes :results silent
+#+begin_src emacs-lisp :tangle no :results silent
 ;; (add-hook 'mu4e-compose-mode-hook
 ;;           (defun my-do-compose-stuff ()
 ;;             "My settings for message composition."
@@ -851,60 +981,6 @@ a helper function for jumping to source
        (file-expand-wildcards  "*.org"))))
 #+end_src
 
-**** Export Backlinks
-#+begin_src emacs-lisp :tangle yes :results silent
-(after! (org org-roam)
-    (defun my/org-roam--backlinks-list (file)
-      (if (org-roam--org-roam-file-p file)
-          (--reduce-from
-           (concat acc (format "- *[[file:%s][%s]]*\n"
-                               (file-relative-name (car it) org-roam-directory)
-                               (org-roam--get-title-or-slug (car it))))
-           "" (org-roam-db-query [:select [from]
-                                  :from links
-                                  :where (= to $s1)
-                                  :and from :not :like $s2] file "%private%"))
-        ""))
-    (defun my/org-export-preprocessor (_backend)
-      (let ((links (my/org-roam--backlinks-list (buffer-file-name))))
-        (unless (string= links "")
-          (save-excursion
-            (goto-char (point-max))
-            (insert (concat "\n* Backlinks\n" links))))))
-    (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor))
-#+end_src
-
-#+begin_src emacs-lisp :tangle no
-(defun my/org-roam--backlinks-list-with-content (file)
-  (with-temp-buffer
-    (if-let* ((backlinks (org-roam--get-backlinks file))
-              (grouped-backlinks (--group-by (nth 0 it) backlinks)))
-        (progn
-          ;; no display of the number of backlinks
-          ;; (insert (format "\n\n** %d Backlink(s)\n"
-          ;;                 (length backlinks)))
-          (dolist (group grouped-backlinks)
-            (let ((file-from (car group))
-                  (bls (cdr group)))
-              (insert (format "- *[[file:%s][%s]]*\n\n"
-                              file-from
-                              (org-roam--get-title-or-slug file-from)))
-              (dolist (backlink bls)
-                (pcase-let ((`(,file-from _ ,props) backlink))
-                  (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
-                  (insert "\n\n")))))))
-    (buffer-string)))
-
-  (defun my/org-export-preprocessor (backend)
-    (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
-      (unless (string= links "")
-        (save-excursion
-          (goto-char (point-max))
-          (insert (concat "\n* Backlinks\n") links)))))
-
-  (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
-#+end_src
-
 **** Export to Website
 ***** Default Section
 #+begin_src emacs-lisp :tangle yes :results silent
@@ -912,109 +988,6 @@ a helper function for jumping to source
   (setq org-hugo-default-section-directory "post"))
 #+end_src
 
-***** Export Backlinks
-#+begin_src emacs-lisp :tangle no :results silent
-(after! (org org-roam)
-    (defun my/org-roam--backlinks-list (file)
-      (if (org-roam--org-roam-file-p file)
-          (--reduce-from
-           (concat acc (format "- *[[file:%s][%s]]*\n"
-                               (file-relative-name (car it) org-roam-directory)
-                               (org-roam--get-title-or-slug (car it))))
-           "" (org-roam-db-query [:select [from]
-                                  :from links
-                                  :where (= to $s1)
-                                  :and from :not :like $s2] file "%private%"))
-        ""))
-    (defun my/org-export-preprocessor (_backend)
-      (let ((links (my/org-roam--backlinks-list (buffer-file-name))))
-        (unless (string= links "")
-          (save-excursion
-            (goto-char (point-max))
-            (insert (concat "\n* Backlinks\n" links))))))
-    (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor))
-#+end_src
-
-#+begin_src emacs-lisp :tangle no
-(defun my/org-roam--backlinks-list-with-content (file)
-  (with-temp-buffer
-    (if-let* ((backlinks (org-roam--get-backlinks file))
-              (grouped-backlinks (--group-by (nth 0 it) backlinks)))
-        (progn
-          ;; no display of the number of backlinks
-          ;; (insert (format "\n\n** %d Backlink(s)\n"
-          ;;                 (length backlinks)))
-          (dolist (group grouped-backlinks)
-            (let ((file-from (car group))
-                  (bls (cdr group)))
-              (insert (format "- *[[file:%s][%s]]*\n\n"
-                              file-from
-                              (org-roam--get-title-or-slug file-from)))
-              (dolist (backlink bls)
-                (pcase-let ((`(,file-from _ ,props) backlink))
-                  (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
-                  (insert "\n\n")))))))
-    (buffer-string)))
-
-  (defun my/org-export-preprocessor (backend)
-    (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
-      (unless (string= links "")
-        (save-excursion
-          (goto-char (point-max))
-          (insert (concat "\n* Backlinks\n") links)))))
-
-  (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
-#+end_src
-
-***** Export Bibliography
-#+begin_src emacs-lisp :tangle yes :results silent
-(use-package! citeproc-org
-  :after org
-  :config
-  (citeproc-org-setup))
-
-(after! citeproc-org
-  (setq
-        citeproc-org-suppress-affixes-cite-link-types '("citealt")
-        citeproc-org-suppress-author-cite-link-types '("citeyear")
-        citeproc-org-org-bib-header "* Bibliography\n"
-        citeproc-org-html-bib-header "<h3 class='citeproc-org-bib-h3'>Bibliography</h3>\n"
-        citeproc-org-ignore-backends '(latex beamer icalendar)))
-#+end_src
-
-#+begin_src emacs-lisp :tangle no :results silent
-(after! org-ref
-    (defun my/org-ref-get-md-bibliography (&optional sort)
-    "Create an md bibliography when there are keys.
-     if SORT is non-nil the bibliography is sorted alphabetically by key."
-    (let ((keys (org-ref-get-bibtex-keys sort)))
-        (when keys
-        (concat
-        "\n"
-        (mapconcat (lambda (x) (org-ref-get-bibtex-entry-md x)) keys "\n\n")
-        "\n"))))
-
-    (defun org-ref-bibliography-format (keyword desc format)
-    "Formatting function for bibliography links."
-    "Redefined Formatting function for bibliography links
-     using my custom md bibliogrpyh function."
-    (cond
-    ((eq format 'org) (org-ref-get-org-bibliography))
-    ((eq format 'ascii) (org-ref-get-ascii-bibliography))
-    ((eq format 'md) (my/org-ref-get-md-bibliography))
-    ((eq format 'odt) (org-ref-get-odt-bibliography))
-    ((eq format 'html) (org-ref-get-html-bibliography))
-    ((eq format 'latex)
-        ;; write out the latex bibliography command
-        (format "\\bibliography{%s}"
-            (replace-regexp-in-string
-            "\\.bib" ""
-            (mapconcat
-            'identity
-            (mapcar 'file-relative-name
-                (split-string keyword ","))
-            ",")))))))
-#+end_src
 * Programming
 ** Utilities
 #+begin_src emacs-lisp :tangle yes :results silent

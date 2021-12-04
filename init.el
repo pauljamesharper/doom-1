@@ -10,6 +10,7 @@
        doom
        doom-dashboard
        doom-quit
+       (emoji +unicode)  ; 🙂
        hl-todo
        indent-guides
        (modeline +light)
@@ -18,7 +19,7 @@
        nav-flash
        ophints
        (popup +all +defaults)
-       tabs
+       ;;tabs
        treemacs
        vc-gutter
        vi-tilde-fringe
@@ -78,14 +79,14 @@
        markdown
        (org +dragndrop +hugo +journal +jupyter +noter +pomodoro +present +roam2)
        (php +lsp)
-       (python +lsp +pyright)
+       (python +lsp)
        (racket +xp)
        rest
        (sh +lsp)
        (web +lsp)
 
        :email
-       mu4e
+       ;; mu4e
 
        :app
        everywhere
