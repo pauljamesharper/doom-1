@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Print total
+# key: prt
+# --
+
+print_total($0_counts.sum())

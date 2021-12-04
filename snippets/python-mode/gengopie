@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: gengopie
+# uuid: gengopie
+# key: gengopie
+# condition: t
+# --
+
+st.plotly_chart(
+    gen_go_pie(
+        labels=${1:name}_counts.sort_index().index,
+        values=$1_counts.sort_index().values,
+    ),
+    use_container_width=True,
+    config=chart_config,
+)
