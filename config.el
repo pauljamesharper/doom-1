@@ -80,9 +80,9 @@
 ;; Make text only slightly bigger
 (setq +zen-text-scale 1.1)
 
-(setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 15)
-      doom-variable-pitch-font (font-spec :family "Rubik") ; inherits `doom-font''s :size
-      doom-unicode-font (font-spec :family "JetBrains Mono NF Regular" :size 12))
+(setq doom-font (font-spec :family "Iosevka" :size 16)
+      doom-variable-pitch-font (font-spec :family "Iosevka Aile") ; inherits `doom-font''s :size
+      doom-unicode-font (font-spec :family "Iosevka" :size 12))
 
 (setq doom-theme 'doom-dracula
       display-time-24hr-format t
