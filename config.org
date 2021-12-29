@@ -126,7 +126,7 @@
 
 #+begin_src emacs-lisp :tangle yes :results silent
 (setq doom-font (font-spec :family "Iosevka" :size 16)
-      doom-variable-pitch-font (font-spec :family "Iosevka Aile") ; inherits `doom-font''s :size
+      doom-variable-pitch-font (font-spec :family "Rubik") ; inherits `doom-font''s :size
       doom-unicode-font (font-spec :family "Iosevka" :size 12))
 #+end_src
 

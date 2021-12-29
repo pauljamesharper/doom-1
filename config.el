@@ -81,7 +81,7 @@
 (setq +zen-text-scale 1.1)
 
 (setq doom-font (font-spec :family "Iosevka" :size 16)
-      doom-variable-pitch-font (font-spec :family "Iosevka Aile") ; inherits `doom-font''s :size
+      doom-variable-pitch-font (font-spec :family "Rubik") ; inherits `doom-font''s :size
       doom-unicode-font (font-spec :family "Iosevka" :size 12))
 
 (setq doom-theme 'doom-dracula
