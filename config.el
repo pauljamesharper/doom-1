@@ -71,18 +71,22 @@
 
 ;; Location of project repositories
 (setq projectile-project-search-path
-      '("~/Projects"
-        "~/Projects/fsfe"
-        "~/Projects/snv"))
+      '("~/Exocortex/Projects"))
 
 ;; Don't use mixed-pitch-mode for any buffer type
 (setq +zen-mixed-pitch-modes '())
 ;; Make text only slightly bigger
 (setq +zen-text-scale 1.1)
 
-(setq doom-font (font-spec :family "Iosevka" :size 16)
-      doom-variable-pitch-font (font-spec :family "Rubik") ; inherits `doom-font''s :size
-      doom-unicode-font (font-spec :family "Iosevka" :size 12))
+(setq doom-font (font-spec :family "Source Code Pro" :size 22)
+      doom-variable-pitch-font (font-spec :family "Ubuntu" :size 22)
+      doom-big-font (font-spec :family "Source Code Pro" :size 30))
+(after! doom-themes
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t))
+(custom-set-faces!
+  '(font-lock-comment-face :slant italic)
+  '(font-lock-keyword-face :slant italic))
 
 (setq doom-theme 'doom-dracula
       display-time-24hr-format t
