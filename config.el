@@ -360,7 +360,7 @@
   (ispell-change-dictionary "en_GB")
   (flyspell-buffer))
 
-(setq org-directory "~/Exocortex")
+(setq org-directory "~/Dropbox/Exocortex")
 
 (after! org
   (use-package! org-super-agenda
@@ -381,7 +381,7 @@
     (setq org-agenda-start-on-weekday nil)
     ;; (setq org-agenda-dim-blocked-tasks nil) ;; makes main tasks visible in agenda-view
     (setq org-agenda-files
-          '("~/Exocortex/org/projects-active.org"))
+          '("~/Dropbox/Exocortex/org/projects-active.org" "~/Dropbox/Exocortex/org/caldav.org" "~/Dropbox/Exocortex/org/actions.org" "~/Dropbox/Exocortex/org/calendar.org" "~/Dropbox/Exocortex/org/someday.org"))
     (setq org-super-agenda-groups
           '(
             (:name "Open deep tasks this quarter"
@@ -435,14 +435,14 @@
 (use-package! org-caldav
   :after org
   :init
-  (setq org-caldav-url "https://dav.mailbox.org/caldav"
-        org-caldav-calendar-id "Y2FsOi8vMC80NQ"
-        org-caldav-inbox "~/Exocortex/org/caldav.org"
-        org-caldav-files '("~/Exocortex/org/calendar.org"
-                           "~/Exocortex/org/actions.org"
-                           "~/Exocortex/org/someday.org"))
+  (setq org-caldav-url "https://posteo.de:8443/calendars/pjharper"
+        org-caldav-calendar-id "default"
+        org-caldav-inbox "~/Dropbox/Exocortex/org/caldav.org"
+        org-caldav-files '("~/Dropbox/Exocortex/org/calendar.org"
+                           "~/Dropbox/Exocortex/org/actions.org"
+                           "~/Dropbox/Exocortex/org/someday.org"))
   :config
-  (setq org-icalendar-timezone "Europe/Berlin"
+  (setq org-icalendar-timezone "Africa/Nairobi"
         org-icalendar-alarm-time 15
         org-icalendar-include-todo t
         org-icalendar-use-deadline '(event-if-todo event-if-not-todo todo-due)
@@ -465,7 +465,7 @@
              (f-write-text
               (s-replace-all '(("(" . "") (")" . ""))
                 (org-clock-get-clock-string))
-                'utf-8 "/home/lino/.clock")
+                'utf-8 "/home/pharper/.clock")
            (f-write-text "No active clock! What are you doing?"
               'utf-8 "/home/lino/.clock")
            )))
@@ -483,21 +483,21 @@
 (after! org
   (setq org-capture-templates
         '(("t" "TODO" entry
-           (file+headline "~/Exocortex/org/actions.org" "Other")
+           (file+headline "~/Dropbox/Exocortex/org/actions.org" "Other")
            "* TODO %?\n%a\n")
           ("a" "APPOINTMENT" entry
-           (file+headline "~/Exocortex/org/calendar.org" "2021_Q1")
+           (file+headline "~/Dropbox/Exocortex/org/calendar.org" "2022_Q2")
            "* %?\n%(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n"))))
 
 (after! org
-  (setq org-journal-dir "~/Exocortex/org/journal"
+  (setq org-journal-dir "~/Dropbox/Exocortex/org/journal"
         org-journal-file-format "%Y.org"
         org-journal-encrypt-journal 't
         org-journal-file-type 'yearly))
 
 (after! org-roam
-  (setq org-roam-directory "~/Exocortex/"
-        org-roam-db-location "~/Exocortex/roam.sqlite"
+  (setq org-roam-directory "~/Dropbox/Exocortex/"
+        org-roam-db-location "~/Dropbox/Exocortex/roam.sqlite"
         ;; don't match my private org stuff
         org-roam-file-exclude-regexp "/org"))
 
@@ -505,23 +505,23 @@
   "Perform a text search on ~/Exocortex."
   (interactive)
   (require 'org)
-  (let ((default-directory "~/Exocortex"))
+  (let ((default-directory "~/Dropbox/Exocortex"))
     (+default/search-project-for-symbol-at-point "")))
 
 (defun my/search-public ()
   "Perform a text search on ~/Projects/exocortex-public."
   (interactive)
-  (let ((default-directory "~/Projects/exocortex-public"))
+  (let ((default-directory "~/Dropbox/Projects/exocortex-public"))
     (+default/search-cwd "")))
 
 (after! citar
-  (setq citar-bibliography '("~/Exocortex/bib/library.bib")
-        citar-library-paths '("~/Exocortex/pdfs")
-        citar-notes-path '("~/Exocortex/refs")
+  (setq citar-bibliography '("~/Dropbox/Exocortex/bib/library.bib")
+        citar-library-paths '("~/Dropbox/Exocortex/pdfs")
+        citar-notes-path '("~/Dropbox/Exocortex/refs")
         citar-file-open-note-function 'orb-citar-edit-note
         citar-file-note-org-include '(org-id org-roam-ref)
         citar-at-point-function 'embark-act
-        bibtex-completion-bibliography '("~/Exocortex/bib/library.bib"))
+        bibtex-completion-bibliography '("~/Dropbox/Exocortex/bib/library.bib"))
         ;; bibtex-completion-notes-path '("~/Exocortex/refs"))
   ;; set icon   s
   (setq citar-symbols
@@ -557,7 +557,7 @@
            plain (function org-roam-capture--get-point)
 
            :file-name "zettel/${slug}"
-           :head "#+title: ${title}\n#+hugo_base_dir:~/Projects/personal-website
+           :head "#+title: ${title}\n#+hugo_base_dir:~/Dropbox/Projects/personal-website
 
 Links ::
 \n#+begin_src toml :front_matter_extra t
@@ -578,7 +578,7 @@ bibliography:../bib/library.bib"
            "%?"
            :file-name "refs/${slug}"
            :head "#+title: Notes on: ${title}
-#+hugo_base_dir:~/Projects/personal-website
+#+hugo_base_dir:~/Dropbox/Projects/personal-website
 #+hugo_section:refs
 #+roam_key: ${ref}
 
@@ -649,7 +649,7 @@ bibliography:../bib/library.bib
 
 (after! pdf-view
   (setq pdf-annot-default-annotation-properties
-        '((t (label . "Linus Sehn"))
+        '((t (label . "Paul Harper"))
           (text (icon . "Note")
                 (color . "#ff0000"))
           (highlight (color . "yellow"))
