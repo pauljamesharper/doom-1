@@ -62,10 +62,10 @@
 (map! :map pdf-view-mode-map
       "C-c i" 'org-noter-insert-note)
 
-(setq user-full-name "Linus Sehn"
-      user-mail-address "linus@sehn.tech")
+(setq user-full-name "Paul Harper"
+      user-mail-address "harper.paul.j@gmail.com")
 
-(setq bookmark-default-file "~/.doom.d/bookmarks")
+(setq bookmark-default-file "~/.config/doom/bookmarks")
 
 ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
 

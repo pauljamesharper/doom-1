@@ -90,13 +90,13 @@
 * General
 ** Name & mail address
 #+begin_src emacs-lisp :tangle yes :results silent
-(setq user-full-name "Linus Sehn"
-      user-mail-address "linus@sehn.tech")
+(setq user-full-name "Paul Harper"
+      user-mail-address "harper.paul.j@gmail.com")
 #+end_src
 
 ** Bookmarks
 #+begin_src emacs-lisp :tangle yes :results silent
-(setq bookmark-default-file "~/.doom.d/bookmarks")
+(setq bookmark-default-file "~/.config/doom/bookmarks")
 #+end_src
 
 ** Startup
@@ -648,7 +648,7 @@ next sync operation.
           ("PROJ" . +org-todo-project))))
 #+end_src
 
-*** FIX Calendar
+*** Calendar
 
 #+begin_src emacs-lisp :tangle yes :results silent
 (use-package! org-caldav
